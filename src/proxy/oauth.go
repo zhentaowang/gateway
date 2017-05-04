@@ -9,7 +9,6 @@ import (
     "net/http"
     "encoding/json"
     "io/ioutil"
-    "strconv"
 )
 
 func (h *HttpProxy) CheckToken(req *fasthttp.Request , result *model.RouteResult) (bool, error) {
@@ -36,7 +35,8 @@ func (h *HttpProxy) CheckToken(req *fasthttp.Request , result *model.RouteResult
         json.Unmarshal(body, &oauthResult)
 
         // 设置user_id
-        req.Header.Add("User-Id", strconv.Itoa(int(oauthResult["user_id"].(float64))))
+        //req.Header.Add("User-Id", strconv.Itoa(int(oauthResult["user_id"].(float64))))
+        req.Header.Add("User-Id", oauthResult["user_id"].(string))
 
         return true, nil
     } else {
