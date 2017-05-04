@@ -9,7 +9,7 @@ import (
     "time"
 
     "github.com/valyala/fasthttp"
-    "gateway/config"
+    "gateway/src/config"
     "github.com/labstack/gommon/log"
 )
 

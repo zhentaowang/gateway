@@ -3,8 +3,8 @@ package proxy
 import (
     "github.com/valyala/fasthttp"
     "errors"
-    "gateway/config"
-    "gateway/model"
+    "gateway/src/config"
+    "gateway/src/model"
     "github.com/labstack/gommon/log"
     "net/http"
     "encoding/json"

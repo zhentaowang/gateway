@@ -2,12 +2,12 @@ package model
 
 import (
     "encoding/base64"
-    "gateway/thrift/gen-go/server"
+    "gateway/src/thrift/gen-go/server"
     "git.apache.org/thrift.git/lib/go/thrift"
     "fmt"
     "time"
-    "gateway/config"
-    pool "gateway/thrift"
+    "gateway/src/config"
+    pool "gateway/src/thrift"
     "github.com/labstack/gommon/log"
 )
 

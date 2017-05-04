@@ -7,7 +7,7 @@ import (
     "fmt"
     "regexp"
     "container/list"
-    "gateway/filter"
+    "gateway/src/filter"
     "github.com/labstack/gommon/log"
 )
 

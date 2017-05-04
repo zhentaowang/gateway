@@ -2,12 +2,12 @@ package main
 
 import (
     //"gateway/admin"
-    "gateway/proxy"
-    "gateway/model"
+    "gateway/src/proxy"
+    "gateway/src/model"
     "github.com/labstack/gommon/log"
     "github.com/go-yaml/yaml"
     "io/ioutil"
-    "gateway/config"
+    "gateway/src/config"
 )
 
 func main() {

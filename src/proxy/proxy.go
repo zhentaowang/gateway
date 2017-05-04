@@ -4,12 +4,12 @@ import (
     "github.com/labstack/gommon/log"
     "github.com/valyala/fasthttp"
     "sync"
-    "gateway/model"
+    "gateway/src/model"
     "net/http"
-    "gateway/util"
-    "gateway/thrift/gen-go/server"
+    "gateway/src/util"
+    "gateway/src/thrift/gen-go/server"
     "encoding/json"
-    "gateway/config"
+    "gateway/src/config"
     "time"
 )
 

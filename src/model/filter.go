@@ -3,7 +3,7 @@ package model
 import (
     "github.com/valyala/fasthttp"
     "net/http"
-    "gateway/filter"
+    "gateway/src/filter"
 )
 
 func (a *API) DoPreFilters(c filter.Context) (filterName string, statusCode int, err error) {
