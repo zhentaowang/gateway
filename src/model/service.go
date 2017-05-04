@@ -58,7 +58,7 @@ func (s *Service) init(r *RouteTable) error {
 }
 
 func (s *Service) getKey() string {
-    key := fmt.Sprintf("%s-%s", s.Namespace, s.Name)
+    key := fmt.Sprintf("%s-%s-%s", s.Namespace, s.Name, s.Port)
     return base64.RawURLEncoding.EncodeToString([]byte(key))
 }
 
