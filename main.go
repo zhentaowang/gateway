@@ -1,7 +1,7 @@
 package main
 
 import (
-    "gateway/admin"
+    //"gateway/admin"
     "gateway/proxy"
     "gateway/model"
     "github.com/labstack/gommon/log"
@@ -32,7 +32,7 @@ func main() {
     h.Start()
 
     // 管理服务
-    s := admin.NewAdminServer(":8080", "luojing", "111111", store)
-    s.Start()
+    //s := admin.NewAdminServer(":8080", "luojing", "111111", store)
+    //s.Start()
 
 }
