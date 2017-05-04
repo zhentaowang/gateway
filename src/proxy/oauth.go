@@ -36,7 +36,8 @@ func (h *HttpProxy) CheckToken(req *fasthttp.Request , result *model.RouteResult
 
         // 设置user_id
         //req.Header.Add("User-Id", strconv.Itoa(int(oauthResult["user_id"].(float64))))
-        req.Header.Add("User-Id", oauthResult["user_id"].(string))
+        req.PostArgs().Add("user_id", oauthResult["user_id"].(string))
+        req.PostArgs().Add("client_id", oauthResult["client_id"].(string))
 
         return true, nil
     } else {

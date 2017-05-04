@@ -143,12 +143,10 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
                 log.Info("body json parse error")
             }
         }
-        outReq.PostArgs().VisitAll(f)
+
         outReq.URI().QueryArgs().VisitAll(f)
-        // 如果header中有User-Id, 需要加入参数中
-        if userId := outReq.Header.Peek("User-Id"); userId != nil {
-            params["user_id"] = string(userId)
-        }
+        outReq.PostArgs().VisitAll(f)
+        params["operation"] = result.API.Name
 
         req.ParamJSON, _ = json.Marshal(params)
 
