@@ -4,7 +4,7 @@ import (
     "github.com/labstack/echo"
     "fmt"
     mw "github.com/labstack/echo/middleware"
-    "gateway/src/modelodel"
+    "gateway/src/model"
 )
 
 type Result struct {

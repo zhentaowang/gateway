@@ -2,44 +2,10 @@ package model
 
 import (
     "github.com/valyala/fasthttp"
-    "net/http"
     "gateway/src/filter"
 )
 
-func (a *API) DoPreFilters(c filter.Context) (filterName string, statusCode int, err error) {
-    for item := a.filters.Front(); item != nil; item = item.Next() {
-        f, _ := item.Value.(filter.Filter)
-        filterName = f.Name()
 
-        statusCode, err = f.Pre(c)
-        if nil != err {
-            return filterName, statusCode, err
-        }
-    }
-
-    return "", http.StatusOK, nil
-}
-
-func (a *API) DoPostFilters(c filter.Context) (filterName string, statusCode int, err error) {
-    for item := a.filters.Back(); item != nil; item = item.Prev() {
-        f, _ := item.Value.(filter.Filter)
-
-        statusCode, err = f.Post(c)
-        if nil != err {
-            return filterName, statusCode, err
-        }
-    }
-
-    return "", http.StatusOK, nil
-}
-
-func (a *API) DoPostErrFilters(c filter.Context) {
-    for item := a.filters.Back(); item != nil; item = item.Prev() {
-        f, _ := item.Value.(filter.Filter)
-
-        f.PostErr(c)
-    }
-}
 
 type proxyContext struct {
     startAt   int64

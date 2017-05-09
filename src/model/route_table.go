@@ -56,6 +56,11 @@ func (r *RouteTable) Load() {
 }
 
 func (r *RouteTable) loadServices() {
+    // 先清空 services map
+    for k := range r.services {
+        delete(r.services, k)
+    }
+
     services, err := r.store.GetServices()
     if nil != err {
         log.Error(err, "Load services fail.")
@@ -70,6 +75,11 @@ func (r *RouteTable) loadServices() {
 }
 
 func (r *RouteTable) loadAPIs() {
+    // 先清空 apis map
+    for k := range r.apis {
+        delete(r.apis, k)
+    }
+
     apis, err := r.store.GetAPIs()
     if nil != err {
         log.Error(err, "Load apis fail.")

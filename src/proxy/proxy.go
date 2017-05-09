@@ -11,12 +11,15 @@ import (
     "encoding/json"
     "gateway/src/config"
     "time"
+    "container/list"
+    "gateway/src/filter"
 )
 
 type HttpProxy struct {
     routeTable     *model.RouteTable
     store          model.Store
     fastHTTPClient *util.FastHTTPClient
+    filters        *list.List
 }
 
 func NewHttpProxy(store model.Store) *HttpProxy {
@@ -36,6 +39,9 @@ func (h *HttpProxy) init() {
     if err != nil {
         log.Panic(err, "init route table error")
     }
+
+    filterNames, _ := h.store.GetFilters(-1)
+    h.filters = filter.NewFilters(filterNames)
 }
 
 func (h *HttpProxy) initRouteTable() error {
@@ -96,8 +102,17 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
         }
     }
 
+    // 系统统一的filters
+    filterName, code, err := filter.DoPreFilters(c, h.filters)
+    if nil != err {
+        log.Warnf("Proxy Filter-Pre<%s> fail.", filterName, err)
+        result.Err = err
+        result.Code = code
+        return
+    }
+
     // pre filters
-    filterName, code, err := result.API.DoPreFilters(c)
+    filterName, code, err = filter.DoPreFilters(c, result.API.Filters)
     if nil != err {
         log.Warnf("Proxy Filter-Pre<%s> fail.", filterName, err)
         result.Err = err
@@ -179,8 +194,18 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
         return
     }
 
-    // post filters
-    filterName, code, err = result.API.DoPostFilters(c)
+    // api 自己的 post filters
+    filterName, code, err = filter.DoPostFilters(c, result.API.Filters)
+    if nil != err {
+        log.Infof("Proxy Filter-Post<%s> fail: %s ", filterName, err.Error())
+
+        result.Err = err
+        result.Code = code
+        return
+    }
+
+    // 系统统一的 post filters
+    filterName, code, err = filter.DoPostFilters(c, h.filters)
     if nil != err {
         log.Infof("Proxy Filter-Post<%s> fail: %s ", filterName, err.Error())
 

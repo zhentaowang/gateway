@@ -4,6 +4,7 @@ import (
     "net/http"
 
     "github.com/valyala/fasthttp"
+    "container/list"
 )
 
 
@@ -47,3 +48,37 @@ func (f BaseFilter) PostErr(c Context) {
 
 }
 
+func DoPreFilters(c Context, filters *list.List) (filterName string, statusCode int, err error) {
+    for item := filters.Front(); item != nil; item = item.Next() {
+        f, _ := item.Value.(Filter)
+        filterName = f.Name()
+
+        statusCode, err = f.Pre(c)
+        if nil != err {
+            return filterName, statusCode, err
+        }
+    }
+
+    return "", http.StatusOK, nil
+}
+
+func DoPostFilters(c Context, filters *list.List) (filterName string, statusCode int, err error) {
+    for item := filters.Back(); item != nil; item = item.Prev() {
+        f, _ := item.Value.(Filter)
+
+        statusCode, err = f.Post(c)
+        if nil != err {
+            return filterName, statusCode, err
+        }
+    }
+
+    return "", http.StatusOK, nil
+}
+
+func DoPostErrFilters(c Context, filters *list.List) {
+    for item := filters.Back(); item != nil; item = item.Prev() {
+        f, _ := item.Value.(Filter)
+
+        f.PostErr(c)
+    }
+}

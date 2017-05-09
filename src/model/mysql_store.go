@@ -4,6 +4,7 @@ import (
     "database/sql"
     "log"
     _ "github.com/go-sql-driver/mysql"
+    "fmt"
 )
 
 type MysqlStore struct {
@@ -28,7 +29,7 @@ func (m *MysqlStore) dbInit(host string, username string, password string, dbNam
 }
 
 func (m *MysqlStore) GetAPIs() ([]*API, error) {
-    rows, err := m.DB.Query("select api_id, name, uri, method, service_id, status, need_login, filters from api")
+    rows, err := m.DB.Query("select api_id, name, uri, method, service_id, status, need_login from api")
     if err != nil {
         log.Fatal(err)
         return nil, err
@@ -37,7 +38,8 @@ func (m *MysqlStore) GetAPIs() ([]*API, error) {
     var value []*API
     for rows.Next() {
         api := new(API)
-        rows.Scan(&api.APIId, &api.Name, &api.URI, &api.Method, &api.ServiceId, &api.Status, &api.NeedLogin, &api.filterNames)
+        rows.Scan(&api.APIId, &api.Name, &api.URI, &api.Method, &api.ServiceId, &api.Status, &api.NeedLogin)
+        api.filterNames, _ = m.GetFilters(api.APIId)
         value = append(value, api)
     }
 
@@ -56,6 +58,27 @@ func (m *MysqlStore) GetServices() ([]*Service, error) {
         service := new(Service)
         rows.Scan(&service.ServiceId, &service.Namespace, &service.Name, &service.Port, &service.Protocol)
         value = append(value, service)
+    }
+
+    return value, nil
+}
+
+/*
+apiId 为-1的时候表示系统的filter
+ */
+func (m *MysqlStore) GetFilters(apiId int) ([]string, error) {
+    var query = fmt.Sprintf("select name from filter where api_id=%d order by seq", apiId)
+    rows, err := m.DB.Query(query)
+    if err != nil {
+        log.Fatal(err)
+        return nil, err
+    }
+    defer rows.Close()
+    var value []string
+    for rows.Next() {
+        var filter string
+        rows.Scan(&filter)
+        value = append(value, filter)
     }
 
     return value, nil

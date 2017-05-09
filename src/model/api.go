@@ -8,7 +8,6 @@ import (
     "regexp"
     "container/list"
     "gateway/src/filter"
-    "github.com/labstack/gommon/log"
 )
 
 const (
@@ -46,9 +45,9 @@ type API struct {
     Service       *Service       `json:"service"`
     Mock          *Mock          `json:"mock, omitempty"`
     Desc          string         `json:"desc, omitempty"`
+    filterNames   []string       `json:"-"`
     Pattern       *regexp.Regexp `json:"-"`
-    filterNames   string         `json:"filter_names"`
-    filters       *list.List     `json:"-"`
+    Filters       *list.List     `json:"-"`
 }
 
 func (a *API) isUp() bool {
@@ -93,7 +92,7 @@ func (a *API) RenderMock(ctx *fasthttp.RequestCtx) {
 func (a *API) init(services map[string]*Service) error {
     a.Pattern = regexp.MustCompile(a.URI)
 
-    a.initFilters()
+    a.Filters = filter.NewFilters(a.filterNames)
 
     for _, v := range services {
         if v.ServiceId == a.ServiceId {
@@ -102,23 +101,6 @@ func (a *API) init(services map[string]*Service) error {
         }
     }
     return ErrServiceNotFound
-}
-
-func (a *API) initFilters() {
-    a.filters = list.New()
-    if a.filterNames == "" {
-        return
-    }
-
-    for _, filterName := range strings.Split(a.filterNames, ",") {
-        f, err := filter.NewFilter(filterName)
-        if nil != err {
-            log.Panicf("Proxy unknow filter <%+v>", filterName)
-        }
-
-        log.Info(f)
-        a.filters.PushBack(f)
-    }
 }
 
 func (a *API) getKey() string {

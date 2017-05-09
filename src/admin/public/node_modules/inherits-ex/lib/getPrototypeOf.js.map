@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "getPrototypeOf.js",
+  "sourceRoot": "../src/",
+  "sources": [
+    "getPrototypeOf.coffee"
+  ],
+  "names": [],
+  "mappings": "AAAA;AAAA,MAAA;;EAAA,cAAA,GAAiB,MAAM,CAAC;;EACxB,IAAA,CAAO,cAAP;IACE,cAAA,GAAiB,SAAC,GAAD;aAAO,GAAG,CAAC;IAAX,EADnB;;;EAGA,MAAM,CAAC,OAAP,GAAiB;AAJjB"
+}

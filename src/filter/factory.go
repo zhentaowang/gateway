@@ -3,6 +3,8 @@ package filter
 import (
     "strings"
     "errors"
+    "container/list"
+    "github.com/labstack/gommon/log"
 )
 
 var (
@@ -13,6 +15,7 @@ var (
 const (
     // FilterRights 验证用户是否有权限访问资源
     FilterRights = "RIGHTS"
+    FilterCORS = "CORS"
 )
 
 func NewFilter(filterName string) (Filter, error) {
@@ -21,7 +24,28 @@ func NewFilter(filterName string) (Filter, error) {
     switch input {
     case FilterRights:
         return newRightsFilter(), nil
+    case FilterCORS:
+        return newCORSFilter(), nil
     default:
         return nil, ErrUnknownFilter
     }
+}
+
+func NewFilters(filterNames []string) (*list.List) {
+    var filters = list.New()
+    if filterNames == nil || len(filterNames) == 0 {
+        return filters
+    }
+
+    for _, filterName := range filterNames {
+        f, err := NewFilter(filterName)
+        if nil != err {
+            log.Panicf("Proxy unknow filter <%+v>", filterName)
+        }
+
+        log.Info(f)
+        filters.PushBack(f)
+    }
+
+    return filters
 }

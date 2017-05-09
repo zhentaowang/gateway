@@ -1,0 +1,35 @@
+{
+  "private": true,
+  "entry": {
+    "index": "./src/index.jsx",
+    "vendor": [
+      "react",
+      "react-dom"
+    ]
+  },
+  "dependencies": {
+    "animate.css": "^3.5.2",
+    "antd": "^2.4.3",
+    "dva": "^1.2.1",
+    "react": "^15.1.0",
+    "react-dom": "^15.1.0",
+    "react-router": "^3.0.0",
+    "whatwg-fetch": "^2.0.3"
+  },
+  "devDependencies": {
+    "atool-build": "^0.9.0",
+    "babel-eslint": "^7.0.0",
+    "babel-plugin-import": "^1.0.1",
+    "babel-plugin-transform-runtime": "^6.8.0",
+    "babel-runtime": "^6.9.2",
+    "dora": "^0.4.3",
+    "dora-plugin-proxy": "^0.8.5",
+    "dora-plugin-webpack": "^0.8.1",
+    "dora-plugin-webpack-hmr": "^0.2.1"
+  },
+  "scripts": {
+    "build": "set NODE_ENV=dev&&atool-build",
+    "start": "dora --plugins \"proxy?watchDirs=./mock,webpack,webpack-hmr\" --port 8001",
+    "prod": "set NODE_ENV=production&&atool-build"
+  }
+}
