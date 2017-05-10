@@ -5,8 +5,8 @@ import (
     "encoding/json"
     "net/http"
     "io/ioutil"
-    "github.com/labstack/gommon/log"
     "bytes"
+    "log"
 )
 
 var (
@@ -39,7 +39,7 @@ func (v RightsFilter) Pre(c Context) (statusCode int, err error) {
     })
 
     paramString, _ := json.Marshal(params)
-    log.Info(string(paramString))
+    log.Println(string(paramString))
 
     //resp, err := http.Post("http://guest-permission/guest-permission/get-user-permission", "application/json", bytes.NewReader(paramString))
     resp, err := http.Post("http://localhost:8080/get-user-permission", "application/json", bytes.NewReader(paramString))

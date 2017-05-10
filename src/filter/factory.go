@@ -4,7 +4,7 @@ import (
     "strings"
     "errors"
     "container/list"
-    "github.com/labstack/gommon/log"
+    "log"
 )
 
 var (
@@ -43,7 +43,7 @@ func NewFilters(filterNames []string) (*list.List) {
             log.Panicf("Proxy unknow filter <%+v>", filterName)
         }
 
-        log.Info(f)
+        log.Println(f)
         filters.PushBack(f)
     }
 

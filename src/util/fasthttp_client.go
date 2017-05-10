@@ -10,7 +10,7 @@ import (
 
     "github.com/valyala/fasthttp"
     "gateway/src/config"
-    "github.com/labstack/gommon/log"
+    "log"
 )
 
 var (
@@ -132,7 +132,7 @@ func (c *FastHTTPClient) doNonNilReqResp(req *fasthttp.Request, resp *fasthttp.R
     }
 
     bw := c.acquireWriter(conn)
-    log.Info(req)
+    log.Print(req)
     err = req.Write(bw)
 
     if resetConnection {

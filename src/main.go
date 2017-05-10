@@ -1,13 +1,13 @@
 package main
 
 import (
-    "gateway/src/admin"
+    //"gateway/src/admin"
     "gateway/src/proxy"
     "gateway/src/model"
-    "github.com/labstack/gommon/log"
-    "github.com/go-yaml/yaml"
+    "gopkg.in/yaml.v2"
     "io/ioutil"
     "gateway/src/config"
+    "log"
 )
 
 func main() {
@@ -29,10 +29,10 @@ func main() {
 
     // 转发服务
     h := proxy.NewHttpProxy(store)
-    go h.Start()
+    h.Start()
 
     // 管理服务
-    s := admin.NewAdminServer(":8080", "luojing", "111111", store)
-    s.Start()
+    //s := admin.NewAdminServer(":8080", "luojing", "111111", store)
+    //s.Start()
 
 }

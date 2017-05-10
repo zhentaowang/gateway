@@ -8,7 +8,7 @@ import (
     "time"
     "gateway/src/config"
     pool "gateway/src/thrift"
-    "github.com/labstack/gommon/log"
+    "log"
 )
 
 type Service struct {
@@ -34,13 +34,13 @@ func (s *Service) init(r *RouteTable) error {
         Dial: func() (interface{}, error) {
             sock, err := thrift.NewTSocket(s.GetHost())  // client端不设置超时
             if err != nil {
-                log.Errorf("thrift.NewTSocketTimeout(%s) error(%v)", s.GetHost(), err)
+                log.Printf("thrift.NewTSocketTimeout(%s) error(%v)", s.GetHost(), err)
                 return nil, err
             }
             tF := thrift.NewTFramedTransportFactory(thrift.NewTTransportFactory())
             client := server.NewMyServiceClientFactory(tF.GetTransport(sock), r.protocolFactory)
             if err = client.Transport.Open(); err != nil {
-                log.Errorf("client.Transport.Open() error(%v)", err)
+                log.Printf("client.Transport.Open() error(%v)", err)
                 return nil, err
             }
             return client, nil
