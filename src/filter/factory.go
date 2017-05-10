@@ -16,6 +16,8 @@ const (
     // FilterRights 验证用户是否有权限访问资源
     FilterRights = "RIGHTS"
     FilterCORS = "CORS"
+    // 给龙腾推送航班信息的参数过滤器
+    FilterDragon = "DRAGON"
 )
 
 func NewFilter(filterName string) (Filter, error) {
@@ -26,6 +28,8 @@ func NewFilter(filterName string) (Filter, error) {
         return newRightsFilter(), nil
     case FilterCORS:
         return newCORSFilter(), nil
+    case FilterDragon:
+        return newDragonFilter(), nil
     default:
         return nil, ErrUnknownFilter
     }
