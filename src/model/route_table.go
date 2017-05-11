@@ -3,8 +3,8 @@ package model
 import (
     "errors"
     "github.com/valyala/fasthttp"
-    "github.com/labstack/gommon/log"
     "git.apache.org/thrift.git/lib/go/thrift"
+    "log"
 )
 
 var (
@@ -63,7 +63,7 @@ func (r *RouteTable) loadServices() {
 
     services, err := r.store.GetServices()
     if nil != err {
-        log.Error(err, "Load services fail.")
+        log.Panic(err, "Load services fail.")
     }
 
     for _, service := range services {
@@ -82,7 +82,7 @@ func (r *RouteTable) loadAPIs() {
 
     apis, err := r.store.GetAPIs()
     if nil != err {
-        log.Error(err, "Load apis fail.")
+        log.Panic(err, "Load apis fail.")
         return
     }
 
@@ -105,12 +105,12 @@ func (r *RouteTable) AddNewService(service *Service) error {
 
     err := service.init(r)
     if nil != err {
-        log.Error(err, "Service init error")
+        log.Panic(err, "Service init error")
     }
 
     r.services[key] = service
 
-    log.Infof("Service <%s-%s> added", service.Namespace, service.Name)
+    log.Printf("Service <%s-%s> added", service.Namespace, service.Name)
     return nil
 }
 
@@ -125,12 +125,12 @@ func (r *RouteTable) AddNewAPI(api *API) error {
 
     err := api.init(r.services)
     if nil != err {
-        log.Error(err, "API init error")
+        log.Panic(err, "API init error")
     }
 
     r.apis[apiKey] = api
 
-    log.Infof("API <%s-%s> added", api.Method, api.URI)
+    log.Printf("API <%s-%s> added", api.Method, api.URI)
 
     return nil
 }

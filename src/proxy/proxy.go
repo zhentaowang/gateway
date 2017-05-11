@@ -1,7 +1,6 @@
 package proxy
 
 import (
-    "github.com/labstack/gommon/log"
     "github.com/valyala/fasthttp"
     "sync"
     "gateway/src/model"
@@ -13,6 +12,7 @@ import (
     "time"
     "container/list"
     "gateway/src/filter"
+    "log"
 )
 
 type HttpProxy struct {
@@ -53,7 +53,7 @@ func (h *HttpProxy) initRouteTable() error {
 }
 
 func (h *HttpProxy) Start() {
-    log.Error(fasthttp.ListenAndServe(":8081", h.ReverseProxyHandler), "Proxy exit at %s", )
+    log.Printf("Proxy exit at %s", fasthttp.ListenAndServe(":8888", h.ReverseProxyHandler))
 }
 
 func (h *HttpProxy) ReverseProxyHandler(ctx *fasthttp.RequestCtx) {
@@ -105,7 +105,7 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
     // 系统统一的filters
     filterName, code, err := filter.DoPreFilters(c, h.filters)
     if nil != err {
-        log.Warnf("Proxy Filter-Pre<%s> fail.", filterName, err)
+        log.Printf("Proxy Filter-Pre<%s> fail.", filterName, err)
         result.Err = err
         result.Code = code
         return
@@ -114,7 +114,7 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
     // pre filters
     filterName, code, err = filter.DoPreFilters(c, result.API.Filters)
     if nil != err {
-        log.Warnf("Proxy Filter-Pre<%s> fail.", filterName, err)
+        log.Printf("Proxy Filter-Pre<%s> fail.", filterName, err)
         result.Err = err
         result.Code = code
         return
@@ -124,7 +124,7 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
     c.SetStartAt(time.Now().UnixNano())
     if service.Protocol == "http" {
         res, err := h.fastHTTPClient.Do(outReq, service.GetHost())
-        log.Info(outReq)
+        log.Println(outReq)
         c.SetEndAt(time.Now().UnixNano())
         result.Res = res
 
@@ -132,17 +132,17 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
             resCode := http.StatusServiceUnavailable
 
             if nil != err {
-                log.Infof("Proxy Fail <%s>", service.GetHost(), err)
+                log.Printf("Proxy Fail <%s>", service.GetHost(), err)
             } else {
                 resCode = res.StatusCode()
-                log.Infof("Proxy Fail <%s>, Code <%d>", service.GetHost(), res.StatusCode(), err)
+                log.Printf("Proxy Fail <%s>, Code <%d>", service.GetHost(), res.StatusCode(), err)
             }
 
             result.Err = err
             result.Code = resCode
             return
         }
-        log.Infof("Backend server[%s] responsed, code <%d>, body<%s>", service.GetHost(), res.StatusCode(), res.Body())
+        log.Printf("Backend server[%s] responsed, code <%d>, body<%s>", service.GetHost(), res.StatusCode(), res.Body())
     } else if service.Protocol == "thrift" {
         req := server.NewRequest()
         req.ServiceName = service.GetHost()
@@ -155,7 +155,7 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
 
         if nil != outReq.Body() {
             if err = json.Unmarshal(outReq.Body(), &params); nil != err {
-                log.Info("body json parse error")
+                log.Println("body json parse error")
             }
         }
 
@@ -168,14 +168,14 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
         pooledClient, err := service.Pool.Get()
         if err != nil {
             result.Err = err
-            log.Error("Thrift pool get client error", err)
+            log.Println("Thrift pool get client error", err)
             return
         }
         defer service.Pool.Put(pooledClient, false)
 
         rawClient, ok := pooledClient.(*server.MyServiceClient)
         if !ok {
-            log.Error("convert to raw client failed")
+            log.Println("convert to raw client failed")
             return
         }
         res, err := rawClient.Send(req)
@@ -183,13 +183,13 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
 
         if err != nil {
             result.Err = err
-            log.Error(err)
+            log.Println(err)
             return
         }
         result.Res = &fasthttp.Response{}
         result.Res.SetStatusCode(int(res.ResponeCode))
         result.Res.SetBody(res.ResponseJSON)
-        log.Info(res)
+        log.Println(res)
     } else {
         return
     }
@@ -197,7 +197,7 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
     // api 自己的 post filters
     filterName, code, err = filter.DoPostFilters(c, result.API.Filters)
     if nil != err {
-        log.Infof("Proxy Filter-Post<%s> fail: %s ", filterName, err.Error())
+        log.Printf("Proxy Filter-Post<%s> fail: %s ", filterName, err.Error())
 
         result.Err = err
         result.Code = code
@@ -207,7 +207,7 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
     // 系统统一的 post filters
     filterName, code, err = filter.DoPostFilters(c, h.filters)
     if nil != err {
-        log.Infof("Proxy Filter-Post<%s> fail: %s ", filterName, err.Error())
+        log.Printf("Proxy Filter-Post<%s> fail: %s ", filterName, err.Error())
 
         result.Err = err
         result.Code = code

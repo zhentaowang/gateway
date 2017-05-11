@@ -5,10 +5,10 @@ import (
     "errors"
     "gateway/src/config"
     "gateway/src/model"
-    "github.com/labstack/gommon/log"
     "net/http"
     "encoding/json"
     "io/ioutil"
+    "log"
 )
 
 func (h *HttpProxy) CheckToken(req *fasthttp.Request , result *model.RouteResult) (bool, error) {
@@ -24,7 +24,7 @@ func (h *HttpProxy) CheckToken(req *fasthttp.Request , result *model.RouteResult
     result.Res.SetStatusCode(res.StatusCode)
 
     if err != nil {
-        log.Error(err)
+        log.Println(err)
         return false, err
     }
     defer res.Body.Close()

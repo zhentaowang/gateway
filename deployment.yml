@@ -13,7 +13,8 @@ spec:
       containers:
         - name: gateway
           image: golang:1.8
-          command: ["src/gateway"]
+          workingDir: "/go/src"
+          command: ["./guest-gateway"]
           volumeMounts:
           - mountPath: "/go/src"
             name: code
