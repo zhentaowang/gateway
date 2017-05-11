@@ -53,7 +53,7 @@ func (h *HttpProxy) initRouteTable() error {
 }
 
 func (h *HttpProxy) Start() {
-    log.Printf("Proxy exit at %s", fasthttp.ListenAndServe(":8081", h.ReverseProxyHandler))
+    log.Printf("Proxy exit at %s", fasthttp.ListenAndServe(":8888", h.ReverseProxyHandler))
 }
 
 func (h *HttpProxy) ReverseProxyHandler(ctx *fasthttp.RequestCtx) {
