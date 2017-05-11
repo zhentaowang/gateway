@@ -57,6 +57,7 @@ func (h *HttpProxy) Start() {
 }
 
 func (h *HttpProxy) ReverseProxyHandler(ctx *fasthttp.RequestCtx) {
+    log.Println("in proxy")
     result := h.routeTable.Select(&ctx.Request)
 
     if nil == result {
