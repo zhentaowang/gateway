@@ -17,7 +17,7 @@ const (
     FilterRights = "RIGHTS"
     FilterCORS = "CORS"
     // 给龙腾推送航班信息的参数过滤器
-    FilterDragon = "DRAGON"
+    FilterUpdateFlight = "SPLIT_SIGN"
 )
 
 func NewFilter(filterName string) (Filter, error) {
@@ -28,8 +28,8 @@ func NewFilter(filterName string) (Filter, error) {
         return newRightsFilter(), nil
     case FilterCORS:
         return newCORSFilter(), nil
-    case FilterDragon:
-        return newDragonFilter(), nil
+    case FilterUpdateFlight:
+        return newUpdateFlightFilter(), nil
     default:
         return nil, ErrUnknownFilter
     }

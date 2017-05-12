@@ -57,6 +57,8 @@ func (h *HttpProxy) Start() {
 }
 
 func (h *HttpProxy) ReverseProxyHandler(ctx *fasthttp.RequestCtx) {
+    log.Println(string(ctx.Request.RequestURI()))
+    log.Println(string(ctx.Request.Body()[:]))
     result := h.routeTable.Select(&ctx.Request)
 
     if nil == result {
