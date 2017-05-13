@@ -17,7 +17,7 @@ const (
     FilterRights = "RIGHTS"
     FilterCORS = "CORS"
     // 给龙腾推送航班信息的参数过滤器
-    FilterUpdateFlight = "SPLIT_SIGN"
+    FilterUpdateFlight = "UPDATE_FLIGHT"
 )
 
 func NewFilter(filterName string) (Filter, error) {
