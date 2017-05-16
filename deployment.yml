@@ -13,8 +13,8 @@ spec:
       containers:
         - name: gateway
           image: golang:1.8
-          workingDir: "/go/src"
-          command: ["./gateway"]
+          workingDir: "/go/src/gateway"
+          command: ["go", "run", "src/main.go"]
           volumeMounts:
           - mountPath: "/go/src"
             name: code
