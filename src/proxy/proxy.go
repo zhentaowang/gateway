@@ -219,6 +219,5 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
 
 func (h *HttpProxy) writeResult(ctx *fasthttp.RequestCtx, res *fasthttp.Response) {
     ctx.SetStatusCode(res.StatusCode())
-    ctx.Response.Header.Set("Content-Type", string(res.Header.Peek("Content-Type")))
     ctx.Write(res.Body())
 }
