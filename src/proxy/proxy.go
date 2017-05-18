@@ -191,7 +191,6 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
         result.Res = &fasthttp.Response{}
         result.Res.SetStatusCode(int(res.ResponeCode))
         result.Res.SetBody(res.ResponseJSON)
-        log.Println(res)
     } else {
         return
     }
