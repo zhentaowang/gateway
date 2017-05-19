@@ -147,7 +147,7 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
         log.Printf("Backend server[%s] responsed, code <%d>, body<%s>", service.GetHost(), res.StatusCode(), res.Body())
     } else if service.Protocol == "thrift" {
         req := server.NewRequest()
-        req.ServiceName = service.GetHost()
+        req.ServiceName = "businessService"
 
         // 解析参数，转化成json格式
         params := make(map[string]interface{})
