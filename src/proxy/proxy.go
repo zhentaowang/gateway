@@ -125,6 +125,10 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
     service := result.API.Service
     c.SetStartAt(time.Now().UnixNano())
     if service.Protocol == "http" {
+
+        outReq.Header.Set("client_id",string(outReq.PostArgs().Peek("client_id")))
+        outReq.Header.Set("user_id",string(outReq.PostArgs().Peek("user_id")))
+
         res, err := h.fastHTTPClient.Do(outReq, service.GetHost())
         log.Println(outReq)
         c.SetEndAt(time.Now().UnixNano())
@@ -147,7 +151,8 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
         log.Printf("Backend server[%s] responsed, code <%d>, body<%s>", service.GetHost(), res.StatusCode(), res.Body())
     } else if service.Protocol == "thrift" {
         req := server.NewRequest()
-        req.ServiceName = service.GetHost()
+        //req.ServiceName = service.GetHost()
+        req.ServiceName = "businessService"
 
         // 解析参数，转化成json格式
         params := make(map[string]interface{})
@@ -195,6 +200,16 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
         return
     }
 
+    // 系统统一的 post filters
+    filterName, code, err = filter.DoPostFilters(c, h.filters)
+    if nil != err {
+        log.Printf("Proxy Filter-Post<%s> fail: %s ", filterName, err.Error())
+
+        result.Err = err
+        result.Code = code
+        return
+    }
+
     // api 自己的 post filters
     filterName, code, err = filter.DoPostFilters(c, result.API.Filters)
     if nil != err {
@@ -205,15 +220,6 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
         return
     }
 
-    // 系统统一的 post filters
-    filterName, code, err = filter.DoPostFilters(c, h.filters)
-    if nil != err {
-        log.Printf("Proxy Filter-Post<%s> fail: %s ", filterName, err.Error())
-
-        result.Err = err
-        result.Code = code
-        return
-    }
 }
 
 func (h *HttpProxy) writeResult(ctx *fasthttp.RequestCtx, res *fasthttp.Response) {

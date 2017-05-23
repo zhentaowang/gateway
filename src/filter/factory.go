@@ -18,6 +18,7 @@ const (
     FilterCORS = "CORS"
     // 给龙腾推送航班信息的参数过滤器
     FilterUpdateFlight = "UPDATE_FLIGHT"
+    FilterResponseHead = "RESPONSE_HEAD" // 原响应头
 )
 
 func NewFilter(filterName string) (Filter, error) {
@@ -30,6 +31,8 @@ func NewFilter(filterName string) (Filter, error) {
         return newCORSFilter(), nil
     case FilterUpdateFlight:
         return newUpdateFlightFilter(), nil
+    case FilterResponseHead:
+        return newResponseHeaderFilter(), nil
     default:
         return nil, ErrUnknownFilter
     }

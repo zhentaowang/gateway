@@ -17,7 +17,7 @@ func (h *HttpProxy) CheckToken(req *fasthttp.Request , result *model.RouteResult
         return false, errors.New("No access token")
     }
 
-    //res, err := h.fastHTTPClient.Do(outReq, config.TConfig.OauthHost)
+    //res, err := h.fastHTTPClient.Do(outReq, config.TConfig.OauthHost
     res, err := http.Get(config.TConfig.OauthHost + string(accessToken))
     result.Res = &fasthttp.Response{}
 
