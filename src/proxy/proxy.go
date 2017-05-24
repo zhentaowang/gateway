@@ -13,6 +13,7 @@ import (
     "container/list"
     "gateway/src/filter"
     "log"
+    "strings"
 )
 
 type HttpProxy struct {
@@ -124,7 +125,9 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
 
     service := result.API.Service
     c.SetStartAt(time.Now().UnixNano())
-    if service.Protocol == "http" {
+    if strings.ToUpper(string(c.GetOriginRequestCtx().Request.Header.Method())) == "OPTIONS" {
+
+    } else if service.Protocol == "http" {
 
         outReq.Header.Set("client_id",string(outReq.PostArgs().Peek("client_id")))
         outReq.Header.Set("user_id",string(outReq.PostArgs().Peek("user_id")))
