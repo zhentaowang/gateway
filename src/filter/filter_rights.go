@@ -38,6 +38,10 @@ func (v RightsFilter) Pre(c Context) (statusCode int, err error) {
         params[string(k)] = string(v)
     })
 
+    c.GetProxyOuterRequest().PostArgs().VisitAll(func(k []byte, v []byte) {
+        params[string(k)] = string(v)
+    })
+
     paramString, _ := json.Marshal(params)
     log.Println(string(paramString))
 
@@ -48,7 +52,15 @@ func (v RightsFilter) Pre(c Context) (statusCode int, err error) {
     }
     defer resp.Body.Close()
     var permission map[string]string
+    var param map[string]string
     body, _ := ioutil.ReadAll(resp.Body)
     json.Unmarshal(body, &permission)
+    json.Unmarshal(paramString, &param)
+
+    if permission[param["url"]] == "false" {
+        println(param["url"] + ":没有权限")
+        return
+    }
+    c.GetProxyOuterRequest().PostArgs().Add("role-ids", permission["roleId"])
     return
 }
