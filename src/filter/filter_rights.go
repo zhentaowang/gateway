@@ -45,21 +45,20 @@ func (v RightsFilter) Pre(c Context) (statusCode int, err error) {
     paramString, _ := json.Marshal(params)
     log.Println(string(paramString))
 
-    resp, err := http.Post("http://guest-permission/guest-permission/get-user-permission", "application/json", bytes.NewReader(paramString))
+    resp, err := http.Post("http://test.iairportcloud.com/guest-permission/get-user-permission", "application/json", bytes.NewReader(paramString))
+    //resp, err := http.Post("http://guest-permission/guest-permission/get-user-permission", "application/json", bytes.NewReader(paramString))
     //resp, err := http.Post("http://localhost:8080/get-user-permission", "application/json", bytes.NewReader(paramString))
     if err != nil {
         log.Fatal(err)
     }
     defer resp.Body.Close()
     var permission map[string]string
-    var param map[string]string
     body, _ := ioutil.ReadAll(resp.Body)
     json.Unmarshal(body, &permission)
-    json.Unmarshal(paramString, &param)
 
-    if permission[param["url"]] == "false" {
-        println(param["url"] + ":没有权限")
-        return
+    if permission[params["url"].(string)] == "false" {
+        println(params["url"].(string) + ":没有权限")
+        return fasthttp.StatusForbidden, ErrRightsFailure
     }
     c.GetProxyOuterRequest().PostArgs().Add("role-ids", permission["roleId"])
     return
