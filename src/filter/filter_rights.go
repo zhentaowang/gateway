@@ -7,6 +7,7 @@ import (
     "io/ioutil"
     "bytes"
     "log"
+    "github.com/valyala/fasthttp"
 )
 
 var (
