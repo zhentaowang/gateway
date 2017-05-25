@@ -57,7 +57,6 @@ func (v RightsFilter) Pre(c Context) (statusCode int, err error) {
     json.Unmarshal(body, &permission)
 
     if permission[params["url"].(string)] == "false" {
-        println(params["url"].(string) + ":没有权限")
         return fasthttp.StatusForbidden, ErrRightsFailure
     }
     c.GetProxyOuterRequest().PostArgs().Add("role-ids", permission["roleId"])
