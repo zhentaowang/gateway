@@ -46,8 +46,8 @@ func (v RightsFilter) Pre(c Context) (statusCode int, err error) {
     paramString, _ := json.Marshal(params)
     log.Println(string(paramString))
 
-    resp, err := http.Post("http://test.iairportcloud.com/guest-permission/get-user-permission", "application/json", bytes.NewReader(paramString))
-    //resp, err := http.Post("http://guest-permission/guest-permission/get-user-permission", "application/json", bytes.NewReader(paramString))
+    resp, err := http.Post("http://testapi.iairportcloud.com/guest-permission/get-user-permission", "application/json", bytes.NewReader(paramString))
+    //resp, err := http.Post("http://101.37.106.176/guest-permission/get-user-permission", "application/json", bytes.NewReader(paramString))
     //resp, err := http.Post("http://localhost:8080/get-user-permission", "application/json", bytes.NewReader(paramString))
     if err != nil {
         log.Fatal(err)
@@ -61,5 +61,7 @@ func (v RightsFilter) Pre(c Context) (statusCode int, err error) {
         return fasthttp.StatusForbidden, ErrRightsFailure
     }
     c.GetProxyOuterRequest().PostArgs().Add("role-ids", permission["roleId"])
+    log.Println(permission["roleId"])
+    log.Println(string(c.GetProxyOuterRequest().PostArgs().Peek("role-ids")))
     return
 }
