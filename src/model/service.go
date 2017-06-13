@@ -37,8 +37,10 @@ func (s *Service) init(r *RouteTable) error {
                 log.Printf("thrift.NewTSocketTimeout(%s) error(%v)", s.GetHost(), err)
                 return nil, err
             }
-            tF := thrift.NewTFramedTransportFactory(thrift.NewTTransportFactory())
-            client := server.NewMyServiceClientFactory(tF.GetTransport(sock), r.protocolFactory)
+            tf := thrift.NewTFramedTransportFactory(thrift.NewTTransportFactory())
+            tTransport := tf.GetTransport(sock)
+            tp := thrift.NewTMultiplexedProtocol(r.protocolFactory.GetProtocol(tTransport), "businessService")
+            client := server.NewMyServiceClientProtocol(tTransport, tp, tp)
             if err = client.Transport.Open(); err != nil {
                 log.Printf("client.Transport.Open() error(%v)", err)
                 return nil, err
