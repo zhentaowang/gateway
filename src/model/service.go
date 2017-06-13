@@ -38,9 +38,7 @@ func (s *Service) init(r *RouteTable) error {
                 return nil, err
             }
             tf := thrift.NewTFramedTransportFactory(thrift.NewTTransportFactory())
-            tTransport := tf.GetTransport(sock)
-            tp := thrift.NewTMultiplexedProtocol(r.protocolFactory.GetProtocol(tTransport), "businessService")
-            client := server.NewMyServiceClientProtocol(tTransport, tp, tp)
+            client := server.NewMyServiceClientFactory(tf.GetTransport(sock), r.protocolFactory)
             if err = client.Transport.Open(); err != nil {
                 log.Printf("client.Transport.Open() error(%v)", err)
                 return nil, err
