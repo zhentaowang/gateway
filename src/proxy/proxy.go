@@ -170,9 +170,9 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
 
         outReq.URI().QueryArgs().VisitAll(f)
         outReq.PostArgs().VisitAll(f)
-        params["operation"] = result.API.Name
 
         req.ParamJSON, _ = json.Marshal(params)
+        req.Operation = result.API.Name
 
         pooledClient, err := service.Pool.Get()
         if err != nil {
