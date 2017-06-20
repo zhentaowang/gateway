@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+    <meta charset="UTF-8">
+    <title>{{.Title}}</title>
+    <style type="text/css">
+        table.gridtable {
+            font-family: verdana,arial,sans-serif;
+            font-size:11px;
+            color:#333333;
+            border-width: 1px;
+            border-color: #666666;
+            border-collapse: collapse;
+        }
+        table.gridtable th {
+            border-width: 1px;
+            width:10%;
+            padding: 8px;
+            border-style: solid;
+            border-color: #666666;
+            background-color: #dedede;
+        }
+        table.gridtable td {
+            border-width: 1px;
+            width:10%;
+            padding: 8px;
+            border-style: solid;
+            border-color: #666666;
+            background-color: #ffffff;
+            text-align:center;
+            vertical-align:middle;
+        }
+    </style>
+</head>
+<body>
+<h1 align="center" valign="middle">管理网关</h1>
+<form action="/gateway/admin/add_api" method="post">
+    <table class="gridtable">
+        <tr>
+            <td colspan="10" align="center" valign="middle" bgcolor="#666609">api</td>
+        </tr>
+        <tr>
+            <th>Api_name</th><th>Api_uri</th><th>Api_method</th><th>Api_need_login</th><th>Api_display_name</th><th>Api_status</th><th>Api_Service_name</th><th>Api_mock</th><th>Api_desc</th><th>Api_filters</th><th>Filter_seq</th>
+        </tr>
+        <tr>
+            <td><input type="text" name="Api_name" /></td><td><input type="text" name="Api_uri" /></td><td><input type="text" name="Api_method" /></td><td><input type="text" name="Api_need_login" /></td></td><td><input type="text" name="Api_display_name" /></td>
+            <td><input type="text" name="Api_status" /></td>
+            <td>
+            <select name="Api_Service_id">
+                {{range .ServiceData}}
+                <option value={{.ServiceId}}>{{.Name}}</option>
+                {{end}}
+            </select>
+            </td>
+            <td><input type="text" name="Api_mock" /></td><td><input type="text" name="Api_desc" /></td>
+            <td>
+                <select name="Api_filters">
+                    {{range .FilterData}}
+                    <option value={{.Name}}>{{.Name}}</option>
+                    {{end}}
+                </select>
+            </td>
+            <td><input type="text" name="Filter_seq" />
+        </tr>
+        <tr>
+            <td colspan="10" align="center" valign="middle">
+                <input type="submit" value="add api" />
+            </td>
+        </tr>
+    </table>
+</form>
+<br /><br />
+<form action="/gateway/admin/add_service" method="post">
+    <table class="gridtable">
+        <tr>
+            <td colspan="10" align="center" valign="middle" bgcolor="#666609">service</td>
+        </tr>
+        <tr>
+            <th>Service_namespace</th><th>Service_name</th><th>Service_desc</th><th>Service_port</th><th>Service_protocol</th>
+        </tr>
+        <tr>
+            <td><input type="text" name="Service_namespace" /></td><td><input type="text" name="Service_name" /></td><td><input type="text" name="Service_desc" /></td><td><input type="text" name="Service_port" /></td><td><input type="text" name="Service_protocol" /></td>
+        </tr>
+        <tr>
+            <td colspan="10" align="center" valign="middle">
+                <input type="submit" value="add service" />
+            </td>
+        </tr>
+    </table>
+</form>
+<br /><p b></p><br />
+<form action="/gateway/admin/add_filter" method="post">
+    <table class="gridtable">
+        <tr>
+            <td colspan="10" align="center" valign="middle" bgcolor="#666609">filters</td>
+        </tr>
+        <tr>
+            <th>Filter_name</th><th>Filter_Api_name</th><th>Filter_seq</th>
+        </tr>
+        <tr>
+            <td><input type="text" name="Filter_name" /></td>
+            <td>
+                <select name="Filter_Api_id">
+                    {{range .ApiData}}
+                    <option value={{.ApiId}}>{{.Name}}</option>
+                    {{end}}
+                </select>
+            </td>
+            <td><input type="text" name="Filter_seq" /></td>
+        </tr>
+        <tr>
+            <td colspan="10" align="center" valign="middle">
+                <input type="submit" value="add filter" />
+            </td>
+        </tr>
+    </table>
+</form>
+</body>
+</html>
