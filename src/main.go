@@ -13,6 +13,7 @@ import (
 func main() {
     // 读取配置文件
     configByte, err := ioutil.ReadFile("config.yml")
+    //configByte, err := ioutil.ReadFile("/Users/apple/Work/project/mygo/src/gateway/config.yml")
     if err != nil {
         log.Fatal(err)
     }

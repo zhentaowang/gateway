@@ -1,9 +1,10 @@
-db_host: "120.27.217.130:3306"
+db_host: "127.0.0.1:3306"
 db_username: root
-db_password: Wyun4test
-db_name: gateway
+db_password: 123456
+db_name: gateway_local
 
-oauth_host: "http://oauth-center.default/oauth/user/getUser?access_token="
+#oauth_host: "http://oauth-center.default/oauth/user/getUser?access_token="
+oauth_host: "https://front.zhiweicloud.com/user/getUser?access_token="
 #oauth_host: "http://testapi.iairportcloud.com/oauth/user/getUser?access_token="
 #oauth_host: "127.0.0.1:8082"
 

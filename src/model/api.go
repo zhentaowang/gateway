@@ -32,7 +32,6 @@ type MockHeader struct {
     Value string `json:"value"`
 }
 
-
 // API a api define
 type API struct {
     APIId         int            `json:"api_id"`
@@ -43,6 +42,7 @@ type API struct {
     Status        int            `json:"status, omitempty"`
     ServiceId     int            `json:"service_id"`
     Service       *Service       `json:"service"`
+    ServiceProviderName string   `json:"Service_provider_name"`
     Mock          *Mock          `json:"mock, omitempty"`
     Desc          string         `json:"desc, omitempty"`
     filterNames   []string       `json:"-"`
@@ -106,4 +106,16 @@ func (a *API) init(services map[string]*Service) error {
 func (a *API) getKey() string {
     key := fmt.Sprintf("%s-%s", a.URI, a.Method)
     return base64.RawURLEncoding.EncodeToString([]byte(key))
+}
+
+// thrift 操作 设置operate,
+// 设置规则：
+//  1、当前api对象name属性为"dynamic-operate"
+//  2、请求url或请求体必须要有key为operation的参数
+func (a *API) GetOperation(operation string) string {
+    if "dynamic-operate" == a.Name && len(operation) > 0{
+        return operation
+    }
+
+    return a.Name
 }
