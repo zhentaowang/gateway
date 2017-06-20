@@ -42,7 +42,7 @@ type API struct {
     Status        int            `json:"status, omitempty"`
     ServiceId     int            `json:"service_id"`
     Service       *Service       `json:"service"`
-    ServiceProviderName string   `json:"Service_provider_name"`
+    ServiceProviderName string   `json:"service_provider_name"`
     Mock          *Mock          `json:"mock, omitempty"`
     Desc          string         `json:"desc, omitempty"`
     filterNames   []string       `json:"-"`
