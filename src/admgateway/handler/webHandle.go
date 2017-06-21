@@ -1,4 +1,4 @@
-package handdler
+package handler
 
 import (
 	"github.com/valyala/fasthttp"

@@ -7,7 +7,7 @@ import (
 	"github.com/buaazp/fasthttprouter"
 
 	_ "github.com/go-sql-driver/mysql"
-	"admgateway/handdler"
+	"gateway/src/admgateway/handler"
 )
 
 
@@ -18,7 +18,7 @@ import (
 func main() {
 
 	router := fasthttprouter.New()
-	handdler.InitRoute(router)
+	handler.InitRoute(router)
 
 	if err := fasthttp.ListenAndServe("0.0.0.0:1323", router.Handler); err != nil {
 		fmt.Println("start fasthttp fail:", err.Error())

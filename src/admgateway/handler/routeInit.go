@@ -1,12 +1,14 @@
-package handdler
+package handler
 
-import "github.com/buaazp/fasthttprouter"
+import (
+	"github.com/buaazp/fasthttprouter"
+)
 
 func InitRoute(router *fasthttprouter.Router) {
 
 
-	router.GET("/", indexHanddler)
-	router.GET("/delete", deleteHanddler)
+	router.GET("/", indexHandler)
+	router.GET("/delete", deleteHandler)
 	router.POST("/gateway/admin/add_api", AddApi)
 	router.POST("/gateway/admin/add_service", AddService)
 	router.POST("/gateway/admin/add_filter", AddFilter)

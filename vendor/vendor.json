@@ -7,10 +7,34 @@
 			"revision": ""
 		},
 		{
+			"checksumSHA1": "VpnaSbGb3xVJywXKXv+G6YifdU4=",
+			"path": "github.com/buaazp/fasthttprouter",
+			"revision": "ade4e2031af3aed7fffd241084aad80a58faf421",
+			"revisionTime": "2016-12-15T12:12:41Z"
+		},
+		{
 			"checksumSHA1": "kuLh+Ri6W+9gvNxHtgl3CjVaXqc=",
 			"path": "github.com/go-sql-driver/mysql",
 			"revision": "ae5a66df4d33ba404d639bd0fc9189cd5ee79bcf",
 			"revisionTime": "2017-05-02T18:08:56Z"
+		},
+		{
+			"checksumSHA1": "yYMWx/j0uGZOTZvS8f8rk2BWt2k=",
+			"path": "github.com/go-xorm/builder",
+			"revision": "c8871c857d2555fbfbd8524f895be5386d3d8836",
+			"revisionTime": "2017-05-19T03:21:30Z"
+		},
+		{
+			"checksumSHA1": "nWWUle4qaomj/+gqbDFikIC5F94=",
+			"path": "github.com/go-xorm/core",
+			"revision": "e9b7412d750de4920b1c7b3ede5a98fd76d38308",
+			"revisionTime": "2017-06-14T06:05:17Z"
+		},
+		{
+			"checksumSHA1": "WN9hI5nZzKcKNEawm7jC9IgDClY=",
+			"path": "github.com/go-xorm/xorm",
+			"revision": "2af18acf7274119e8e542d6bdab1955c80efb447",
+			"revisionTime": "2017-06-15T12:09:46Z"
 		},
 		{
 			"checksumSHA1": "+CqJGh7NIDMnHgScq9sl9tPrnVM=",

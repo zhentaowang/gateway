@@ -1,0 +1,5 @@
+MysqlHost: 127.0.0.1
+MysqlPort: 3306
+MysqlUserName: root
+MysqlPassword: ""
+MysqlDb: gateway

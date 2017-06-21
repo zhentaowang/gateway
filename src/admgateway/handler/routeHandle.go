@@ -1,4 +1,4 @@
-package handdler
+package handler
 
 import (
 	"github.com/valyala/fasthttp"
@@ -7,9 +7,9 @@ import (
 
 
 
-func indexHanddler(ctx *fasthttp.RequestCtx) {
+func indexHandler(ctx *fasthttp.RequestCtx) {
 
-	url := filepath.Join( "view", "index.html")
+	url := filepath.Join( "src","admgateway","view", "index.html")
 
 	data := struct {
 		Title string
@@ -27,9 +27,9 @@ func indexHanddler(ctx *fasthttp.RequestCtx) {
 	Render(ctx, url, data)
 }
 
-func deleteHanddler(ctx *fasthttp.RequestCtx)  {
+func deleteHandler(ctx *fasthttp.RequestCtx)  {
 
-	url := filepath.Join( "view", "delete.html")
+	url := filepath.Join( "src","admgateway","view", "delete.html")
 
 	data := struct {
 		Title string
