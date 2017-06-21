@@ -15,8 +15,9 @@ var Engine *xorm.Engine
 
 
 
-
-
+/**
+映射数据库api表
+ */
 type Api struct {
 	ApiId       int	`xorm:"pk"`
 	Name        string
@@ -31,6 +32,9 @@ type Api struct {
 	Filters     string
 }
 
+/**
+映射数据库service表
+ */
 type Service struct {
 
 	ServiceId int	`xorm:"pk"`
@@ -41,7 +45,9 @@ type Service struct {
 	Protocol  string
 }
 
-
+/**
+映射数据库filter表
+ */
 type Filter struct {
 
 	FilterId int	`xorm:"pk"`
@@ -50,7 +56,9 @@ type Filter struct {
 	Seq      int
 }
 
-
+/**
+初始化数据库连接
+ */
 func init()  {
 
 	configByte, err := ioutil.ReadFile("src/admgateway/config/mysqlConfig.yml")
@@ -69,7 +77,9 @@ func init()  {
 }
 
 
-
+/**
+检查错误，如果错误不为空，打印错误
+ */
 func CheckErr(err error) {
 	if err != nil {
 		panic(err)
