@@ -15,3 +15,7 @@ oauth_host: "http://oauth-center.default/oauth/user/getUser?access_token="
 "read_timeout": 30
 "write_timeout": 30
 "max_response_body_size": 104857600
+
+
+KafkaHost: localhost:9092
+KafkaTopic: HttpHandleInfo

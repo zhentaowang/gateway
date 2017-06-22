@@ -60,10 +60,22 @@ func (h *HttpProxy) Start() {
 func (h *HttpProxy) ReverseProxyHandler(ctx *fasthttp.RequestCtx) {
     log.Println(string(ctx.Request.RequestURI()))
     log.Println(string(ctx.Request.Body()[:]))
+    startTime := time.Now().UnixNano()
+
+    httpHandleInfo := new(util.HttpHandlInfo)
+    httpHandleInfo.SetRequestContent(ctx.Request.String())
+    httpHandleInfo.SetRequestUrl(string(ctx.Request.RequestURI()))
+
     result := h.routeTable.Select(&ctx.Request)
 
     if nil == result {
         ctx.SetStatusCode(fasthttp.StatusNotFound)
+        endTime := time.Now().UnixNano()
+
+        httpHandleInfo.SetResponseContent(ctx.Response.String())
+        httpHandleInfo.SetUsedTime(endTime-startTime)
+        httpHandleInfo.VisitCount()
+
         return
     }
 
@@ -72,15 +84,30 @@ func (h *HttpProxy) ReverseProxyHandler(ctx *fasthttp.RequestCtx) {
     if result.Err != nil {
         if result.API.Mock != nil {
             result.API.RenderMock(ctx)
+            endTime := time.Now().UnixNano()
+
+            httpHandleInfo.SetResponseContent(ctx.Response.String())
+            httpHandleInfo.SetUsedTime(endTime-startTime)
+            httpHandleInfo.VisitCount()
             result.Release()
             return
         }
 
         ctx.SetStatusCode(result.Code)
+        endTime := time.Now().UnixNano()
+
+        httpHandleInfo.SetResponseContent(ctx.Response.String())
+        httpHandleInfo.SetUsedTime(endTime-startTime)
+        httpHandleInfo.VisitCount()
         result.Release()
         return
     } else {
         h.writeResult(ctx, result.Res)
+        endTime := time.Now().UnixNano()
+
+        httpHandleInfo.SetResponseContent(ctx.Response.String())
+        httpHandleInfo.SetUsedTime(endTime-startTime)
+        httpHandleInfo.VisitCount()
         result.Release()
         return
     }
@@ -90,6 +117,7 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
     if nil != wg {
         defer wg.Done()
     }
+
 
     outReq := copyRequest(&ctx.Request)
 
@@ -101,6 +129,8 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
         if err != nil || !ok {
             result.Err = err
             result.Code = http.StatusForbidden
+
+
             return
         }
     }
@@ -111,6 +141,8 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
         log.Printf("Proxy Filter-Pre<%s> fail.", filterName, err)
         result.Err = err
         result.Code = code
+
+
         return
     }
 
@@ -120,6 +152,8 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
         log.Printf("Proxy Filter-Pre<%s> fail.", filterName, err)
         result.Err = err
         result.Code = code
+
+
         return
     }
 
@@ -137,6 +171,7 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
         c.SetEndAt(time.Now().UnixNano())
         result.Res = res
 
+
         if err != nil || res.StatusCode() >= fasthttp.StatusInternalServerError {
             resCode := http.StatusServiceUnavailable
 
@@ -151,6 +186,8 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
             result.Code = resCode
             return
         }
+
+
         log.Printf("Backend server[%s] responsed, code <%d>, body<%s>", service.GetHost(), res.StatusCode(), res.Body())
     } else if service.Protocol == "thrift" {
         req := server.NewRequest()
@@ -178,6 +215,7 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
         if err != nil {
             result.Err = err
             log.Println("Thrift pool get client error", err)
+
             return
         }
         defer service.Pool.Put(pooledClient, false)
