@@ -154,7 +154,12 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
         log.Printf("Backend server[%s] responsed, code <%d>, body<%s>", service.GetHost(), res.StatusCode(), res.Body())
     } else if service.Protocol == "thrift" {
         req := server.NewRequest()
-        req.ServiceName = "businessService"
+
+        // 解析serviceName
+        req.ServiceName = "businessService"// 默认servicename = businessService
+        if serviceProviderName := result.API.ServiceProviderName; len(serviceProviderName) > 0 {
+            req.ServiceName = serviceProviderName
+        }
 
         // 解析参数，转化成json格式
         params := make(map[string]interface{})
@@ -171,8 +176,15 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
         outReq.URI().QueryArgs().VisitAll(f)
         outReq.PostArgs().VisitAll(f)
 
+        // 转化成json
         req.ParamJSON, _ = json.Marshal(params)
-        req.Operation = result.API.Name
+
+        // set operation
+        operation := result.API.Name
+        if value, ok := params["operation"].(string); ok {
+            operation = result.API.GetOperation(value)
+        }
+        req.Operation = operation
 
         pooledClient, err := service.Pool.Get()
         if err != nil {
@@ -221,7 +233,6 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
         result.Code = code
         return
     }
-
 }
 
 func (h *HttpProxy) writeResult(ctx *fasthttp.RequestCtx, res *fasthttp.Response) {

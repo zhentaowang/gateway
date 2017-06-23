@@ -4,6 +4,7 @@ db_password: Wyun4test
 db_name: gateway
 
 oauth_host: "http://oauth-center.default/oauth/user/getUser?access_token="
+#oauth_host: "https://front.zhiweicloud.com/user/getUser?access_token="
 #oauth_host: "http://testapi.iairportcloud.com/oauth/user/getUser?access_token="
 #oauth_host: "127.0.0.1:8082"
 
