@@ -6,7 +6,7 @@ import (
     "gateway/src/model"
     "net/http"
     "gateway/src/util"
-    "gateway/src/thrift/gen-go/server"
+    "code.aliyun.com/wyunshare/thrift-server/gen-go/server"
     "encoding/json"
     "gateway/src/config"
     "time"

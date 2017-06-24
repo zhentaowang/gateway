@@ -19,24 +19,62 @@ var _ = bytes.Equal
 type RESCODE int64
 const (
   RESCODE__200 RESCODE = 200
-  RESCODE__500 RESCODE = 500
   RESCODE__400 RESCODE = 400
+  RESCODE__403 RESCODE = 403
+  RESCODE__404 RESCODE = 404
+  RESCODE__500 RESCODE = 500
+  RESCODE__503 RESCODE = 503
 )
+
+func (p RESCODE) Int() int {
+  switch p {
+  case RESCODE__200:
+    return 200
+  case RESCODE__400:
+    return 400
+  case RESCODE__403:
+    return 403
+  case RESCODE__404:
+    return 404
+  case RESCODE__500:
+    return 500
+  case RESCODE__503:
+    return 503
+  default:
+    return 200
+  }
+}
 
 func (p RESCODE) String() string {
   switch p {
-  case RESCODE__200: return "_200"
-  case RESCODE__500: return "_500"
-  case RESCODE__400: return "_400"
+  case RESCODE__200:
+    return "_200"
+  case RESCODE__400:
+    return "_400"
+  case RESCODE__403:
+    return "_403"
+  case RESCODE__404:
+    return "_404"
+  case RESCODE__500:
+    return "_500"
+  case RESCODE__503:
+    return "_503"
   }
   return "<UNSET>"
 }
 
 func RESCODEFromString(s string) (RESCODE, error) {
   switch s {
-  case "_200": return RESCODE__200, nil 
-  case "_500": return RESCODE__500, nil 
-  case "_400": return RESCODE__400, nil 
+  case "_200":
+    return RESCODE__200, nil
+  case "400":
+    return RESCODE__400, nil
+  case "_404":
+    return RESCODE__404, nil
+  case "_500":
+    return RESCODE__500, nil
+  case "_503":
+    return RESCODE__503, nil
   }
   return RESCODE(0), fmt.Errorf("not a valid RESCODE string")
 }

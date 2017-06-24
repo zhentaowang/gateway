@@ -2,13 +2,9 @@ package model
 
 import (
     "encoding/base64"
-    "gateway/src/thrift/gen-go/server"
-    "git.apache.org/thrift.git/lib/go/thrift"
     "fmt"
-    "time"
-    "gateway/src/config"
-    pool "gateway/src/thrift"
-    "log"
+    "code.aliyun.com/wyunshare/thrift-server/pool"
+    "code.aliyun.com/wyunshare/thrift-server"
 )
 
 type Service struct {
@@ -30,30 +26,7 @@ func (s *Service) init(r *RouteTable) error {
     //)
 
     // client
-    s.Pool = &pool.Pool{
-        Dial: func() (interface{}, error) {
-            sock, err := thrift.NewTSocket(s.GetHost())  // client端不设置超时
-            if err != nil {
-                log.Printf("thrift.NewTSocketTimeout(%s) error(%v)", s.GetHost(), err)
-                return nil, err
-            }
-            tf := thrift.NewTFramedTransportFactory(thrift.NewTTransportFactory())
-            client := server.NewMyServiceClientFactory(tf.GetTransport(sock), r.protocolFactory)
-            if err = client.Transport.Open(); err != nil {
-                log.Printf("client.Transport.Open() error(%v)", err)
-                return nil, err
-            }
-            return client, nil
-        },
-        Close: func(v interface{}) error {
-            v.(*server.MyServiceClient).Transport.Close()
-            return nil
-        },
-        MaxActive:   config.TConfig.MaxConns,
-        MaxIdle:     config.TConfig.MaxIdle,
-        IdleTimeout: time.Duration(config.TConfig.MaxIdleConnDuration),
-    }
-
+    s.Pool = thriftserver.GetPool(s.GetHost())
     return nil
 }
 

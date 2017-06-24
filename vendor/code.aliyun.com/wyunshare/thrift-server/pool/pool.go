@@ -1,4 +1,4 @@
-package thrift
+package pool
 
 import (
     "time"

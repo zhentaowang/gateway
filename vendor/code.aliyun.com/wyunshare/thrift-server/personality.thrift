@@ -1,5 +1,5 @@
 namespace java com.wyun.thrift.server
-namespace go server
+namespace go thriftserver
 
 struct Request {
     # 传递的参数信息，使用格式进行表示

@@ -3,6 +3,42 @@
 	"ignore": "test",
 	"package": [
 		{
+			"checksumSHA1": "K/bU+OvNU7g1hswWfcxsopP6+sI=",
+			"path": "code.aliyun.com/wyunshare/thrift-server",
+			"revision": "8648df19fe5f56d05a65fd6703633f5c89ed7cfc",
+			"revisionTime": "2017-06-24T07:23:10Z"
+		},
+		{
+			"checksumSHA1": "1k3NBiNCdZdXxc4jOlAJ64yYA4I=",
+			"path": "code.aliyun.com/wyunshare/thrift-server/business",
+			"revision": "8648df19fe5f56d05a65fd6703633f5c89ed7cfc",
+			"revisionTime": "2017-06-24T07:23:10Z"
+		},
+		{
+			"checksumSHA1": "TKV0nA5LXHBkr4GNBQ2/7Jf2Cw0=",
+			"path": "code.aliyun.com/wyunshare/thrift-server/conf",
+			"revision": "8648df19fe5f56d05a65fd6703633f5c89ed7cfc",
+			"revisionTime": "2017-06-24T07:23:10Z"
+		},
+		{
+			"checksumSHA1": "t07ZKdA5ZJ4WnlTPXjFzlfJyscU=",
+			"path": "code.aliyun.com/wyunshare/thrift-server/gen-go/server",
+			"revision": "8648df19fe5f56d05a65fd6703633f5c89ed7cfc",
+			"revisionTime": "2017-06-24T07:23:10Z"
+		},
+		{
+			"checksumSHA1": "mg+xSYVH3tpQlZK4dteuWFgX9L0=",
+			"path": "code.aliyun.com/wyunshare/thrift-server/pool",
+			"revision": "8648df19fe5f56d05a65fd6703633f5c89ed7cfc",
+			"revisionTime": "2017-06-24T07:23:10Z"
+		},
+		{
+			"checksumSHA1": "aJHLVuIp/sMEYaxBKhGMvJoulU0=",
+			"path": "code.aliyun.com/wyunshare/thrift-server/processor",
+			"revision": "8648df19fe5f56d05a65fd6703633f5c89ed7cfc",
+			"revisionTime": "2017-06-24T07:23:10Z"
+		},
+		{
 			"path": "git.apache.org/thrift.git/lib/go/thrift",
 			"revision": ""
 		},
