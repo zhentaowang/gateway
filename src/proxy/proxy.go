@@ -177,6 +177,7 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
         outReq.PostArgs().VisitAll(f)
 
         // 转化成json
+        delete(params, "access_token")
         req.ParamJSON, _ = json.Marshal(params)
 
         // set operation
