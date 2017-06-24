@@ -64,7 +64,7 @@ func (s *Service) getKey() string {
 
 func (s *Service) GetHost() string {
     if len(s.Namespace) > 0 {
-        return fmt.Sprintf("%s.%s:%s", s.Namespace, s.Name, s.Port)
+        return fmt.Sprintf("%s.%s:%s",s.Name, s.Namespace,  s.Port)
     } else {
         return fmt.Sprintf("%s:%s", s.Name, s.Port)
     }
