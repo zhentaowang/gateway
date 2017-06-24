@@ -5,6 +5,7 @@ import (
     "log"
     _ "github.com/go-sql-driver/mysql"
     "fmt"
+    "encoding/json"
 )
 
 type MysqlStore struct {
@@ -29,7 +30,7 @@ func (m *MysqlStore) dbInit(host string, username string, password string, dbNam
 }
 
 func (m *MysqlStore) GetAPIs() ([]*API, error) {
-    rows, err := m.DB.Query("select api_id, name, uri, method, service_id, status, need_login from api")
+    rows, err := m.DB.Query("select api_id, name, uri, method, service_id, status, need_login, mock from api")
     if err != nil {
         log.Fatal(err)
         return nil, err
@@ -38,8 +39,17 @@ func (m *MysqlStore) GetAPIs() ([]*API, error) {
     var value []*API
     for rows.Next() {
         api := new(API)
-        rows.Scan(&api.APIId, &api.Name, &api.URI, &api.Method, &api.ServiceId, &api.Status, &api.NeedLogin)
+        var mockStr []byte
+        rows.Scan(&api.APIId, &api.Name, &api.URI, &api.Method, &api.ServiceId, &api.Status, &api.NeedLogin, &mockStr)
+        mock := new(Mock)
+        err := json.Unmarshal(mockStr, mock)
+        if err != nil {
+            log.Fatal(err)
+            return nil, err
+        }
+
         api.filterNames, _ = m.GetFilters(api.APIId)
+        api.Mock = mock
         value = append(value, api)
     }
 
