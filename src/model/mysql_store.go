@@ -42,13 +42,15 @@ func (m *MysqlStore) GetAPIs() ([]*API, error) {
         var mockStr []byte
         rows.Scan(&api.APIId, &api.Name, &api.URI, &api.Method, &api.ServiceId, &api.Status, &api.NeedLogin, &mockStr)
         mock := new(Mock)
-        err := json.Unmarshal(mockStr, mock)
-        if err != nil {
-            log.Fatal(err)
-            return nil, err
+        if len(mockStr) != 0 && mockStr != nil {
+            err := json.Unmarshal(mockStr, mock)
+            if err != nil {
+                log.Fatal(err)
+                return nil, err
+            }
+        } else {
+            mock = nil
         }
-
-        api.filterNames, _ = m.GetFilters(api.APIId)
         api.Mock = mock
         value = append(value, api)
     }

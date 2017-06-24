@@ -60,22 +60,10 @@ func (h *HttpProxy) Start() {
 func (h *HttpProxy) ReverseProxyHandler(ctx *fasthttp.RequestCtx) {
     log.Println(string(ctx.Request.RequestURI()))
     log.Println(string(ctx.Request.Body()[:]))
-    startTime := time.Now().UnixNano()
-
-    httpHandleInfo := new(util.HttpHandlInfo)
-    httpHandleInfo.SetRequestContent(ctx.Request.String())
-    httpHandleInfo.SetRequestUrl(string(ctx.Request.RequestURI()))
-
     result := h.routeTable.Select(&ctx.Request)
 
     if nil == result {
         ctx.SetStatusCode(fasthttp.StatusNotFound)
-        endTime := time.Now().UnixNano()
-
-        httpHandleInfo.SetResponseContent(ctx.Response.String())
-        httpHandleInfo.SetUsedTime(endTime-startTime)
-        httpHandleInfo.VisitCount()
-
         return
     }
 
@@ -84,30 +72,15 @@ func (h *HttpProxy) ReverseProxyHandler(ctx *fasthttp.RequestCtx) {
     if result.Err != nil {
         if result.API.Mock != nil {
             result.API.RenderMock(ctx)
-            endTime := time.Now().UnixNano()
-
-            httpHandleInfo.SetResponseContent(ctx.Response.String())
-            httpHandleInfo.SetUsedTime(endTime-startTime)
-            httpHandleInfo.VisitCount()
             result.Release()
             return
         }
 
         ctx.SetStatusCode(result.Code)
-        endTime := time.Now().UnixNano()
-
-        httpHandleInfo.SetResponseContent(ctx.Response.String())
-        httpHandleInfo.SetUsedTime(endTime-startTime)
-        httpHandleInfo.VisitCount()
         result.Release()
         return
     } else {
         h.writeResult(ctx, result.Res)
-        endTime := time.Now().UnixNano()
-
-        httpHandleInfo.SetResponseContent(ctx.Response.String())
-        httpHandleInfo.SetUsedTime(endTime-startTime)
-        httpHandleInfo.VisitCount()
         result.Release()
         return
     }
