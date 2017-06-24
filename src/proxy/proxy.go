@@ -118,7 +118,6 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
         defer wg.Done()
     }
 
-
     outReq := copyRequest(&ctx.Request)
 
     c := model.NewContext(h.routeTable, ctx, outReq, result)
@@ -129,8 +128,6 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
         if err != nil || !ok {
             result.Err = err
             result.Code = http.StatusForbidden
-
-
             return
         }
     }
@@ -141,8 +138,6 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
         log.Printf("Proxy Filter-Pre<%s> fail.", filterName, err)
         result.Err = err
         result.Code = code
-
-
         return
     }
 
@@ -152,8 +147,6 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
         log.Printf("Proxy Filter-Pre<%s> fail.", filterName, err)
         result.Err = err
         result.Code = code
-
-
         return
     }
 
@@ -171,7 +164,6 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
         c.SetEndAt(time.Now().UnixNano())
         result.Res = res
 
-
         if err != nil || res.StatusCode() >= fasthttp.StatusInternalServerError {
             resCode := http.StatusServiceUnavailable
 
@@ -186,8 +178,6 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
             result.Code = resCode
             return
         }
-
-
         log.Printf("Backend server[%s] responsed, code <%d>, body<%s>", service.GetHost(), res.StatusCode(), res.Body())
     } else if service.Protocol == "thrift" {
         req := server.NewRequest()
@@ -215,7 +205,6 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
         if err != nil {
             result.Err = err
             log.Println("Thrift pool get client error", err)
-
             return
         }
         defer service.Pool.Put(pooledClient, false)
