@@ -27,4 +27,9 @@ type T struct {
     MaxResponseBodySize int `yaml:"max_response_body_size"`
 }
 
+type KafkaConfig struct {
+    KafkaHost string `yaml:"KafkaHost"`
+    KafkaTopic string   `yaml:"KafkaTopic"`
+}
+
 var TConfig T

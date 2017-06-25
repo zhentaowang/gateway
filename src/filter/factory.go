@@ -19,6 +19,7 @@ const (
     // 给龙腾推送航班信息的参数过滤器
     FilterUpdateFlight = "UPDATE_FLIGHT"
     FilterResponseHead = "RESPONSE_HEAD" // 原响应头
+    FilterVisitCount = "VISITCOUNT"
 )
 
 func NewFilter(filterName string) (Filter, error) {
@@ -33,6 +34,9 @@ func NewFilter(filterName string) (Filter, error) {
         return newUpdateFlightFilter(), nil
     case FilterResponseHead:
         return newResponseHeaderFilter(), nil
+    case FilterVisitCount:
+        return newVisitCount(), nil
+
     default:
         return nil, ErrUnknownFilter
     }

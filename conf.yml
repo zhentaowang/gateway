@@ -1,6 +1,9 @@
 db_host: "120.27.217.130:3306"
 db_username: root
 db_password: Wyun4test
+#db_host: "127.0.0.1:3306"
+#db_username: root
+#db_password:
 db_name: gateway
 
 oauth_host: "http://oauth-center.default/oauth/user/getUser?access_token="
@@ -16,3 +19,7 @@ oauth_host: "http://oauth-center.default/oauth/user/getUser?access_token="
 "read_timeout": 30
 "write_timeout": 30
 "max_response_body_size": 104857600
+
+
+KafkaHost: localhost:9092
+KafkaTopic: HttpHandleInfo
