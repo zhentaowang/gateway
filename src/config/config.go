@@ -28,8 +28,8 @@ type T struct {
 }
 
 type KafkaConfig struct {
-    KafkaHost string `yaml:"KafkaHost"`
-    KafkaTopic string   `yaml:"KafkaTopic"`
+    KafkaHost string `yaml:"kafka_host"`
+    KafkaTopic string   `yaml:"kafka_topic"`
 }
 
 var TConfig T
