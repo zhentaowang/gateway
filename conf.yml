@@ -21,5 +21,5 @@ oauth_host: "http://oauth-center.default/oauth/user/getUser?access_token="
 "max_response_body_size": 104857600
 
 
-KafkaHost: localhost:9092
-KafkaTopic: HttpHandleInfo
+kafka_host: localhost:9092
+kafka_topic: HttpHandleInfo
