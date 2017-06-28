@@ -5,6 +5,7 @@ import (
 
 	"github.com/go-xorm/xorm"
 	"gateway/src/admgateway/config"
+	"gateway/src/admgateway/util"
 	"io/ioutil"
 	"gopkg.in/yaml.v2"
 )
@@ -99,6 +100,7 @@ func MInsertApi(data *Api, filter_seq int) {
 
 	CheckErr(err)
 	println(affected )
+	util.SetData()
 }
 
 
@@ -108,6 +110,7 @@ func MInsertService(data *Service)  {
 
 	CheckErr(err)
 	println(affected )
+	util.SetData()
 }
 
 
@@ -119,6 +122,7 @@ func MInsertFilter(data *Filter)  {
 
 	CheckErr(err)
 	println(affected )
+	util.SetData()
 }
 
 func MQueryService(data *Service) []Service {
@@ -165,6 +169,7 @@ func MModifyApi(data *Api) {
 	affected, err := Engine.Id(data.ApiId).Update(data)
 	CheckErr(err)
 	println(affected)
+	util.SetData()
 
 }
 
@@ -173,6 +178,7 @@ func MModifyService(data *Service)  {
 	affected, err := Engine.Id(data.ServiceId).Update(data)
 	CheckErr(err)
 	println(affected)
+	util.SetData()
 
 }
 
@@ -181,6 +187,7 @@ func MModifyFilter(data *Filter) {
 	affected, err := Engine.Id(data.FilterId).Update(data)
 	CheckErr(err)
 	println(affected)
+	util.SetData()
 
 }
 
@@ -196,6 +203,7 @@ func MDeleteApi(data *Api) {
 
 	CheckErr(err)
 	println(affected)
+	util.SetData()
 }
 
 func MDeleteService(data *Service) {
@@ -206,6 +214,7 @@ func MDeleteService(data *Service) {
 
 	CheckErr(err)
 	println(affected)
+	util.SetData()
 }
 
 func MDeleteFilter(data *Filter)  {
@@ -218,5 +227,6 @@ func MDeleteFilter(data *Filter)  {
 
 	CheckErr(err)
 	println(affected, has)
+	util.SetData()
 
 }

@@ -23,3 +23,6 @@ oauth_host: "http://oauth-center.default/oauth/user/getUser?access_token="
 
 kafka_host: localhost:9092
 kafka_topic: HttpHandleInfo
+
+zookeeper_server: 127.0.0.1:2181
+zookeeper_path: /gateway

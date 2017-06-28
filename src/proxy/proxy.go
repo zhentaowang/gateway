@@ -35,7 +35,7 @@ func NewHttpProxy(store model.Store) *HttpProxy {
 }
 
 func (h *HttpProxy) init() {
-    err := h.initRouteTable()
+    err := h.InitRouteTable()
 
     if err != nil {
         log.Panic(err, "init route table error")
@@ -45,7 +45,7 @@ func (h *HttpProxy) init() {
     h.filters = filter.NewFilters(filterNames)
 }
 
-func (h *HttpProxy) initRouteTable() error {
+func (h *HttpProxy) InitRouteTable() error {
 
     h.routeTable = model.NewRouteTable(h.store)
     h.routeTable.Load()

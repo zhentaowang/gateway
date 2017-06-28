@@ -32,4 +32,9 @@ type KafkaConfig struct {
     KafkaTopic string   `yaml:"kafka_topic"`
 }
 
+type ZookeeperConfig struct {
+    ZkServer string `yaml:"zookeeper_server"`
+    ZkPath string   `yaml:"zookeeper_path"`
+}
+
 var TConfig T
