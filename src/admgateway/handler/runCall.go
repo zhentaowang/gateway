@@ -13,7 +13,7 @@ type Webconf struct {
 
 func Run() {
 
-	conf := conf_center.New("gateway")
+	conf := conf_center.New("/wyun/gateway")
 	conf.Init()
 
 	router := fasthttprouter.New()

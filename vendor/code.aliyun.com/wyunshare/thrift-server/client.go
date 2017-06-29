@@ -14,7 +14,7 @@ import (
 
 func GetPool(hostPort string) (*pool.Pool) {
 
-	cf := conf_center.New("gateway")
+	cf := conf_center.New("/wyun/gateway")
 	cf.Init()
 
 	conf.TConfig = conf.T{}

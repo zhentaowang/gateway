@@ -15,6 +15,9 @@ spec:
           image: golang:1.8
           workingDir: "/go/src/gateway"
           command: ["go", "run", "src/main.go"]
+          env:
+          - name: zk_servers
+            value: "zk-client.platform:80"
           volumeMounts:
           - mountPath: "/go/src"
             name: code
@@ -44,7 +47,9 @@ spec:
   - port: 443
     targetPort: 8888
     protocol: TCP
+    name: "tcp"
   - port: 1323
     targetPort: 1323
+    name: "admweb"
   selector:
     app: gateway
