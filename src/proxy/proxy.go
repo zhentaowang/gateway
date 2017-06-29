@@ -8,12 +8,14 @@ import (
     "gateway/src/util"
     "code.aliyun.com/wyunshare/thrift-server/gen-go/server"
     "encoding/json"
-    "gateway/src/config"
     "time"
     "container/list"
     "gateway/src/filter"
     "log"
     "strings"
+    "code.aliyun.com/wyunshare/thrift-server/conf"
+    "conf_center"
+    "strconv"
 )
 
 type HttpProxy struct {
@@ -24,8 +26,24 @@ type HttpProxy struct {
 }
 
 func NewHttpProxy(store model.Store) *HttpProxy {
+
+    cf := conf_center.New("gateway")
+    cf.Init()
+
+    conf.TConfig = conf.T{}
+
+    conf.TConfig.MaxConnDuration, _= strconv.Atoi(cf.ConfProperties["jdbc"]["max_conn_duration"])
+    conf.TConfig.MaxConns, _= strconv.Atoi(cf.ConfProperties["jdbc"]["max_conns"])
+    conf.TConfig.MaxIdle, _= strconv.Atoi(cf.ConfProperties["jdbc"]["max_idle"])
+    conf.TConfig.MaxIdleConnDuration, _= strconv.Atoi(cf.ConfProperties["jdbc"]["max_idle_conn_duration"])
+    conf.TConfig.MaxResponseBodySize, _= strconv.Atoi(cf.ConfProperties["jdbc"]["max_response_body_size"])
+    conf.TConfig.ReadTimeout, _ = strconv.Atoi(cf.ConfProperties["jdbc"]["read_timeout"])
+    conf.TConfig.ReadTimeout, _ = strconv.Atoi(cf.ConfProperties["jdbc"]["write_timeout"])
+    conf.TConfig.ReadBufferSize, _ = strconv.Atoi(cf.ConfProperties["jdbc"]["read_buffer_size"])
+    conf.TConfig.WriteBufferSize, _ = strconv.Atoi(cf.ConfProperties["jdbc"]["write_buffer_size"])
+
     h := &HttpProxy{
-        fastHTTPClient: util.NewFastHTTPClient(&config.TConfig),
+        fastHTTPClient: util.NewFastHTTPClient(&conf.TConfig),
         store: store,
     }
 

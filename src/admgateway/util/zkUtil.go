@@ -6,9 +6,8 @@ import (
 	"encoding/binary"
 	"log"
 	"bytes"
-	"io/ioutil"
 	"strings"
-	"gopkg.in/yaml.v2"
+	"code.aliyun.com/wyunshare/wyun-zookeeper/go-client/src/conf_center"
 )
 
 type ZookeeperConfig struct {
@@ -18,19 +17,10 @@ type ZookeeperConfig struct {
 
 func SetData()  {
 
-	configByte, err := ioutil.ReadFile("conf.yml")
-	if err != nil {
-		log.Fatal(err)
-	}
+	conf := conf_center.New("gateway")
+	conf.Init()
 
-	zkConf := new(ZookeeperConfig)
-	err = yaml.Unmarshal(configByte, &zkConf)
-	if nil != err {
-		log.Panic("load config error: ", err)
-		return
-	}
-
-	host := strings.Split(zkConf.ZkServer,",")
+	host := strings.Split(conf.ConfProperties["zookeeper"]["zookeeper_server"],",")
 
 	conn, _, err := zk.Connect(host, 10*time.Second)
 	if nil != err {
@@ -38,7 +28,7 @@ func SetData()  {
 		return
 	}
 
-	_, stat, _ := conn.Exists(zkConf.ZkPath)
+	_, stat, _ := conn.Exists(conf.ConfProperties["zookeeper"]["zookeeper_path"])
 
 	cur := time.Now()
 	timestamp := cur.UnixNano()
@@ -46,5 +36,5 @@ func SetData()  {
 	b_buf := bytes.NewBuffer([]byte{})
 	binary.Write(b_buf, binary.BigEndian, timestamp)
 
-	conn.Set(zkConf.ZkPath, b_buf.Bytes(), stat.Version)
+	conn.Set(conf.ConfProperties["zookeeper"]["zookeeper_path"], b_buf.Bytes(), stat.Version)
 }

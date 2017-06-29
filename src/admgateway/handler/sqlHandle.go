@@ -4,10 +4,8 @@ package handler
 import (
 
 	"github.com/go-xorm/xorm"
-	"gateway/src/admgateway/config"
 	"gateway/src/admgateway/util"
-	"io/ioutil"
-	"gopkg.in/yaml.v2"
+	"code.aliyun.com/wyunshare/wyun-zookeeper/go-client/src/conf_center"
 )
 
 
@@ -62,19 +60,15 @@ type Filter struct {
  */
 func init()  {
 
-	configByte, err := ioutil.ReadFile("src/admgateway/config/mysqlConfig.yml")
-	conf := new(config.MysqlConfig)
-	err = yaml.Unmarshal(configByte, &conf)
+	conf := conf_center.New("gateway")
+	conf.Init()
 
-	CheckErr(err)
-
-	var MysqlUrl string = conf.MysqlUserName + ":" + conf.MysqlPassword + "@tcp(" + conf.MysqlHost + ":" + conf.MysqlPort + ")/" +
-				conf.MysqlDb + "?charset=utf8"
+	var MysqlUrl string = conf.ConfProperties["jdbc"]["db_username"] + ":" + conf.ConfProperties["jdbc"]["db_password"] + "@tcp(" + conf.ConfProperties["jdbc"]["db_host"] + ")/" +
+		conf.ConfProperties["jdbc"]["db_name"] + "?charset=utf8"
 
 	//print("MysqlUrl    " + MysqlUrl)
-	Engine, err = xorm.NewEngine("mysql", MysqlUrl)
+	Engine, _ = xorm.NewEngine("mysql", MysqlUrl)
 
-	CheckErr(err)
 }
 
 

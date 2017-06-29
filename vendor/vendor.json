@@ -39,6 +39,17 @@
 			"revisionTime": "2017-06-24T07:23:10Z"
 		},
 		{
+			"checksumSHA1": "+Y6OXD9cnvE8uDI+EXY89RNQsvo=",
+			"path": "code.aliyun.com/wyunshare/wyun-zookeeper/go-client/src/conf_center",
+			"revision": "518cfbdcdc84169f7e2bee9b9e5cfa16d1f8e1a3",
+			"revisionTime": "2017-06-28T10:28:28Z"
+		},
+		{
+			"checksumSHA1": "4+cQ5BpU1ZGfsCgElu44dMeDU1A=",
+			"path": "conf_center",
+			"revision": ""
+		},
+		{
 			"path": "git.apache.org/thrift.git/lib/go/thrift",
 			"revision": ""
 		},
@@ -103,6 +114,12 @@
 			"revisionTime": "2017-06-15T12:09:46Z"
 		},
 		{
+			"checksumSHA1": "lSy6AYcBQIHtzhfjNrmKzHJygdo=",
+			"path": "github.com/goinggo/mapstructure",
+			"revision": "194205d9b4a98eff86d4e8d3c0dfe87dea59ef81",
+			"revisionTime": "2014-07-17T18:29:41Z"
+		},
+		{
 			"checksumSHA1": "OV+/R43DDDJ/Gxrx9oQob/K7sL0=",
 			"path": "github.com/golang/snappy",
 			"revision": "553a641470496b2327abcac10b36396bd98e45c9",
@@ -149,6 +166,12 @@
 			"path": "github.com/rcrowley/go-metrics",
 			"revision": "1f30fe9094a513ce4c700b9a54458bbb0c96996c",
 			"revisionTime": "2016-11-28T21:05:44Z"
+		},
+		{
+			"checksumSHA1": "iWQLzuCxgolL1+Ol9zCXFpQZmjk=",
+			"path": "github.com/samuel/go-zookeeper/zk",
+			"revision": "1d7be4effb13d2d908342d349d71a284a7542693",
+			"revisionTime": "2016-10-28T23:23:40Z"
 		},
 		{
 			"checksumSHA1": "LTOa3BADhwvT0wFCknPueQALm8I=",

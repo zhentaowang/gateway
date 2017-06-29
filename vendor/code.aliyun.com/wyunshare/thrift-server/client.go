@@ -3,27 +3,32 @@ package thriftserver
 import (
 	"fmt"
 	"git.apache.org/thrift.git/lib/go/thrift"
-	"gopkg.in/yaml.v2"
-	"io/ioutil"
-	"log"
 	"os"
 	"time"
 	"code.aliyun.com/wyunshare/thrift-server/pool"
 	"code.aliyun.com/wyunshare/thrift-server/conf"
 	"code.aliyun.com/wyunshare/thrift-server/gen-go/server"
+	"conf_center"
+	"strconv"
 )
 
 func GetPool(hostPort string) (*pool.Pool) {
-	configByte, err := ioutil.ReadFile("conf.yml")
-	if err != nil {
-		log.Fatal(err)
-	}
+
+	cf := conf_center.New("gateway")
+	cf.Init()
 
 	conf.TConfig = conf.T{}
-	err = yaml.Unmarshal(configByte, &conf.TConfig)
-	if nil != err {
-		log.Panic("thrift load conf error: ", err)
-	}
+
+	conf.TConfig.MaxConnDuration, _= strconv.Atoi(cf.ConfProperties["jdbc"]["max_conn_duration"])
+	conf.TConfig.MaxConns, _= strconv.Atoi(cf.ConfProperties["jdbc"]["max_conns"])
+	conf.TConfig.MaxIdle, _= strconv.Atoi(cf.ConfProperties["jdbc"]["max_idle"])
+	conf.TConfig.MaxIdleConnDuration, _= strconv.Atoi(cf.ConfProperties["jdbc"]["max_idle_conn_duration"])
+	conf.TConfig.MaxResponseBodySize, _= strconv.Atoi(cf.ConfProperties["jdbc"]["max_response_body_size"])
+	conf.TConfig.ReadTimeout, _ = strconv.Atoi(cf.ConfProperties["jdbc"]["read_timeout"])
+	conf.TConfig.ReadTimeout, _ = strconv.Atoi(cf.ConfProperties["jdbc"]["write_timeout"])
+	conf.TConfig.ReadBufferSize, _ = strconv.Atoi(cf.ConfProperties["jdbc"]["read_buffer_size"])
+	conf.TConfig.WriteBufferSize, _ = strconv.Atoi(cf.ConfProperties["jdbc"]["write_buffer_size"])
+
 	// client
     return &pool.Pool{
 		Dial: func() (interface{}, error) {

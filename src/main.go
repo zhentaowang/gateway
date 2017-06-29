@@ -3,35 +3,24 @@ package main
 import (
     //"gateway/src/admin"
     "gateway/src/model"
-    "gopkg.in/yaml.v2"
-    "io/ioutil"
-    "gateway/src/config"
     "log"
     "gateway/src/proxy"
     "github.com/samuel/go-zookeeper/zk"
     "time"
-    "strings"
+    "code.aliyun.com/wyunshare/wyun-zookeeper/go-client/src/conf_center"
     "gateway/src/admgateway/handler"
+    "strings"
 )
 
 
 
 func main() {
     // 读取配置文件
-    configByte, err := ioutil.ReadFile("conf.yml")
-    if err != nil {
-        log.Fatal(err)
-    }
-
-    config.TConfig = config.T{}
-    err = yaml.Unmarshal(configByte, &config.TConfig)
-    if nil != err {
-        log.Panic("load config error: ", err)
-        return
-    }
+    conf := conf_center.New("gateway")
+    conf.Init()
 
     // 获取数据库
-    store := model.NewMysqlStore(config.TConfig.DBHost, config.TConfig.DBUsername, config.TConfig.DBPassword, config.TConfig.DBName)
+    store := model.NewMysqlStore(conf.ConfProperties["jdbc"]["db_host"], conf.ConfProperties["jdbc"]["db_username"], conf.ConfProperties["jdbc"]["db_password"], conf.ConfProperties["jdbc"]["db_name"])
 
     // 转发服务
     h := proxy.NewHttpProxy(store)
@@ -47,19 +36,10 @@ func main() {
 
 func DataChange(h *proxy.HttpProxy)  {
 
-    configByte, err := ioutil.ReadFile("conf.yml")
-    if err != nil {
-        log.Fatal(err)
-    }
+    conf := conf_center.New("gateway")
+    conf.Init()
 
-    zkConf := new(config.ZookeeperConfig)
-    err = yaml.Unmarshal(configByte, &zkConf)
-    if nil != err {
-        log.Panic("load config error: ", err)
-        return
-    }
-    host := strings.Split(zkConf.ZkServer,",")
-
+    host := strings.Split(conf.ConfProperties["zookeeper"]["zookeeper_server"],",")
 
     conn, _, err := zk.Connect(host, 10*time.Second)
     if nil != err {
@@ -68,7 +48,7 @@ func DataChange(h *proxy.HttpProxy)  {
     }
 
     for {
-        b, _, stat, _ := conn.GetW(zkConf.ZkPath)
+        b, _, stat, _ := conn.GetW(conf.ConfProperties["zookeeper"]["zookeeper_path"])
         <-stat
         log.Println("data changed")
         println(string(b))

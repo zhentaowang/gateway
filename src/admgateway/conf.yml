@@ -1,4 +1,0 @@
-zookeeper_server: 127.0.0.1:2181
-zookeeper_path: /gateway
-
-adm_web_host: 127.0.0.1:1323

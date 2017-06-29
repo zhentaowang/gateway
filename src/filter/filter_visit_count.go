@@ -6,10 +6,8 @@ import (
 	"os"
 	"log"
 	"encoding/json"
-	"io/ioutil"
-	"gopkg.in/yaml.v2"
-	"gateway/src/config"
 
+	"conf_center"
 )
 
 type VisitCount struct {
@@ -43,18 +41,13 @@ func (inf *VisitCount) Post(c Context)  (int, error){
 
 	logger := log.New(os.Stderr, "[srama]", log.LstdFlags)
 
-	configByte, err := ioutil.ReadFile("config.yml")
-	conf := new(config.KafkaConfig)
-	err = yaml.Unmarshal(configByte, &conf)
-	if err != nil {
-		panic(err)
-	}
+	conf := conf_center.New("gateway")
+	conf.Init()
 
-
-	if conf.KafkaHost != "" {
+	if conf.ConfProperties["kafka"]["kafka_host"] != "" {
 		config := sarama.NewConfig()
 		config.Producer.Return.Successes = true
-		producer, err := sarama.NewSyncProducer(strings.Split(conf.KafkaHost, ","), config)
+		producer, err := sarama.NewSyncProducer(strings.Split(conf.ConfProperties["kafka"]["kafka_host"], ","), config)
 		if err != nil {
 			panic(err)
 		}
@@ -63,7 +56,7 @@ func (inf *VisitCount) Post(c Context)  (int, error){
 
 		msg := &sarama.ProducerMessage{}
 
-		msg.Topic = conf.KafkaTopic
+		msg.Topic = conf.ConfProperties["kafka"]["kafka_topic"]
 		msg.Partition = int32(-1)
 		msg.Key = sarama.StringEncoder("info")
 		msg.Value = sarama.ByteEncoder(string(jsons))
@@ -81,7 +74,7 @@ func (inf *VisitCount) Post(c Context)  (int, error){
 		logger.Println(string(jsons))
 	}
 
-	return c.GetProxyResponse().StatusCode(), err
+	return c.GetProxyResponse().StatusCode(), errs
 }
 
 func (inf *VisitCount) SetRequestUrl(url string)  {
