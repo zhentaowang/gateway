@@ -7,10 +7,9 @@ import (
     "sync"
     "sync/atomic"
     "time"
-
     "github.com/valyala/fasthttp"
-    "gateway/src/config"
     "log"
+    "code.aliyun.com/wyunshare/thrift-server/conf"
 )
 
 var (
@@ -46,7 +45,7 @@ type FastHTTPClient struct {
 }
 
 // NewFastHTTPClient create FastHTTPClient instance
-func NewFastHTTPClient(conf *config.T) *FastHTTPClient {
+func NewFastHTTPClient(conf *conf.T) *FastHTTPClient {
     return &FastHTTPClient{
         MaxConnDuration:     time.Duration(conf.MaxConnDuration) * time.Second,
         MaxIdleConnDuration: time.Duration(conf.MaxIdleConnDuration) * time.Second,

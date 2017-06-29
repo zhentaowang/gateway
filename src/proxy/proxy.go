@@ -6,14 +6,16 @@ import (
     "gateway/src/model"
     "net/http"
     "gateway/src/util"
-    "gateway/src/thrift/gen-go/server"
+    "code.aliyun.com/wyunshare/thrift-server/gen-go/server"
     "encoding/json"
-    "gateway/src/config"
     "time"
     "container/list"
     "gateway/src/filter"
     "log"
     "strings"
+    "code.aliyun.com/wyunshare/thrift-server/conf"
+    "conf_center"
+    "strconv"
 )
 
 type HttpProxy struct {
@@ -24,8 +26,24 @@ type HttpProxy struct {
 }
 
 func NewHttpProxy(store model.Store) *HttpProxy {
+
+    cf := conf_center.New("gateway")
+    cf.Init()
+
+    conf.TConfig = conf.T{}
+
+    conf.TConfig.MaxConnDuration, _= strconv.Atoi(cf.ConfProperties["jdbc"]["max_conn_duration"])
+    conf.TConfig.MaxConns, _= strconv.Atoi(cf.ConfProperties["jdbc"]["max_conns"])
+    conf.TConfig.MaxIdle, _= strconv.Atoi(cf.ConfProperties["jdbc"]["max_idle"])
+    conf.TConfig.MaxIdleConnDuration, _= strconv.Atoi(cf.ConfProperties["jdbc"]["max_idle_conn_duration"])
+    conf.TConfig.MaxResponseBodySize, _= strconv.Atoi(cf.ConfProperties["jdbc"]["max_response_body_size"])
+    conf.TConfig.ReadTimeout, _ = strconv.Atoi(cf.ConfProperties["jdbc"]["read_timeout"])
+    conf.TConfig.ReadTimeout, _ = strconv.Atoi(cf.ConfProperties["jdbc"]["write_timeout"])
+    conf.TConfig.ReadBufferSize, _ = strconv.Atoi(cf.ConfProperties["jdbc"]["read_buffer_size"])
+    conf.TConfig.WriteBufferSize, _ = strconv.Atoi(cf.ConfProperties["jdbc"]["write_buffer_size"])
+
     h := &HttpProxy{
-        fastHTTPClient: util.NewFastHTTPClient(&config.TConfig),
+        fastHTTPClient: util.NewFastHTTPClient(&conf.TConfig),
         store: store,
     }
 
@@ -35,7 +53,7 @@ func NewHttpProxy(store model.Store) *HttpProxy {
 }
 
 func (h *HttpProxy) init() {
-    err := h.initRouteTable()
+    err := h.InitRouteTable()
 
     if err != nil {
         log.Panic(err, "init route table error")
@@ -45,7 +63,7 @@ func (h *HttpProxy) init() {
     h.filters = filter.NewFilters(filterNames)
 }
 
-func (h *HttpProxy) initRouteTable() error {
+func (h *HttpProxy) InitRouteTable() error {
 
     h.routeTable = model.NewRouteTable(h.store)
     h.routeTable.Load()
@@ -154,7 +172,12 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
         log.Printf("Backend server[%s] responsed, code <%d>, body<%s>", service.GetHost(), res.StatusCode(), res.Body())
     } else if service.Protocol == "thrift" {
         req := server.NewRequest()
-        req.ServiceName = "businessService"
+
+        // 解析serviceName
+        req.ServiceName = "businessService"// 默认servicename = businessService
+        if serviceProviderName := result.API.ServiceProviderName; len(serviceProviderName) > 0 {
+            req.ServiceName = serviceProviderName
+        }
 
         // 解析参数，转化成json格式
         params := make(map[string]interface{})
@@ -171,8 +194,16 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
         outReq.URI().QueryArgs().VisitAll(f)
         outReq.PostArgs().VisitAll(f)
 
+        // 转化成json
+        delete(params, "access_token")
         req.ParamJSON, _ = json.Marshal(params)
-        req.Operation = result.API.Name
+
+        // set operation
+        operation := result.API.Name
+        if value, ok := params["operation"].(string); ok {
+            operation = result.API.GetOperation(value)
+        }
+        req.Operation = operation
 
         pooledClient, err := service.Pool.Get()
         if err != nil {
@@ -221,7 +252,6 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
         result.Code = code
         return
     }
-
 }
 
 func (h *HttpProxy) writeResult(ctx *fasthttp.RequestCtx, res *fasthttp.Response) {
