@@ -60,7 +60,7 @@ type Filter struct {
  */
 func init()  {
 
-	conf := conf_center.New("/wyun/gateway")
+	conf := conf_center.New("gateway")
 	conf.Init()
 
 	var MysqlUrl string = conf.ConfProperties["jdbc"]["db_username"] + ":" + conf.ConfProperties["jdbc"]["db_password"] + "@tcp(" + conf.ConfProperties["jdbc"]["db_host"] + ")/" +

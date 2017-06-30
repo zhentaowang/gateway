@@ -41,7 +41,7 @@ func (inf *VisitCount) Post(c Context)  (int, error){
 
 	logger := log.New(os.Stderr, "[srama]", log.LstdFlags)
 
-	conf := conf_center.New("/wyun/gateway")
+	conf := conf_center.New("gateway")
 	conf.Init()
 
 	if conf.ConfProperties["kafka"]["kafka_host"] != "" {
