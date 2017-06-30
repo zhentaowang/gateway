@@ -17,7 +17,7 @@ type ZookeeperConfig struct {
 
 func SetData()  {
 
-	conf := conf_center.New("gateway")
+	conf := conf_center.New("/wyun/gateway")
 	conf.Init()
 
 	host := strings.Split(conf.ConfProperties["zookeeper"]["zookeeper_server"],",")

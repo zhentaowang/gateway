@@ -27,7 +27,7 @@ type HttpProxy struct {
 
 func NewHttpProxy(store model.Store) *HttpProxy {
 
-    cf := conf_center.New("gateway")
+    cf := conf_center.New("/wyun/gateway")
     cf.Init()
 
     conf.TConfig = conf.T{}

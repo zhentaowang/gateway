@@ -16,7 +16,7 @@ import (
 
 func main() {
     // 读取配置文件
-    conf := conf_center.New("gateway")
+    conf := conf_center.New("/wyun/gateway")
     conf.Init()
 
     // 获取数据库
@@ -36,7 +36,7 @@ func main() {
 
 func DataChange(h *proxy.HttpProxy)  {
 
-    conf := conf_center.New("gateway")
+    conf := conf_center.New("/wyun/gateway")
     conf.Init()
 
     host := strings.Split(conf.ConfProperties["zookeeper"]["zookeeper_server"],",")

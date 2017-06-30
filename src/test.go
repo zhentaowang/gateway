@@ -13,7 +13,7 @@ import (
 
 func main() {
 
-	//conf := conf_center.New("gateway")
+	//conf := conf_center.New("/wyun/gateway")
 	//conf.Init()
 	//jsonStr, _ := json.Marshal(conf.ConfProperties)
 	//println(string(jsonStr))
