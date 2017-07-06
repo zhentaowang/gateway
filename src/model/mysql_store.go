@@ -51,6 +51,8 @@ func (m *MysqlStore) GetAPIs() ([]*API, error) {
         } else {
             mock = nil
         }
+
+        api.filterNames, _ = m.GetFilters(api.APIId)
         api.Mock = mock
         value = append(value, api)
     }
