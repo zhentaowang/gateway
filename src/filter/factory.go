@@ -20,6 +20,7 @@ const (
     FilterUpdateFlight = "UPDATE_FLIGHT"
     FilterResponseHead = "RESPONSE_HEAD" // 原响应头
     FilterVisitCount = "VISITCOUNT"
+    FilterText = "FILTERTEXT"
 )
 
 func NewFilter(filterName string) (Filter, error) {
@@ -36,6 +37,8 @@ func NewFilter(filterName string) (Filter, error) {
         return newResponseHeaderFilter(), nil
     case FilterVisitCount:
         return newVisitCount(), nil
+    case FilterText:
+        return newTextFilter(), nil
 
     default:
         return nil, ErrUnknownFilter

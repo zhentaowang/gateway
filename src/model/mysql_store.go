@@ -30,7 +30,7 @@ func (m *MysqlStore) dbInit(host string, username string, password string, dbNam
 }
 
 func (m *MysqlStore) GetAPIs() ([]*API, error) {
-    rows, err := m.DB.Query("select api_id, name, uri, method, service_id, status, need_login, mock from api")
+    rows, err := m.DB.Query("select api_id, name, uri, method, service_id, status, need_login, mock, service_provider_name from api")
     if err != nil {
         log.Fatal(err)
         return nil, err
@@ -40,7 +40,7 @@ func (m *MysqlStore) GetAPIs() ([]*API, error) {
     for rows.Next() {
         api := new(API)
         var mockStr []byte
-        rows.Scan(&api.APIId, &api.Name, &api.URI, &api.Method, &api.ServiceId, &api.Status, &api.NeedLogin, &mockStr)
+        rows.Scan(&api.APIId, &api.Name, &api.URI, &api.Method, &api.ServiceId, &api.Status, &api.NeedLogin, &mockStr, &api.ServiceProviderName)
         mock := new(Mock)
         if len(mockStr) != 0 && mockStr != nil {
             err := json.Unmarshal(mockStr, mock)
