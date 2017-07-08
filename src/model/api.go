@@ -63,7 +63,15 @@ func (a *API) isMethodMatches(req *fasthttp.Request) bool {
 }
 
 func (a *API) isURIMatches(req *fasthttp.Request) bool {
-    return a.Pattern.Match(req.URI().RequestURI())
+    UrlArray := strings.Split(req.URI().RequestURI(),"/")
+    IfMinMatch := UrlArray[len(UrlArray)-1]
+
+    if strings.Compare(IfMinMatch,"*") == 0 {
+        return a.Pattern.Match(req.URI().RequestURI())
+    } else {
+        return strings.Compare(a.URI,req.URI().RequestURI()) == 0
+    }
+
 }
 
 // RenderMock dender mock response
