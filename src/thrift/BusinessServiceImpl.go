@@ -9,14 +9,17 @@ import (
 	"github.com/go-xorm/xorm"
 	"conf_center"
 	_ "github.com/go-sql-driver/mysql"
+	"code.aliyun.com/wyunshare/thrift-server/pool"
 )
 
 type BusinessServiceImpl struct {
 }
 
 // 通过 BusinessServiceImpl 实现 IBusinessService 接口的 Send 方法，从而实现 IBusinessService 接口
-func (msi *BusinessServiceImpl) Handle(request *server.Request) (r *server.Response, err error) {
-	addr := strings.Split(request.Operation, "/")
+func (msi *BusinessServiceImpl) Handle(operation string, paramJSON []byte) (*server.Response, error) {
+
+	var pooled *pool.Pool
+	addr := strings.Split(operation, "/")
 
 	buffer := bytes.NewBufferString("")
 
@@ -36,11 +39,14 @@ func (msi *BusinessServiceImpl) Handle(request *server.Request) (r *server.Respo
 	sql := "select service.name,service.namespace,service.port from service,api where api.service_id = service.service_id and api.uri=?"
 	results, err := Engine.Query(sql,buffer.String())
 
-	pooled:= thriftserver.GetPool(string(results["name"])+"."+string(results["namespace"])+  ":"+string(results["port"]))
+	if len(string(results[0]["namespace"]))==0 {
+		pooled = thriftserver.GetPool(string(results[0]["name"])  + ":" + string(results[0]["port"]))
+	} else {
+		pooled = thriftserver.GetPool(string(results[0]["name"]) + "." + string(results[0]["namespace"]) + ":" + string(results[0]["port"]))
+	}
 	client, err := pooled.Get()
 	if err != nil {
 		log.Println("Thrift pool get client error", err)
-		return
 	}
 
 	defer pooled.Put(client, false)
@@ -48,13 +54,17 @@ func (msi *BusinessServiceImpl) Handle(request *server.Request) (r *server.Respo
 	rawClient, ok := client.(*server.MyServiceClient)
 	if !ok {
 		log.Println("convert to raw client failed")
-		return
 	}
 
-	res, err := rawClient.Send(request)
+	req := server.NewRequest()
+
+	req.ServiceName = "businessService"
+	req.Operation = operation
+	req.ParamJSON = paramJSON
+
+	res, err := rawClient.Send(req)
 	if err != nil {
 		log.Println(err)
-		return
 	}
 
 	return res, err

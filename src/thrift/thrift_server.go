@@ -15,7 +15,7 @@ func StartThriftServer()  {
 	businessServiceMap := &business.BusinessServiceMap{
 		ServiceMap: make(map[string]business.IBusinessService),
 	}
-	businessServiceMap.RegisterService("businessService", BusinessServiceImpl{})
+	businessServiceMap.RegisterService("businessService", &BusinessServiceImpl{})
 
 	wyunServiceImpl := processor.WyunServiceImpl{
 		BusinessServiceMap: businessServiceMap,

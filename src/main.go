@@ -10,6 +10,7 @@ import (
     "code.aliyun.com/wyunshare/wyun-zookeeper/go-client/src/conf_center"
     "gateway/src/admgateway/handler"
     "strings"
+    "gateway/src/thrift"
 )
 
 
@@ -25,6 +26,7 @@ func main() {
     // 转发服务
     h := proxy.NewHttpProxy(store)
     go DataChange(h)
+    go thrift.StartThriftServer()
     go handler.Run()
     h.Start()
 
