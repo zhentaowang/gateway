@@ -36,7 +36,7 @@ func (msi *BusinessServiceImpl) Handle(operation string, paramJSON []byte) (*ser
 	//print("MysqlUrl    " + MysqlUrl)
 	Engine, _ := xorm.NewEngine("mysql", MysqlUrl)
 
-	sql := "select service.name,service.namespace,service.port from service,api where api.service_id = service.service_id and api.uri=?"
+	sql := "select service.name,service.namespace,service.port ,api.service_provider_name from service,api where api.service_id = service.service_id and api.uri=?"
 	results, err := Engine.Query(sql,buffer.String())
 
 	if len(string(results[0]["namespace"]))==0 {
@@ -58,7 +58,7 @@ func (msi *BusinessServiceImpl) Handle(operation string, paramJSON []byte) (*ser
 
 	req := server.NewRequest()
 
-	req.ServiceName = "businessService"
+	req.ServiceName = string(results[0]["service_provider_name"])
 	req.Operation = operation
 	req.ParamJSON = paramJSON
 
