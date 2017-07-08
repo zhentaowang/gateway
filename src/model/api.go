@@ -63,13 +63,13 @@ func (a *API) isMethodMatches(req *fasthttp.Request) bool {
 }
 
 func (a *API) isURIMatches(req *fasthttp.Request) bool {
-    UrlArray := strings.Split(req.URI().RequestURI(),"/")
+    UrlArray := strings.Split(string(req.URI().RequestURI()),"/")
     IfMinMatch := UrlArray[len(UrlArray)-1]
 
     if strings.Compare(IfMinMatch,"*") == 0 {
-        return a.Pattern.Match(req.URI().RequestURI())
+        return a.Pattern.Match(string(req.URI().RequestURI()))
     } else {
-        return strings.Compare(a.URI,req.URI().RequestURI()) == 0
+        return strings.Compare(a.URI,string(req.URI().RequestURI())) == 0
     }
 
 }
