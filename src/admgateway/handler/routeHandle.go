@@ -2,14 +2,13 @@ package handler
 
 import (
 	"github.com/valyala/fasthttp"
-	"path/filepath"
 )
 
 
 
 func indexHandler(ctx *fasthttp.RequestCtx) {
 
-	url := filepath.Join( "src","admgateway","view", "index.html")
+	url := "api.html"
 
 	data := struct {
 		Title string
@@ -27,9 +26,50 @@ func indexHandler(ctx *fasthttp.RequestCtx) {
 	Render(ctx, url, data)
 }
 
+func ToService(ctx *fasthttp.RequestCtx)  {
+
+	url := "filter.html"
+
+	data := struct {
+		Title string
+		ApiData []Api
+		ServiceData []Service
+		FilterData []Filter
+	}{
+		Title: "Gateway Manager",
+		ApiData: MQueryApi(new(Api)),
+		ServiceData: MQueryService(new(Service)),
+		FilterData: MQueryFilter(new(Filter)),
+	}
+
+
+	Render(ctx, url, data)
+}
+
+func ToFilter(ctx *fasthttp.RequestCtx)  {
+
+	url := "service.html"
+
+	data := struct {
+		Title string
+		ApiData []Api
+		ServiceData []Service
+		FilterData []Filter
+	}{
+		Title: "Gateway Manager",
+		ApiData: MQueryApi(new(Api)),
+		ServiceData: MQueryService(new(Service)),
+		FilterData: MQueryFilter(new(Filter)),
+	}
+
+
+	Render(ctx, url, data)
+
+}
+
 func deleteHandler(ctx *fasthttp.RequestCtx)  {
 
-	url := filepath.Join( "src","admgateway","view", "delete.html")
+	url := "delete.html"
 
 	data := struct {
 		Title string
@@ -54,6 +94,7 @@ func AddApi(ctx *fasthttp.RequestCtx) {
 
 	MInsertApi(form_data, filter_seq)
 
+	indexHandler(ctx)
 }
 
 
@@ -63,6 +104,8 @@ func AddService(ctx *fasthttp.RequestCtx)  {
 
 	MInsertService(form_data)
 
+	indexHandler(ctx)
+
 }
 
 
@@ -71,6 +114,8 @@ func AddFilter(ctx *fasthttp.RequestCtx)  {
 	form_data := GetFilterFormData(ctx)
 
 	MInsertFilter(form_data)
+
+	indexHandler(ctx)
 
 }
 
@@ -135,9 +180,8 @@ func DeleteApi(ctx *fasthttp.RequestCtx)  {
 	form_data , _:= GetApiFormData(ctx)
 	MDeleteApi(form_data)
 
-	var filter_data = Filter{0, form_data.ApiId, "", 0}
+	indexHandler(ctx)
 
-	MDeleteFilter(&filter_data)
 }
 
 
@@ -145,8 +189,9 @@ func DeleteService(ctx *fasthttp.RequestCtx)  {
 
 	form_data := GetServiceFormData(ctx)
 
-
 	MDeleteService(form_data)
+
+	indexHandler(ctx)
 
 }
 
@@ -156,5 +201,7 @@ func DeleteFilter(ctx *fasthttp.RequestCtx)  {
 	form_data := GetFilterFormData(ctx)
 
 	MDeleteFilter(form_data)
+
+	indexHandler(ctx)
 
 }

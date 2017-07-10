@@ -6,6 +6,7 @@ import (
 	"github.com/go-xorm/xorm"
 	"gateway/src/admgateway/util"
 	"code.aliyun.com/wyunshare/wyun-zookeeper/go-client/src/conf_center"
+	"github.com/labstack/gommon/log"
 )
 
 
@@ -26,6 +27,7 @@ type Api struct {
 	DisplayName string
 	Status      int
 	ServiceId   int
+	ServiceProviderName	string
 	Mock        string
 	Desc        string
 	Filters     string
@@ -85,37 +87,54 @@ func CheckErr(err error) {
 
 func MInsertApi(data *Api, filter_seq int) {
 
-	
-	affected, err := Engine.Insert(data)
-
-	result := MQueryApi(data)
-	var filter_data = Filter{0, result[len(result)-1].ApiId, data.Filters, filter_seq}
-	MInsertFilter(&filter_data)
-
+	api := new(Api)
+	total, err := Engine.Where("api_id =?", data.ApiId).Count(api)
 	CheckErr(err)
-	println(affected )
+
+	if total >0 {
+		MDeleteApi(data)
+	}
+	affected, err := Engine.Insert(data)
+	CheckErr(err)
+	log.Print("insert api " + string(affected))
+
 	util.SetData()
 }
 
 
 func MInsertService(data *Service)  {
+
+	service := new(Service)
+
+	total, err := Engine.Where("service_id =?", data.ServiceId).Count(service)
+	CheckErr(err)
+
+	if total >0 {
+		MDeleteService(data)
+	}
 	
 	affected, err := Engine.Insert(data)
-
 	CheckErr(err)
-	println(affected )
+	log.Print("insert service " + string(affected))
+
 	util.SetData()
 }
 
 
 func MInsertFilter(data *Filter)  {
-	
-	affected, err := Engine.Insert(data)
-	var ApiData = Api{0, "", "", "", 0, "", 0, 0, "", "", data.Name}
-	affected, err = Engine.Where("api_id = ?",data.ApiId).Cols("filters").Update(ApiData)
 
+	filter := new(Filter)
+	total, err := Engine.Where("filter_id =?", data.FilterId).Count(filter)
 	CheckErr(err)
-	println(affected )
+
+	if total >0 {
+		MDeleteFilter(data)
+	}
+
+	affected, err := Engine.Insert(data)
+	CheckErr(err)
+
+	log.Print("insert filter " + string(affected))
 	util.SetData()
 }
 
@@ -187,40 +206,37 @@ func MModifyFilter(data *Filter) {
 
 func MDeleteApi(data *Api) {
 
-	affected, err := Engine.Delete(data)
+	api := new(Api)
+	affected, err := Engine.Id(data.ApiId).Delete(api)
 
 	CheckErr(err)
-	println(affected)
+	log.Print("have deleted api " + string(affected))
 
-	var FilterData = Filter{0, data.ApiId, "", 0}
-	affected, err = Engine.Delete(FilterData)
-
-	CheckErr(err)
-	println(affected)
 	util.SetData()
 }
 
 func MDeleteService(data *Service) {
 
-	affected, err := Engine.Delete(data)
-	var ApiData = Api{0, "", "", "", 0, "", data.ServiceId, 0, "", "", ""}
-	affected, err = Engine.Delete(ApiData)
-
+	service := new(Service)
+	affected, err := Engine.Id(data.ServiceId).Delete(service)
 	CheckErr(err)
-	println(affected)
+	log.Print("have deleted service " + string(affected))
+
+	var ApiData = Api{0, "", "", "", 0, "", data.ServiceId, 0, "" ,"", "", ""}
+	affected, err = Engine.Delete(ApiData)
+	CheckErr(err)
+	log.Print("have deleted api " + string(affected))
+
 	util.SetData()
 }
 
 func MDeleteFilter(data *Filter)  {
 
-	has, err := Engine.Where("filter_id=?", data.FilterId).Get(data)
-	affected, err := Engine.Delete(data)
-
-	var ApiData = Api{0, "", "", "", 0, "", 0, 0, "", "", ""}
-	affected, err = Engine.Where("filters = ?", data.Name).Cols("filters").Update(ApiData)
-
+	filter := new(Filter)
+	affected, err := Engine.Id(data.FilterId).Delete(filter)
 	CheckErr(err)
-	println(affected, has)
+	log.Print("haved deleted filter " + string(affected))
+
 	util.SetData()
 
 }

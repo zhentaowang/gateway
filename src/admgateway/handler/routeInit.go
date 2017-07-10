@@ -8,6 +8,9 @@ func InitRoute(router *fasthttprouter.Router) {
 
 
 	router.GET("/", indexHandler)
+	router.GET("/filter.html", ToService)
+	router.GET("/service.html", ToFilter)
+	router.GET("/api.html", indexHandler)
 	router.GET("/delete", deleteHandler)
 	router.POST("/gateway/admin/add_api", AddApi)
 	router.POST("/gateway/admin/add_service", AddService)
