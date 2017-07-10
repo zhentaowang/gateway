@@ -51,5 +51,8 @@ spec:
   - port: 1323
     targetPort: 1323
     name: "admweb"
+  - port: 8889
+    targetPort: 8889
+    name: "thriftServer"
   selector:
     app: gateway
