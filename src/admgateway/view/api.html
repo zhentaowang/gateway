@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>表管理界面</title>
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+    <div class="page-content" style="padding: 20px;">
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="#">api表</a></li>
+                    <li><a href="filter.html">filter表</a></li>
+                    <li><a href="service.html">service表</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <div style="border: 1px solid #e0e0e0; padding: 10px 0;">
+            <form class="form-inline" role="form" id="form1" action="/gateway/admin/add_api" method="post">
+                <div class="form-group  col-lg-3">
+                    <label class="control-label" for="Api_Api_id"></label>
+                    <input type="hidden" class="form-control" name="Api_Api_id" id="Api_Api_id" placeholder="不需要填写">
+                </div>
+                <div class="form-group  col-lg-3">
+                    <label class="control-label" for="Api_name">name：</label>
+                    <input type="text" class="form-control" name="Api_name" id="Api_name" placeholder="必须填写，operation名称">
+                </div>
+                <div class="form-group  col-lg-3">
+                    <label class="control-label" for="Api_uri">uri：</label>
+                    <input type="text" class="form-control" name="Api_uri" id="Api_uri" placeholder="必须填写，填写一个正则表达式，第一级为项目名称">
+                </div>
+                <div class="form-group  col-lg-3">
+                    <label class="control-label" for="Api_method">method：</label>
+                    <select name="Api_method" id="Api_method">
+                        <option value="POST">POST</option>
+                        <option value="GET">GET</option>
+                        <option value="*">*</option>
+                    </select>
+                </div>
+                <div class="form-group  col-lg-3">
+                    <label class="control-label" for="Api_need_login">need_login：</label>
+                    <select name="Api_need_login" id="Api_need_login">
+                        <option value="0">不需要</option>
+                        <option value="1">需要</option>
+                    </select>
+                </div>
+                <div class="form-group  col-lg-3">
+                    <label class="control-label" for="Api_display_name">display_name：</label>
+                    <input type="text" class="form-control" name="Api_display_name" id="Api_display_name" placeholder="可不填写，api显示的名称">
+                </div>
+                <div class="form-group  col-lg-3">
+                    <label class="control-label" for="Api_status">status：</label>
+                    <select name="Api_status" id="Api_status">
+                        <option value="0">不生效</option>
+                        <option value="1">生效</option>
+                    </select>
+                </div>
+                <div class="form-group  col-lg-3">
+                    <label class="control-label" for="Api_Service_id">service_id：</label>
+                    <select id="Api_Service_id" name="Api_Service_id">
+                        {{range .ServiceData}}
+                        <option value={{.ServiceId}}>{{.Name}}</option>
+                        {{end}}
+                    </select>
+                </div>
+                <div class="form-group  col-lg-3">
+                    <label class="control-label" for="Api_Service_Provider_name">Service_Provider_name：</label>
+                    <input type="text" class="form-control" name="Api_Service_Provider_name" id="Api_Service_Provider_name" placeholder="可不填写，用作servicename">
+                </div>
+                <div class="form-group  col-lg-3">
+                    <label class="control-label" for="Api_mock">mock：</label>
+                    <input type="text" class="form-control" name="Api_mock" id="Api_mock" placeholder="可不填写，填写json字符串，模拟http响应">
+                </div>
+                <div class="form-group  col-lg-3">
+                    <label class="control-label" for="Api_desc">desc：</label>
+                    <input type="text" class="form-control" name="Api_desc" id="Api_desc" placeholder="可不填写，描述api">
+                </div>
+                <div class="col-sm-12 btn-wrapper">
+                    <input type="button" class="btn btn-primary" id="ajaxBtn" value="提交"></input>
+                </div>
+            </form>
+        </div>
+
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>name</th>
+                    <th>uri</th>
+                    <th>method</th>
+                    <th>need_login</th>
+                    <th>display_name</th>
+                    <th>status</th>
+                    <th>service_id</th>
+                    <th>service_provider_name</th>
+                    <th>mock</th>
+                    <th>desc</th>
+                    <th>ApiId</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+            {{range .ApiData}}
+                <tr id=tr-{{.ApiId}}>
+                    <td >{{.Name}}</td>
+                    <td >{{.Uri}}</td>
+                    <td >{{.Method}}</td>
+                    <td >{{.NeedLogin}}</td>
+                    <td >{{.DisplayName}}</td>
+                    <td >{{.Status}}</td>
+                    <td >{{.ServiceId}}</td>
+                    <td>{{.ServiceProviderName}}</td>
+                    <td >{{.Mock}}</td>
+                    <td >{{.Desc}}</td>
+                    <td >{{.ApiId}}</td>
+                    <td class="operation">
+                        <a href="#" onclick="modifyData({{.ApiId}});">修改</a><a href="#" onclick="deleteData({{.ApiId}});">删除</a>
+                    </td>
+                </tr>
+            {{end}}
+            </tbody>
+        </table>
+    </div>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+    <script>
+        $(function() {
+
+            //ajax提交
+            $("#ajaxBtn").click(function () {
+                console.log("ajax submit")
+                var params = $("#form1").serialize();
+                $.ajax({
+                    type: "POST",
+                    url: "/gateway/admin/add_api",
+                    data: params,
+                    success: function (msg) {
+
+                    }
+                });
+            })
+        })
+        function modifyData(id) {
+            var tdArray = document.querySelectorAll('.table #tr-'+id+' td:not(.operation)');
+            $('#Api_name').val(tdArray[0].innerText);
+            $('#Api_uri').val(tdArray[1].innerText);
+            $('#Api_method').val(tdArray[2].innerText);
+            $('#Api_need_login').val(tdArray[3].innerText);
+            $('#Api_display_name').val(tdArray[4].innerText);
+            $('#Api_status').val(tdArray[5].innerText);
+            $('#Api_Service_id').val(tdArray[6].innerText);
+            $('#Api_Service_Provider_name').val(tdArray[7].innerText);
+            $('#Api_mock').val(tdArray[8].innerText);
+            $('#Api_desc').val(tdArray[9].innerText);
+            $('#Api_Api_id').val(tdArray[10].innerText);
+        }
+
+        var xmlobj; //定义XMLHttpRequest对象
+        function CreateXMLHttpRequest()
+        {
+            if(window.ActiveXObject)
+//如果当前浏览器支持Active Xobject，则创建ActiveXObject对象
+            {
+                //xmlobj = new ActiveXObject("Microsoft.XMLHTTP");
+                try {
+                    xmlobj = new ActiveXObject("Msxml2.XMLHTTP");
+                } catch (e) {
+                    try {
+                        xmlobj = new ActiveXObject("Microsoft.XMLHTTP");
+                    } catch (E) {
+                        xmlobj = false;
+                    }
+                }
+            }
+            else if(window.XMLHttpRequest)
+//如果当前浏览器支持XMLHttp Request，则创建XMLHttpRequest对象
+            {
+                xmlobj = new XMLHttpRequest();
+            }
+        }
+        function deleteData(id) {
+            if(confirm('您确定删除这行数据吗？')) {
+                console.log('执行删除操作');
+                CreateXMLHttpRequest(); //创建对象
+                var parm = "Api_Api_id=" + id;//构造URL参数
+                //xmlobj.open("POST", "{dede:global.cfg_templeturl/}/../include/weather.php", true); //调用weather.php
+                xmlobj.open("POST", "/gateway/admin/delete_api", true); //调用weather.php
+                xmlobj.setRequestHeader("cache-control","no-cache");
+                xmlobj.setRequestHeader("contentType","text/html;charset=uft-8"); //指定发送的编码
+                xmlobj.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;");  //设置请求头信息
+//                xmlobj.onreadystatechange = StatHandler;  //判断URL调用的状态值并处理
+                xmlobj.send(parm); //设置为发送给服务器数据
+                self.location='/'
+            }
+        }
+    </script>
+</body>
+
+</html>

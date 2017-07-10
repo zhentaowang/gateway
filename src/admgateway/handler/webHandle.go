@@ -2,13 +2,13 @@ package handler
 
 import (
 	"github.com/valyala/fasthttp"
-	"os"
 	"path/filepath"
 	"html/template"
 	"log"
 	"bytes"
 	"strconv"
 	"encoding/json"
+	"os"
 )
 
 
@@ -16,11 +16,16 @@ import (
 
 func GetApiFormData(ctx *fasthttp.RequestCtx) (*Api,int) {
 
+	aa := ctx.Request.String()
+
+	println(aa)
+
 	postValues := ctx.PostArgs()
 	FormData := new(Api)
 
 	FormData.ApiId, _ = strconv.Atoi(string(postValues.Peek("Api_Api_id")[:]))
 	FormData.Desc = string(postValues.Peek("Api_desc")[:])
+	FormData.ServiceProviderName = string(postValues.Peek("Api_Service_Provider_name")[:])
 	FormData.DisplayName = string(postValues.Peek("Api_display_name")[:])
 	FormData.Filters = string(postValues.Peek("Api_filters")[:])
 	FormData.Method = string(postValues.Peek("Api_method")[:])
@@ -42,12 +47,12 @@ func GetServiceFormData(ctx *fasthttp.RequestCtx)  *Service {
 	postValues := ctx.PostArgs()
 	FormData := new(Service)
 
+	FormData.ServiceId, _ = strconv.Atoi(string(postValues.Peek("Service_id")[:]))
 	FormData.Desc = string(postValues.Peek("Service_desc")[:])
 	FormData.Name = string(postValues.Peek("Service_name")[:])
 	FormData.Namespace = string(postValues.Peek("Service_namespace")[:])
 	FormData.Port = string(postValues.Peek("Service_port")[:])
 	FormData.Protocol = string(postValues.Peek("Service_protocol")[:])
-	FormData.ServiceId, _ = strconv.Atoi(string(postValues.Peek("Service_Service_id")[:]))
 
 	return FormData
 }
@@ -56,7 +61,7 @@ func GetFilterFormData(ctx *fasthttp.RequestCtx)  *Filter {
 	postValues := ctx.PostArgs()
 	FormData := new(Filter)
 
-	FormData.FilterId, _ = strconv.Atoi(string(postValues.Peek("Filter_Filter_id")[:]))
+	FormData.FilterId, _ = strconv.Atoi(string(postValues.Peek("Filter_id")[:]))
 	FormData.ApiId, _ = strconv.Atoi(string(postValues.Peek("Filter_Api_id")[:]))
 	FormData.Name = string(postValues.Peek("Filter_name")[:])
 	FormData.Seq, _ = strconv.Atoi(string(postValues.Peek("Filter_seq")[:]))
@@ -73,7 +78,8 @@ func Render(ctx *fasthttp.RequestCtx, url string, data interface{}) {
 		return
 	}
 	pwd, _ := os.Getwd()
-	htmlFile := filepath.Join(pwd, url)
+
+	htmlFile := filepath.Join(pwd, "src","admgateway","view", url)
 
 	t, err := template.ParseFiles(htmlFile)
 	if err != nil {
@@ -98,4 +104,12 @@ func JsonResult(ctx *fasthttp.RequestCtx, data interface{}) {
 		panic(err)
 	}
 	ctx.WriteString(string(b))
+}
+
+func RedirectIndex(ctx *fasthttp.RequestCtx, data interface{})  {
+
+	url := filepath.Join( "src","admgateway","view", "delete.html")
+
+	Render(ctx, url, data)
+	
 }

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>表管理界面</title>
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+    <div class="page-content" style="padding: 20px;">
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <ul class="nav navbar-nav">
+                    <li><a href="api.html">api表</a></li>
+                    <li><a href="filter.html">filter表</a></li>
+                    <li class="active"><a href="#">service表</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <div style="border: 1px solid #e0e0e0; padding: 10px 0;">
+            <form class="form-inline" role="form" id="form3">
+                <input type="hidden" id="Service_id" name="Service_id" value="" />
+                <div class="form-group  col-lg-2">
+                    <label class="control-label" for="Service_namespace">namespace：</label>
+                    <input type="text" class="form-control" id="Service_namespace" name="Service_namespace" vlaue="" placeholder="测试时，可不填写，参考k8s的namespace">
+                </div>
+                <div class="form-group  col-lg-2">
+                    <label class="control-label" for="Service_name">name：</label>
+                    <input type="text" class="form-control" id="Service_name" name="Service_name" vlaue="" placeholder="必须填写，当作域名">
+                </div>
+                <div class="form-group  col-lg-2">
+                    <label class="control-label" for="Service_desc">desc：</label>
+                    <input type="text" class="form-control" id="Service_desc" name="Service_desc" vlaue="" placeholder="可不填写，描述service">
+                </div>
+                <div class="form-group  col-lg-2">
+                    <label class="control-label" for="Service_port">port：</label>
+                    <input type="text" class="form-control" id="Service_port" name="Service_port" vlaue="" placeholder="必须填写，后端服务的端口">
+                </div>
+                <div class="form-group  col-lg-2">
+                    <label class="control-label" for="Service_protocol">protocol：</label>
+                    <select id="Service_protocol" name="Service_protocol">
+                        <option value="http">http</option>
+                        <option value="thrift">thrift</option>
+                    </select>
+                </div>
+                <div class="col-sm-12 btn-wrapper">
+                    <input type="button" class="btn btn-primary" id="ajaxBtn" value="提交"></input>
+                </div>
+            </form>
+        </div>
+
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>service_id</th>
+                    <th>namespace</th>
+                    <th>name</th>
+                    <th>desc</th>
+                    <th>port</th>
+                    <th>protocol</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+            {{range .ServiceData}}
+            <tr id=tr-{{.ServiceId}}>
+                <td>{{.ServiceId}}</td>
+                <td>{{.Namespace}}</td>
+                <td>{{.Name}}</td>
+                <td>{{.Desc}}</td>
+                <td>{{.Port}}</td>
+                <td>{{.Protocol}}</td>
+                <td class="operation">
+                    <a href="#" onclick="modifyData({{.ServiceId}});">修改</a><a href="#" onclick="deleteData({{.ServiceId}});">删除</a>
+                </td>
+            </tr>
+            {{end}}
+            </tbody>
+        </table> 
+    </div>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+    <script>
+        $(function() {
+            //ajax提交
+            $("#ajaxBtn").click (function () {
+                console.log("ajax submit")
+                var params = $("#form3").serialize();
+                $.ajax({
+                    type: "POST",
+                    url: "/gateway/admin/add_service",
+                    data: params,
+                    success: function (msg) {
+
+                    }
+                });
+            })
+        })
+        function modifyData(id) {
+            var tdArray = document.querySelectorAll('.table #tr-'+id+' td:not(.operation)');
+            $('#Service_id').val(tdArray[0].innerText);
+            $('#Service_namespace').val(tdArray[1].innerText);
+            $('#Service_name').val(tdArray[2].innerText);
+            $('#Service_desc').val(tdArray[3].innerText);
+            $('#Service_port').val(tdArray[4].innerText);
+            $('#Service_protocol').val(tdArray[5].innerText);
+        }
+
+        var xmlobj; //定义XMLHttpRequest对象
+        function CreateXMLHttpRequest()
+        {
+            if(window.ActiveXObject)
+//如果当前浏览器支持Active Xobject，则创建ActiveXObject对象
+            {
+                //xmlobj = new ActiveXObject("Microsoft.XMLHTTP");
+                try {
+                    xmlobj = new ActiveXObject("Msxml2.XMLHTTP");
+                } catch (e) {
+                    try {
+                        xmlobj = new ActiveXObject("Microsoft.XMLHTTP");
+                    } catch (E) {
+                        xmlobj = false;
+                    }
+                }
+            }
+            else if(window.XMLHttpRequest)
+//如果当前浏览器支持XMLHttp Request，则创建XMLHttpRequest对象
+            {
+                xmlobj = new XMLHttpRequest();
+            }
+        }
+        function deleteData(id) {
+            if(confirm('您确定删除这行数据吗？')) {
+                console.log('执行删除操作');
+                CreateXMLHttpRequest(); //创建对象
+                var parm = "Service_id=" + id;//构造URL参数
+                //xmlobj.open("POST", "{dede:global.cfg_templeturl/}/../include/weather.php", true); //调用weather.php
+                xmlobj.open("POST", "/gateway/admin/delete_service", true); //调用weather.php
+                xmlobj.setRequestHeader("cache-control","no-cache");
+                xmlobj.setRequestHeader("contentType","text/html;charset=uft-8"); //指定发送的编码
+                xmlobj.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;");  //设置请求头信息
+//                xmlobj.onreadystatechange = StatHandler;  //判断URL调用的状态值并处理
+                xmlobj.send(parm); //设置为发送给服务器数据
+                self.location='/'
+            }
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,42 @@
+.page-content .table-bordered {
+    margin-top: 20px;
+}
+
+.page-content .table-bordered thead th {
+    border-bottom: none;
+    text-align: center;
+}
+
+.page-content .table-bordered tbody .operation {
+    text-align: center;
+}
+
+.page-content .table-bordered tbody .operation a:last-child {
+    margin-left: 10px;
+}
+
+#form3 .form-group {
+    width: 20%;
+}
+
+.form-inline {
+    overflow: hidden;
+}
+
+.form-inline .form-group {
+    margin-bottom: 10px;
+    padding: 0;
+}
+
+.form-inline .form-group .control-label {
+    width: 30%;
+    text-align: right;
+}
+
+.form-inline .form-group .form-control {
+    width: 65%;
+}
+
+.form-inline .btn-wrapper {
+    text-align: center;
+}

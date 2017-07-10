@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>表管理界面</title>
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+    <div class="page-content" style="padding: 20px;">
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <ul class="nav navbar-nav">
+                    <li><a href="api.html">api表</a></li>
+                    <li class="active"><a href="#">filter表</a></li>
+                    <li><a href="service.html">service表</a></li>
+                </ul>
+            </div>
+        </nav>
+        <div style="border: 1px solid #e0e0e0; padding: 10px 0;">
+            <form class="form-inline" role="form" id="form2">
+                <input type="hidden" id="Filter_id" name="Filter_id" value="" />
+                <div class="form-group  col-lg-2">
+                    <label class="control-label" for="Filter_Api_id">api_id：</label>
+                    <input type="text" class="form-control" id="Filter_Api_id" name="Filter_Api_id" vlaue="" placeholder="可不填写，filter对应的api">
+                </div>
+                <div class="form-group  col-lg-2">
+                    <label class="control-label" for="Filter_name">name：</label>
+                    <select id="Filter_name" name="Filter_name">
+                        <option value="RIGHTS">RIGHTS</option>
+                        <option value="CORS">CORS</option>
+                        <option value="UPDATE_FLIGHT">UPDATE_FLIGHT</option>
+                        <option value="RESPONSE_HEAD">RESPONSE_HEAD</option>
+                        <option value="VISITCOUNT">VISITCOUNT</option>
+                        <option value="FILTERTEXT">FILTERTEXT</option>
+                    </select>
+                </div>
+                <div class="form-group  col-lg-2">
+                    <label class="control-label" for="Filter_seq">seq：</label>
+                    <input type="text" class="form-control" id="Filter_seq" name="Filter_seq" vlaue="" placeholder="必须填写，-1所有api都要执行，表示filter执行次序">
+                </div>
+                <div class="col-sm-12 btn-wrapper">
+                    <input type="button" class="btn btn-primary" id="ajaxBtn" value="提交"></input>
+                </div>
+            </form>
+        </div>
+
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>filter_id</th>
+                    <th>name</th>
+                    <th>api_id</th>
+                    <th>seq</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+            {{range .FilterData}}
+            <tr id=tr-{{.FilterId}}>
+                <td>{{.FilterId}}</td>
+                <td>{{.Name}}</td>
+                <td>{{.ApiId}}</td>
+                <td>{{.Seq}}</td>
+                <td class="operation">
+                    <a href="#" onclick="modifyData({{.FilterId}});">修改</a><a href="#" onclick="deleteData({{.FilterId}});">删除</a>
+                </td>
+            </tr>
+            {{end}}
+            </tbody>
+        </table>
+    </div>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+    <script>
+        $(function() {
+            //ajax提交
+            $("#ajaxBtn").click (function () {
+                console.log("ajax submit")
+                var params = $("#form2").serialize();
+                console.log(params)
+                $.ajax({
+                    type: "POST",
+                    url: "/gateway/admin/add_filter",
+                    data: params,
+                    success: function (msg) {
+
+                    }
+                });
+            })
+        })
+        function modifyData(id) {
+            var tdArray = document.querySelectorAll('.table #tr-'+id+' td:not(.operation)');
+            $('#Filter_id').val(tdArray[0].innerText);
+            $('#Filter_Api_id').val(tdArray[1].innerText);
+            $('#Filter_name').val(tdArray[2].innerText);
+            $('#Filter_seq').val(tdArray[3].innerText);
+        }
+        var xmlobj; //定义XMLHttpRequest对象
+        function CreateXMLHttpRequest()
+        {
+            if(window.ActiveXObject)
+//如果当前浏览器支持Active Xobject，则创建ActiveXObject对象
+            {
+                //xmlobj = new ActiveXObject("Microsoft.XMLHTTP");
+                try {
+                    xmlobj = new ActiveXObject("Msxml2.XMLHTTP");
+                } catch (e) {
+                    try {
+                        xmlobj = new ActiveXObject("Microsoft.XMLHTTP");
+                    } catch (E) {
+                        xmlobj = false;
+                    }
+                }
+            }
+            else if(window.XMLHttpRequest)
+//如果当前浏览器支持XMLHttp Request，则创建XMLHttpRequest对象
+            {
+                xmlobj = new XMLHttpRequest();
+            }
+        }
+        function deleteData(id) {
+            if(confirm('您确定删除这行数据吗？')) {
+                console.log('执行删除操作');
+                CreateXMLHttpRequest(); //创建对象
+                var parm = "Filter_id=" + id;//构造URL参数
+                //xmlobj.open("POST", "{dede:global.cfg_templeturl/}/../include/weather.php", true); //调用weather.php
+                xmlobj.open("POST", "/gateway/admin/delete_filter", true); //调用weather.php
+                xmlobj.setRequestHeader("cache-control","no-cache");
+                xmlobj.setRequestHeader("contentType","text/html;charset=uft-8"); //指定发送的编码
+                xmlobj.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;");  //设置请求头信息
+//                xmlobj.onreadystatechange = StatHandler;  //判断URL调用的状态值并处理
+                xmlobj.send(parm); //设置为发送给服务器数据
+                self.location='/'
+            }
+        }
+    </script>
+</body>
+
+</html>
