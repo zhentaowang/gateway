@@ -34,17 +34,17 @@ kind: Service
 metadata:
   name: gateway
   namespace: platform
-#  ### https 专用，需要自己修改CertID
-#  annotations:
-#      service.beta.kubernetes.io/alicloud-loadbalancer-ProtocolPort: "https:443"
-#      service.beta.kubernetes.io/alicloud-loadbalancer-Bandwidth: "60"
-#      service.beta.kubernetes.io/alicloud-loadbalancer-CertID: "xxxxxx"
-#      service.beta.kubernetes.io/alicloud-loadbalancer-HealthCheckFlag: "off"
-#  ###
+  ### https 专用，需要自己修改CertID
+  annotations:
+      service.beta.kubernetes.io/alicloud-loadbalancer-ProtocolPort: "https:443"
+      service.beta.kubernetes.io/alicloud-loadbalancer-Bandwidth: "60"
+      service.beta.kubernetes.io/alicloud-loadbalancer-CertID: "xxxx"
+      service.beta.kubernetes.io/alicloud-loadbalancer-HealthCheckFlag: "off"
+  ###
 spec:
   type: LoadBalancer
   ports:
-  - port: 8888
+  - port: 443
     targetPort: 8888
     protocol: TCP
     name: "tcp"
@@ -53,6 +53,6 @@ spec:
     name: "admweb"
   - port: 8889
     targetPort: 8889
-    name: "thriftServer"
+    name: "thriftserver"
   selector:
     app: gateway
