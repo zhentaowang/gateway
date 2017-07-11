@@ -6,8 +6,7 @@ import (
 	"os"
 	"log"
 	"encoding/json"
-
-	"conf_center"
+	"gateway/src/util"
 )
 
 type VisitCount struct {
@@ -41,8 +40,7 @@ func (inf *VisitCount) Post(c Context)  (int, error){
 
 	logger := log.New(os.Stderr, "[srama]", log.LstdFlags)
 
-	conf := conf_center.New("gateway")
-	conf.Init()
+	conf := util.GetConfigCenterInstance()
 
 	if conf.ConfProperties["kafka"]["kafka_host"] != "" {
 		config := sarama.NewConfig()

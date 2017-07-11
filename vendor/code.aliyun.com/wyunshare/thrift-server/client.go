@@ -8,14 +8,13 @@ import (
 	"code.aliyun.com/wyunshare/thrift-server/pool"
 	"code.aliyun.com/wyunshare/thrift-server/conf"
 	"code.aliyun.com/wyunshare/thrift-server/gen-go/server"
-	"conf_center"
 	"strconv"
+	"gateway/src/util"
 )
 
 func GetPool(hostPort string) (*pool.Pool) {
 
-	cf := conf_center.New("gateway")
-	cf.Init()
+	cf := util.GetConfigCenterInstance()
 
 	conf.TConfig = conf.T{}
 

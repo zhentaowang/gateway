@@ -7,7 +7,6 @@ import (
 	"log"
 	"bytes"
 	"strings"
-	"code.aliyun.com/wyunshare/wyun-zookeeper/go-client/src/conf_center"
 )
 
 type ZookeeperConfig struct {
@@ -17,8 +16,7 @@ type ZookeeperConfig struct {
 
 func SetData()  {
 
-	conf := conf_center.New("gateway")
-	conf.Init()
+	conf := GetConfigCenterInstance()
 
 	host := strings.Split(conf.ConfProperties["zookeeper"]["zookeeper_server"],",")
 

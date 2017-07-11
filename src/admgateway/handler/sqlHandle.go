@@ -4,9 +4,8 @@ package handler
 import (
 
 	"github.com/go-xorm/xorm"
-	"gateway/src/admgateway/util"
-	"code.aliyun.com/wyunshare/wyun-zookeeper/go-client/src/conf_center"
 	"github.com/labstack/gommon/log"
+	"gateway/src/util"
 )
 
 
@@ -62,8 +61,7 @@ type Filter struct {
  */
 func init()  {
 
-	conf := conf_center.New("gateway")
-	conf.Init()
+	conf := util.GetConfigCenterInstance()
 
 	var MysqlUrl string = conf.ConfProperties["jdbc"]["db_username"] + ":" + conf.ConfProperties["jdbc"]["db_password"] + "@tcp(" + conf.ConfProperties["jdbc"]["db_host"] + ")/" +
 		conf.ConfProperties["jdbc"]["db_name"] + "?charset=utf8"

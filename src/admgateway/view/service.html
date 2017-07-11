@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+{{define "content"}}
 <html lang="en">
 
 <head>
@@ -9,6 +10,9 @@
     <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
     <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" href="index.css">
+    <style type="text/css">
+        {{template "css"}}
+    </style>
 </head>
 
 <body>
@@ -26,36 +30,56 @@
         <div style="border: 1px solid #e0e0e0; padding: 10px 0;">
             <form class="form-inline" role="form" id="form3">
                 <input type="hidden" id="Service_id" name="Service_id" value="" />
-                <div class="form-group  col-lg-2">
-                    <label class="control-label" for="Service_namespace">namespace：</label>
-                    <input type="text" class="form-control" id="Service_namespace" name="Service_namespace" vlaue="" placeholder="测试时，可不填写，参考k8s的namespace">
-                </div>
-                <div class="form-group  col-lg-2">
-                    <label class="control-label" for="Service_name">name：</label>
-                    <input type="text" class="form-control" id="Service_name" name="Service_name" vlaue="" placeholder="必须填写，当作域名">
-                </div>
-                <div class="form-group  col-lg-2">
-                    <label class="control-label" for="Service_desc">desc：</label>
-                    <input type="text" class="form-control" id="Service_desc" name="Service_desc" vlaue="" placeholder="可不填写，描述service">
-                </div>
-                <div class="form-group  col-lg-2">
-                    <label class="control-label" for="Service_port">port：</label>
-                    <input type="text" class="form-control" id="Service_port" name="Service_port" vlaue="" placeholder="必须填写，后端服务的端口">
-                </div>
-                <div class="form-group  col-lg-2">
-                    <label class="control-label" for="Service_protocol">protocol：</label>
-                    <select id="Service_protocol" name="Service_protocol">
-                        <option value="http">http</option>
-                        <option value="thrift">thrift</option>
-                    </select>
-                </div>
-                <div class="col-sm-12 btn-wrapper">
-                    <input type="button" class="btn btn-primary" id="ajaxBtn" value="提交"></input>
-                </div>
+                <table class="gridtable">
+                    <tr>
+                        <td>
+                            <div class="form-group  col-lg-2">
+                                <label class="control-label" for="Service_namespace">namespace：</label>
+                                <input type="text" class="form-control" id="Service_namespace" name="Service_namespace" vlaue="" placeholder="测试时，可不填写，参考k8s的namespace">
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group  col-lg-2">
+                                <label class="control-label" for="Service_name">name：</label>
+                                <input type="text" class="form-control" id="Service_name" name="Service_name" vlaue="" placeholder="必须填写，当作域名">
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group  col-lg-2">
+                                <label class="control-label" for="Service_desc">desc：</label>
+                                <input type="text" class="form-control" id="Service_desc" name="Service_desc" vlaue="" placeholder="可不填写，描述service">
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group  col-lg-2">
+                                <label class="control-label" for="Service_port">port：</label>
+                                <input type="text" class="form-control" id="Service_port" name="Service_port" vlaue="" placeholder="必须填写，后端服务的端口">
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="form-group  col-lg-2">
+                                <label class="control-label" for="Service_protocol">protocol：</label>
+                                <select id="Service_protocol" name="Service_protocol">
+                                    <option value="http">http</option>
+                                    <option value="thrift">thrift</option>
+                                </select>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" align="center" valign="middle">
+                            <div class="col-sm-12 btn-wrapper">
+                                <input type="button" class="btn btn-primary" id="ajaxBtn" value="提交"></input>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
             </form>
         </div>
 
-        <table class="table table-bordered">
+        <table class="gridtable">
             <thead>
                 <tr>
                     <th>service_id</th>
@@ -154,3 +178,4 @@
 </body>
 
 </html>
+{{end}}

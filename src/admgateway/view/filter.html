@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+{{define "content"}}
 <html lang="en">
 
 <head>
@@ -9,6 +10,9 @@
     <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
     <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" href="index.css">
+    <style type="text/css">
+        {{template "css"}}
+    </style>
 </head>
 
 <body>
@@ -25,32 +29,46 @@
         <div style="border: 1px solid #e0e0e0; padding: 10px 0;">
             <form class="form-inline" role="form" id="form2">
                 <input type="hidden" id="Filter_id" name="Filter_id" value="" />
-                <div class="form-group  col-lg-2">
-                    <label class="control-label" for="Filter_Api_id">api_id：</label>
-                    <input type="text" class="form-control" id="Filter_Api_id" name="Filter_Api_id" vlaue="" placeholder="可不填写，filter对应的api">
-                </div>
-                <div class="form-group  col-lg-2">
-                    <label class="control-label" for="Filter_name">name：</label>
-                    <select id="Filter_name" name="Filter_name">
-                        <option value="RIGHTS">RIGHTS</option>
-                        <option value="CORS">CORS</option>
-                        <option value="UPDATE_FLIGHT">UPDATE_FLIGHT</option>
-                        <option value="RESPONSE_HEAD">RESPONSE_HEAD</option>
-                        <option value="VISITCOUNT">VISITCOUNT</option>
-                        <option value="FILTERTEXT">FILTERTEXT</option>
-                    </select>
-                </div>
-                <div class="form-group  col-lg-2">
-                    <label class="control-label" for="Filter_seq">seq：</label>
-                    <input type="text" class="form-control" id="Filter_seq" name="Filter_seq" vlaue="" placeholder="必须填写，-1所有api都要执行，表示filter执行次序">
-                </div>
-                <div class="col-sm-12 btn-wrapper">
-                    <input type="button" class="btn btn-primary" id="ajaxBtn" value="提交"></input>
-                </div>
+                <table class="gridtable">
+                    <tr>
+                        <td>
+                            <div class="form-group  col-lg-2">
+                                <label class="control-label" for="Filter_Api_id">api_id：</label>
+                                <input type="text" class="form-control" id="Filter_Api_id" name="Filter_Api_id" vlaue="" placeholder="可不填写，filter对应的api">
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group  col-lg-2">
+                                <label class="control-label" for="Filter_name">name：</label>
+                                <select id="Filter_name" name="Filter_name">
+                                    <option value="RIGHTS">RIGHTS</option>
+                                    <option value="CORS">CORS</option>
+                                    <option value="UPDATE_FLIGHT">UPDATE_FLIGHT</option>
+                                    <option value="RESPONSE_HEAD">RESPONSE_HEAD</option>
+                                    <option value="VISITCOUNT">VISITCOUNT</option>
+                                    <option value="FILTERTEXT">FILTERTEXT</option>
+                                </select>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group  col-lg-2">
+                                <label class="control-label" for="Filter_seq">seq：</label>
+                                <input type="text" class="form-control" id="Filter_seq" name="Filter_seq" vlaue="" placeholder="必须填写，-1所有api都要执行，表示filter执行次序">
+                            </div>
+                        </td>
+                        </tr>
+                    <tr>
+                        <td colspan="4" align="center" valign="middle">
+                            <div class="col-sm-12 btn-wrapper">
+                                <input type="button" class="btn btn-primary" id="ajaxBtn" value="提交"></input>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
             </form>
         </div>
 
-        <table class="table table-bordered">
+        <table class="gridtable">
             <thead>
                 <tr>
                     <th>filter_id</th>
@@ -143,3 +161,4 @@
 </body>
 
 </html>
+{{end}}
