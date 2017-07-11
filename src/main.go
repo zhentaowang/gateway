@@ -9,18 +9,17 @@ import (
     "gateway/src/proxy"
     "github.com/samuel/go-zookeeper/zk"
     "time"
-    "code.aliyun.com/wyunshare/wyun-zookeeper/go-client/src/conf_center"
     "gateway/src/admgateway/handler"
     "strings"
     "gateway/src/thrift"
+    "gateway/src/util"
 )
 
 
 
 func main() {
     // 读取配置文件
-    conf := conf_center.New("gateway")
-    conf.Init()
+    conf := util.GetConfigCenterInstance()
 
     log.Println("init gateway success")
     // 获取数据库
@@ -41,8 +40,7 @@ func main() {
 
 func DataChange(h *proxy.HttpProxy)  {
 
-    conf := conf_center.New("gateway")
-    conf.Init()
+    conf := util.GetConfigCenterInstance()
 
     host := strings.Split(conf.ConfProperties["zookeeper"]["zookeeper_server"],",")
 

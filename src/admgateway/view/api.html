@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+{{define "content"}}
 <html lang="en">
 
 <head>
@@ -8,7 +9,10 @@
     <title>表管理界面</title>
     <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
     <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <link rel="stylesheet" href="index.css">
+    <!--<link rel="stylesheet" href="src/admgateway/view/index.css">-->
+    <style type="text/css">
+        {{template "css"}}
+    </style>
 </head>
 
 <body>
@@ -25,71 +29,100 @@
 
         <div style="border: 1px solid #e0e0e0; padding: 10px 0;">
             <form class="form-inline" role="form" id="form1" action="/gateway/admin/add_api" method="post">
-                <div class="form-group  col-lg-3">
-                    <label class="control-label" for="Api_Api_id"></label>
                     <input type="hidden" class="form-control" name="Api_Api_id" id="Api_Api_id" placeholder="不需要填写">
-                </div>
-                <div class="form-group  col-lg-3">
-                    <label class="control-label" for="Api_name">name：</label>
-                    <input type="text" class="form-control" name="Api_name" id="Api_name" placeholder="必须填写，operation名称">
-                </div>
-                <div class="form-group  col-lg-3">
-                    <label class="control-label" for="Api_uri">uri：</label>
-                    <input type="text" class="form-control" name="Api_uri" id="Api_uri" placeholder="必须填写，填写一个正则表达式，第一级为项目名称">
-                </div>
-                <div class="form-group  col-lg-3">
-                    <label class="control-label" for="Api_method">method：</label>
-                    <select name="Api_method" id="Api_method">
-                        <option value="POST">POST</option>
-                        <option value="GET">GET</option>
-                        <option value="*">*</option>
-                    </select>
-                </div>
-                <div class="form-group  col-lg-3">
-                    <label class="control-label" for="Api_need_login">need_login：</label>
-                    <select name="Api_need_login" id="Api_need_login">
-                        <option value="0">不需要</option>
-                        <option value="1">需要</option>
-                    </select>
-                </div>
-                <div class="form-group  col-lg-3">
-                    <label class="control-label" for="Api_display_name">display_name：</label>
-                    <input type="text" class="form-control" name="Api_display_name" id="Api_display_name" placeholder="可不填写，api显示的名称">
-                </div>
-                <div class="form-group  col-lg-3">
-                    <label class="control-label" for="Api_status">status：</label>
-                    <select name="Api_status" id="Api_status">
-                        <option value="0">不生效</option>
-                        <option value="1">生效</option>
-                    </select>
-                </div>
-                <div class="form-group  col-lg-3">
-                    <label class="control-label" for="Api_Service_id">service_id：</label>
-                    <select id="Api_Service_id" name="Api_Service_id">
-                        {{range .ServiceData}}
-                        <option value={{.ServiceId}}>{{.Name}}</option>
-                        {{end}}
-                    </select>
-                </div>
-                <div class="form-group  col-lg-3">
-                    <label class="control-label" for="Api_Service_Provider_name">Service_Provider_name：</label>
-                    <input type="text" class="form-control" name="Api_Service_Provider_name" id="Api_Service_Provider_name" placeholder="可不填写，用作servicename">
-                </div>
-                <div class="form-group  col-lg-3">
-                    <label class="control-label" for="Api_mock">mock：</label>
-                    <input type="text" class="form-control" name="Api_mock" id="Api_mock" placeholder="可不填写，填写json字符串，模拟http响应">
-                </div>
-                <div class="form-group  col-lg-3">
-                    <label class="control-label" for="Api_desc">desc：</label>
-                    <input type="text" class="form-control" name="Api_desc" id="Api_desc" placeholder="可不填写，描述api">
-                </div>
-                <div class="col-sm-12 btn-wrapper">
-                    <input type="button" class="btn btn-primary" id="ajaxBtn" value="提交"></input>
-                </div>
+                <table class="gridtable">
+                    <tr>
+                        <td>
+                            <div class="form-group  col-lg-3">
+                                <label class="control-label" for="Api_name">name：</label>
+                                <input type="text"class="form-control" name="Api_name" id="Api_name" placeholder="必须填写，operation名称">
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group  col-lg-3">
+                                <label class="control-label" for="Api_uri">uri：</label>
+                                <input type="text" class="form-control" name="Api_uri" id="Api_uri" placeholder="必须填写，填写一个正则表达式，第一级为项目名称">
+                        </div>
+                        </td>
+                        <td>
+                            <div class="form-group  col-lg-3">
+                                <label class="control-label" for="Api_method">method：</label>
+                                <select name="Api_method" id="Api_method">
+                                    <option value="POST">POST</option>
+                                    <option value="GET">GET</option>
+                                    <option value="*">*</option>
+                                </select>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group  col-lg-3">
+                                <label class="control-label" for="Api_need_login">need_login：</label>
+                                <select name="Api_need_login" id="Api_need_login">
+                                    <option value="0">不需要</option>
+                                <option value="1">需要</option>
+                                </select>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="form-group  col-lg-3">
+                                <label class="control-label" for="Api_display_name">display_name：</label>
+                                <input type="text" class="form-control" name="Api_display_name" id="Api_display_name" placeholder="可不填写，api显示的名称">
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group  col-lg-3">
+                                <label class="control-label" for="Api_status">status：</label>
+                                <select name="Api_status" id="Api_status">
+                                    <option value="0">不生效</option>
+                                    <option value="1">生效</option>
+                                </select>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group  col-lg-3">
+                                <label class="control-label" for="Api_Service_id">service_id：</label>
+                                <select id="Api_Service_id" name="Api_Service_id">
+                                    {{range .ServiceData}}
+                                    <option value={{.ServiceId}}>{{.Name}}</option>
+                                    {{end}}
+                                </select>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group  col-lg-3">
+                                <label class="control-label" for="Api_Service_Provider_name">Service_Provider_name：</label>
+                                <input type="text" class="form-control" name="Api_Service_Provider_name" id="Api_Service_Provider_name" placeholder="可不填写，用作servicename">
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="form-group  col-lg-3">
+                                <label class="control-label" for="Api_mock">mock：</label>
+                                <input type="text" class="form-control" name="Api_mock" id="Api_mock" placeholder="可不填写，填写json字符串，模拟http响应">
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group  col-lg-3">
+                                <label class="control-label" for="Api_desc">desc：</label>
+                                <input type="text" class="form-control" name="Api_desc" id="Api_desc" placeholder="可不填写，描述api">
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" align="center" valign="middle">
+                            <div class="col-sm-12 btn-wrapper">
+                                <input type="button" class="btn btn-primary" id="ajaxBtn" value="提交"></input>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
             </form>
         </div>
 
-        <table class="table table-bordered">
+        <table class="gridtable">
             <thead>
                 <tr>
                     <th>name</th>
@@ -204,3 +237,4 @@
 </body>
 
 </html>
+{{end}}

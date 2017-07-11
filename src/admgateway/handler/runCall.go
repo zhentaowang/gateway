@@ -4,7 +4,7 @@ import (
 	"github.com/valyala/fasthttp"
 	"fmt"
 	"github.com/buaazp/fasthttprouter"
-	"code.aliyun.com/wyunshare/wyun-zookeeper/go-client/src/conf_center"
+	"gateway/src/util"
 )
 
 type Webconf struct {
@@ -13,8 +13,7 @@ type Webconf struct {
 
 func Run() {
 
-	conf := conf_center.New("gateway")
-	conf.Init()
+	conf := util.GetConfigCenterInstance()
 
 	router := fasthttprouter.New()
 	InitRoute(router)

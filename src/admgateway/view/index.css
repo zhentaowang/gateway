@@ -1,42 +1,31 @@
-.page-content .table-bordered {
-    margin-top: 20px;
+{{define "css"}}
+table.gridtable {
+    width:100%;
+    font-family: verdana,arial,sans-serif;
+    font-size:11px;
+    color:#333333;
+    border-width: 1px;
+    border-color: #666666;
+    border-collapse: collapse;
+}
+table.gridtable th {
+    border-width: 1px;
+    width:10%;
+    padding: 8px;
+    border-style: solid;
+    border-color: #666666;
+    background-color: #dedede;
+}
+table.gridtable td {
+    border-width: 1px;
+    width:10%;
+    padding: 8px;
+    border-style: solid;
+    border-color: #ffd8e4;
+    /*border-color: #666666;*/
+    background-color: #c7edcc;
+    text-align:center;
+    vertical-align:middle;
 }
 
-.page-content .table-bordered thead th {
-    border-bottom: none;
-    text-align: center;
-}
-
-.page-content .table-bordered tbody .operation {
-    text-align: center;
-}
-
-.page-content .table-bordered tbody .operation a:last-child {
-    margin-left: 10px;
-}
-
-#form3 .form-group {
-    width: 20%;
-}
-
-.form-inline {
-    overflow: hidden;
-}
-
-.form-inline .form-group {
-    margin-bottom: 10px;
-    padding: 0;
-}
-
-.form-inline .form-group .control-label {
-    width: 30%;
-    text-align: right;
-}
-
-.form-inline .form-group .form-control {
-    width: 65%;
-}
-
-.form-inline .btn-wrapper {
-    text-align: center;
-}
+{{end}}

@@ -9,7 +9,7 @@ import (
     "io/ioutil"
     "log"
     "strconv"
-    "conf_center"
+    "gateway/src/util"
 )
 
 func (h *HttpProxy) CheckToken(req *fasthttp.Request , result *model.RouteResult) (bool, error) {
@@ -18,8 +18,7 @@ func (h *HttpProxy) CheckToken(req *fasthttp.Request , result *model.RouteResult
         return false, errors.New("No access token")
     }
     //res, err := h.fastHTTPClient.Do(outReq, config.TConfig.OauthHost
-    conf := conf_center.New("gateway")
-    conf.Init()
+    conf := util.GetConfigCenterInstance()
     res, err := http.Get(conf.ConfProperties["jdbc"]["oauth_host"] + string(accessToken))
     result.Res = &fasthttp.Response{}
 
