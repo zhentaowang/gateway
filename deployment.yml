@@ -53,6 +53,6 @@ spec:
     name: "admweb"
   - port: 8889
     targetPort: 8889
-    name: "thriftServer"
+    name: "thriftserver"
   selector:
     app: gateway
