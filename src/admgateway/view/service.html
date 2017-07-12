@@ -9,7 +9,6 @@
     <title>表管理界面</title>
     <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
     <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <link rel="stylesheet" href="index.css">
     <style type="text/css">
         {{template "css"}}
     </style>
@@ -79,7 +78,7 @@
             </form>
         </div>
 
-        <table class="gridtable">
+        <table class="gridtable" id="ServiceTable">
             <thead>
                 <tr>
                     <th>service_id</th>
@@ -164,7 +163,7 @@
             })
         })
         function modifyData(id) {
-            var tdArray = document.querySelectorAll('.table #tr-'+id+' td:not(.operation)');
+            var tdArray = document.querySelectorAll('#ServiceTable #tr-'+id+' td:not(.operation)');
             $('#Service_id').val(tdArray[0].innerText);
             $('#Service_namespace').val(tdArray[1].innerText);
             $('#Service_name').val(tdArray[2].innerText);

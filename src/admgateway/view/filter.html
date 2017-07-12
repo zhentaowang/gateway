@@ -67,7 +67,7 @@
             </form>
         </div>
 
-        <table class="gridtable">
+        <table class="gridtable" id="FilterTable">
             <thead>
                 <tr>
                     <th>filter_id</th>
@@ -133,7 +133,7 @@
             })
         })
         function modifyData(id) {
-            var tdArray = document.querySelectorAll('.table #tr-'+id+' td:not(.operation)');
+            var tdArray = document.querySelectorAll('#FilterTable #tr-'+id+' td:not(.operation)');
             $('#Filter_id').val(tdArray[0].innerText);
             $('#Filter_Api_id').val(tdArray[1].innerText);
             $('#Filter_name').val(tdArray[2].innerText);

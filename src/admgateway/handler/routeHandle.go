@@ -22,6 +22,7 @@ func indexHandler(ctx *fasthttp.RequestCtx) {
 		FilterData: MQueryFilter(new(Filter)),
 	}
 
+	ctx.Response.Header.Set("Location", "/")
 
 	Render(ctx, url, data)
 }
@@ -62,26 +63,6 @@ func ToFilter(ctx *fasthttp.RequestCtx)  {
 		FilterData: MQueryFilter(new(Filter)),
 	}
 
-
-	Render(ctx, url, data)
-
-}
-
-func deleteHandler(ctx *fasthttp.RequestCtx)  {
-
-	url := "delete.html"
-
-	data := struct {
-		Title string
-		ApiData []Api
-		ServiceData []Service
-		FilterData []Filter
-	}{
-		Title: "Gateway Manager",
-		ApiData: MQueryApi(new(Api)),
-		ServiceData: MQueryService(new(Service)),
-		FilterData: MQueryFilter(new(Filter)),
-	}
 
 	Render(ctx, url, data)
 
