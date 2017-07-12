@@ -47,12 +47,12 @@ func NewHttpProxy(store model.Store) *HttpProxy {
         store: store,
     }
 
-    h.init()
+    h.Init()
 
     return h
 }
 
-func (h *HttpProxy) init() {
+func (h *HttpProxy) Init() {
     err := h.InitRouteTable()
 
     if err != nil {

@@ -51,10 +51,9 @@ func DataChange(h *proxy.HttpProxy)  {
     }
 
     for {
-        b, _, stat, _ := conn.GetW(conf.ConfProperties["zookeeper"]["zookeeper_path"])
+        _, _, stat, _ := conn.GetW(conf.ConfProperties["zookeeper"]["zookeeper_path"])
         <-stat
         log.Println("data changed")
-        println(string(b))
-        h.InitRouteTable()
+        h.Init()
     }
 }
