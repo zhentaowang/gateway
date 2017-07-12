@@ -29,6 +29,7 @@
 
         <div style="border: 1px solid #e0e0e0; padding: 10px 0;">
             <form class="form-inline" role="form" id="form1" action="/gateway/admin/add_api" method="post">
+                    <input type="text" class="form-control" name="flag" id="flag" placeholder="不需要填写">
                     <input type="hidden" class="form-control" name="Api_Api_id" id="Api_Api_id" placeholder="不需要填写">
                 <table class="gridtable">
                     <tr>
@@ -164,8 +165,17 @@
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
     <script>
-        function validateUri_required(field,alerttxt)
+        function validateUri_required(field,id,alerttxt)
         {
+            var id_value
+
+            with(id) {
+                id_value = value;
+            }
+
+            console.log("id="+id_value);
+
+            if(id_value != "-1") {
             with (field)
             {
                 var IfRepeat=false;
@@ -186,6 +196,9 @@
                     return true
                 }
             }
+            } else {
+                return true
+            }
         }
         function validateOperation_required(field,alerttxt)
         {
@@ -205,7 +218,7 @@
                 console.log("ajax submit")
                 with ($("#form1"))
                 {
-                    if (validateUri_required(Api_uri,"Api_uri 不能为空和重复!")==false) {
+                    if (validateUri_required(Api_uri,flag,"Api_uri 不能为空和重复!")==false) {
                         Api_uri.focus();
                         return false
                     }
@@ -220,14 +233,15 @@
                     url: "/gateway/admin/add_api",
                     data: params,
                     success: function (msg) {
-
+                        console.log("ajax success");
+                        location.reload();
                     }
                 });
             })
         })
         function modifyData(id) {
             var tdArray = document.querySelectorAll('#ApiTable #tr-'+id+' td:not(.operation)');
-            console.log("tdArray="+tdArray[0])
+            $('#flag').val("-1");
             $('#Api_name').val(tdArray[0].innerText);
             $('#Api_uri').val(tdArray[1].innerText);
             $('#Api_method').val(tdArray[2].innerText);
