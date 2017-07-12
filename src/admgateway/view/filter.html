@@ -9,7 +9,6 @@
     <title>表管理界面</title>
     <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
     <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <link rel="stylesheet" href="index.css">
     <style type="text/css">
         {{template "css"}}
     </style>
@@ -56,7 +55,7 @@
                                 <input type="text" class="form-control" id="Filter_seq" name="Filter_seq" vlaue="" placeholder="必须填写，-1所有api都要执行，表示filter执行次序">
                             </div>
                         </td>
-                        </tr>
+                    </tr>
                     <tr>
                         <td colspan="4" align="center" valign="middle">
                             <div class="col-sm-12 btn-wrapper">
@@ -96,10 +95,31 @@
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
     <script>
+        function validate_required(field,alerttxt)
+        {
+            with (field)
+            {
+                var patt = /^[0-9]*$/;
+                var result = patt.test(value);
+                if (value==null||value==""||!result) {
+                    alert(alerttxt);
+                    return false
+                } else {
+                    return true
+                }
+            }
+        }
         $(function() {
             //ajax提交
             $("#ajaxBtn").click (function () {
                 console.log("ajax submit")
+                with ($("#form2"))
+                {
+                    if (validate_required(Filter_seq,"Filter_seq 不能为空且只能为数字!")==false) {
+                        Filter_seq.focus();
+                        return false
+                    }
+                }
                 var params = $("#form2").serialize();
                 console.log(params)
                 $.ajax({

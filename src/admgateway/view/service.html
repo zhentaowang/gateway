@@ -111,10 +111,47 @@
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
     <script>
+        function validate_port_required(field,alerttxt)
+        {
+            with (field)
+            {
+                var patt = /^[0-9]*$/;
+                var result = patt.test(value);
+                if (value==null||value==""||!result) {
+                    alert(alerttxt);
+                    return false
+                } else {
+                    return true
+                }
+            }
+        }
+        function validate_name_required(field,alerttxt)
+        {
+            with (field)
+            {
+                if (value==null||value=="") {
+                    alert(alerttxt);
+                    return false
+                } else {
+                    return true
+                }
+            }
+        }
         $(function() {
             //ajax提交
             $("#ajaxBtn").click (function () {
                 console.log("ajax submit")
+                with ($("#form3"))
+                {
+                    if (validate_name_required(Service_name,"Service_name 不能为空!")==false) {
+                        Service_name.focus();
+                        return false
+                    }
+                    if (validate_port_required(Service_port,"Service_port 不能为空且只能为数字!")==false) {
+                        Service_port.focus();
+                        return false
+                    }
+                }
                 var params = $("#form3").serialize();
                 $.ajax({
                     type: "POST",

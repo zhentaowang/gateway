@@ -122,7 +122,7 @@
             </form>
         </div>
 
-        <table class="gridtable">
+        <table class="gridtable" id="ApiTable">
             <thead>
                 <tr>
                     <th>name</th>
@@ -164,11 +164,56 @@
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
     <script>
+        function validateUri_required(field,alerttxt)
+        {
+            with (field)
+            {
+                var IfRepeat=false;
+                var tableObj = document.getElementById("ApiTable");
+                console.log("tableObj="+tableObj.rows.length);
+                for (var i = 1; i < tableObj.rows.length; i++) {    //遍历Table的所有Row
+                        tableInfo = tableObj.rows[i].cells[1].innerText;   //获取Table中单元格的内容
+                        console.log("tableInfo="+tableInfo)
+                        if (tableInfo == value) {
+                            IfRepeat = true;
+                            break;
+                        }
+                }
+                if (value==null||value==""||IfRepeat) {
+                    alert(alerttxt);
+                    return false
+                } else {
+                    return true
+                }
+            }
+        }
+        function validateOperation_required(field,alerttxt)
+        {
+            with (field)
+            {
+                if (value==null||value=="") {
+                    alert(alerttxt);
+                    return false
+                } else {
+                    return true
+                }
+            }
+        }
         $(function() {
-
             //ajax提交
             $("#ajaxBtn").click(function () {
                 console.log("ajax submit")
+                with ($("#form1"))
+                {
+                    if (validateUri_required(Api_uri,"Api_uri 不能为空和重复!")==false) {
+                        Api_uri.focus();
+                        return false
+                    }
+                    if (validateOperation_required(Api_name,"Api_name 不能为空!")==false) {
+                        Api_name.focus();
+                        return false
+                    }
+                }
                 var params = $("#form1").serialize();
                 $.ajax({
                     type: "POST",
