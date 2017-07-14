@@ -7,9 +7,9 @@ import (
 	"strings"
 	"bytes"
 	"github.com/go-xorm/xorm"
-	"conf_center"
 	_ "github.com/go-sql-driver/mysql"
 	"code.aliyun.com/wyunshare/thrift-server/pool"
+	"gateway/src/util"
 )
 
 type BusinessServiceImpl struct {
@@ -27,8 +27,7 @@ func (msi *BusinessServiceImpl) Handle(operation string, paramJSON []byte) (*ser
 		buffer.WriteString("/"+s)
 	}
 
-	conf := conf_center.New("gateway")
-	conf.Init()
+	conf := util.GetConfigCenterInstance()
 
 	var MysqlUrl string = conf.ConfProperties["jdbc"]["db_username"] + ":" + conf.ConfProperties["jdbc"]["db_password"] + "@tcp(" + conf.ConfProperties["jdbc"]["db_host"] + ")/" +
 		conf.ConfProperties["jdbc"]["db_name"] + "?charset=utf8"
