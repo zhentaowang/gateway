@@ -257,7 +257,4 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
 func (h *HttpProxy) writeResult(ctx *fasthttp.RequestCtx, res *fasthttp.Response) {
     ctx.SetStatusCode(res.StatusCode())
     ctx.Write(res.Body())
-    res.Header.VisitAll(func (key []byte, value []byte) {
-        ctx.Response.Header.Set(string(key), string(value))
-    })
 }
