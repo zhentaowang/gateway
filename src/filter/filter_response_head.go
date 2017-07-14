@@ -15,7 +15,7 @@ func (f ResponseHeaderFilter) Name() string {
     return FilterResponseHead
 }
 
-// Pre pre filter, before proxy request
+// set default response
 func (f ResponseHeaderFilter) Post(c Context) (statusCode int, err error) {
     c.GetProxyResponse().Header.VisitAll(func(key, value []byte) {
         c.GetOriginRequestCtx().Response.Header.Set(string(key),string(value))
