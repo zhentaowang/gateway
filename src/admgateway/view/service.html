@@ -110,6 +110,27 @@
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
     <script>
+        function validate_name_and_port_required(field1,field2,field3,alerttxt) {
+            var IfRepeat=false;
+            var tableObj = document.getElementById("ServiceTable");
+            console.log("tableObj="+tableObj.rows.length);
+            for (var i = 1; i < tableObj.rows.length; i++) {//遍历Table的所有Row
+                serviceNameSpace = tableObj.rows[i].cells[1].innerText;
+                serviceName = tableObj.rows[i].cells[2].innerText;   //获取Table中单元格的内容
+                servicePort = tableObj.rows[i].cells[4].innerText;
+                console.log("serviceName="+serviceName+"   servicePort="+servicePort)
+                if (serviceNameSpace==field1.value&&serviceName==field2.value&&servicePort==field3.value) {
+                    IfRepeat = true;
+                    break;
+                }
+            }
+            if (IfRepeat) {
+                alert(alerttxt);
+                return false
+            } else {
+                return true
+            }
+        }
         function validate_port_required(field,alerttxt)
         {
             with (field)
@@ -148,6 +169,11 @@
                     }
                     if (validate_port_required(Service_port,"Service_port 不能为空且只能为数字!")==false) {
                         Service_port.focus();
+                        return false
+                    }
+                    if(validate_name_and_port_required(Service_namespace,Service_name,Service_port,"service重复了，请重新配置")==false)
+                    {
+                        Service_namespace.focus();
                         return false
                     }
                 }
