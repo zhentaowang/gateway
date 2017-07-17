@@ -2,8 +2,8 @@ package filter
 
 import (
     "strings"
-    "bytes"
     "fmt"
+    "encoding/json"
 )
 
 /*
@@ -21,7 +21,7 @@ func (v UpdateFlightFilter) Name() string {
     return FilterUpdateFlight
 }
 
-func (v UpdateFlightFilter) Pre(c Context) (statusCode int, err error) {
+/*func (v UpdateFlightFilter) Pre(c Context) (statusCode int, err error) {
     bodyStr := string(c.GetOriginRequestCtx().PostBody())
     fmt.Println("传入的参数")
     fmt.Printf(bodyStr)
@@ -45,5 +45,16 @@ func (v UpdateFlightFilter) Pre(c Context) (statusCode int, err error) {
         tcUpdate = []byte(str)
         c.GetProxyOuterRequest().SetBody(tcUpdate)
     }
+    return
+}*/
+
+func (v UpdateFlightFilter) Pre(c Context) (statusCode int, err error) {
+    bodyStr := string(c.GetOriginRequestCtx().PostBody())
+    fmt.Println("传入的参数")
+    fmt.Printf(bodyStr)
+    params := make(map[string]string)
+    params["Notify"] = strings.TrimSpace(bodyStr)
+    p,_ := json.Marshal(&params)
+    c.GetProxyOuterRequest().SetBody(p)
     return
 }
