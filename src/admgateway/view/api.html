@@ -9,7 +9,6 @@
     <title>表管理界面</title>
     <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
     <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <!--<link rel="stylesheet" href="src/admgateway/view/index.css">-->
     <style type="text/css">
         {{template "css"}}
     </style>
@@ -18,22 +17,24 @@
 <body>
 
 <div id="LoginBox">
+    <form class="form-inline" role="form" action="/login" method="post">
     <div class="row1">
-        登录DIY账号窗口<a href="javascript:void(0)" title="关闭窗口" class="close_btn" id="closeBtn">×</a>
+        登陆网关<a href="javascript:void(0)" title="关闭窗口" class="close_btn" id="closeBtn">×</a>
     </div>
     <div class="row">
         用户名: <span class="inputBox">
-                <input type="text" id="txtName" placeholder="账号/邮箱" />
+                <input type="text" id="txtName" name="txtName" placeholder="账号/邮箱" />
             </span><a href="javascript:void(0)" title="提示" class="warning" id="warn">*</a>
     </div>
     <div class="row">
         密&nbsp;&nbsp;&nbsp;&nbsp;码: <span class="inputBox">
-                <input type="text" id="txtPwd" placeholder="密码" />
+                <input type="text" id="txtPwd" name="txtPwd" placeholder="密码" />
             </span><a href="javascript:void(0)" title="提示" class="warning" id="warn2">*</a>
-    </div>
-    <div class="row">
-        <a href="#" id="loginbtn">登录</a>
-    </div>
+    </div >
+        <div class="row">
+            <input type="submit" class="btn btn-primary" value="登陆" id="loginbtn" ></input>
+        </div>
+    </form>
 </div>
     <div class="page-content" style="padding: 20px;">
         <nav class="navbar navbar-default">
@@ -43,7 +44,7 @@
                     <li><a href="filter.html">filter表</a></li>
                     <li><a href="service.html">service表</a></li>
                 </ul>
-                <a href="#" id="example" class="nav pull-right">登录</a>
+                <a href="#" id="example" class="nav pull-right">{{.Name}}</a>
             </div>
         </nav>
 
@@ -192,12 +193,12 @@
                 var tableObj = document.getElementById("ApiTable");
                 console.log("tableObj="+tableObj.rows.length);
                 for (var i = 1; i < tableObj.rows.length; i++) {    //遍历Table的所有Row
-                        tableInfo = tableObj.rows[i].cells[1].innerText;   //获取Table中单元格的内容
-                        console.log("tableInfo="+tableInfo)
-                        if (tableInfo == value) {
-                            IfRepeat = true;
-                            break;
-                        }
+                    tableInfo = tableObj.rows[i].cells[1].innerText;   //获取Table中单元格的内容
+                    console.log("tableInfo="+tableInfo)
+                    if (tableInfo == value) {
+                        IfRepeat = true;
+                        break;
+                    }
                 }
                 if (value==null||value==""||IfRepeat) {
                     alert(alerttxt);
@@ -207,6 +208,7 @@
                 }
             }
         }
+
         function validateOperation_required(field,alerttxt)
         {
             with (field)
@@ -219,6 +221,7 @@
                 }
             }
         }
+
         $(function() {
             $("#example").hover(function () {
                 $(this).stop().animate({
@@ -233,8 +236,8 @@
                 $("#mask").addClass("mask").fadeIn("slow");
                 $("#LoginBox").fadeIn("slow");
             });
-            //
-            //按钮的透明度
+//
+//按钮的透明度
             $("#loginbtn").hover(function () {
                 $(this).stop().animate({
                     opacity: '1'
@@ -244,9 +247,9 @@
                     opacity: '0.8'
                 }, 1000);
             });
-            //文本框不允许为空---按钮触发
+//文本框不允许为空---按钮触发
+
             $("#loginbtn").on('click', function () {
-                console
                 var txtName = $("#txtName").val();
                 var txtPwd = $("#txtPwd").val();
                 if (txtName == "" || txtName == undefined || txtName == null) {
@@ -268,16 +271,9 @@
                     }
                 }
                 params = "txtName="+txtName+"&"+"txtPwd="+txtPwd
-                $.ajax({
-                    type: "POST",
-                    url: "/login",
-                    data: params,
-                    success: function (msg) {
-                        console.log("login success")
-                    }
-                });
+
             });
-            //文本框不允许为空---单个文本触发
+//文本框不允许为空---单个文本触发
             $("#txtName").on('blur', function () {
                 var txtName = $("#txtName").val();
                 if (txtName == "" || txtName == undefined || txtName == null) {
@@ -290,7 +286,7 @@
             $("#txtName").on('focus', function () {
                 $("#warn").css({ display: 'none' });
             });
-            //
+//
             $("#txtPwd").on('blur', function () {
                 var txtName = $("#txtPwd").val();
                 if (txtName == "" || txtName == undefined || txtName == null) {
@@ -304,13 +300,21 @@
                 $("#warn2").css({ display: 'none' });
             });
             //关闭
-            $(".close_btn").hover(function () { $(this).css({ color: 'black' }) }, function () { $(this).css({ color: '#999' }) }).on('click', function () {
+            $(".close_btn").hover(function () {
+                    $(this).css({ color: 'black' }) },
+                function () { $(this).css({ color: '#999' }) }).on('click', function () {
                 $("#LoginBox").fadeOut("fast");
                 $("#mask").css({ display: 'none' });
             });
             //ajax提交
             $("#ajaxBtn").click(function () {
                 console.log("ajax submit")
+                console.log("name="+$("#example").text())
+                if ($("#example").text() == '登陆')
+                {
+                    alert("请登陆！！！！！！！！")
+                    return false
+                }
                 with ($("#form1"))
                 {
                     if (validateUri_required(Api_uri,"Api_uri 不能为空和重复!")==false) {
@@ -323,6 +327,7 @@
                     }
                 }
                 var params = $("#form1").serialize();
+                console.log("params="+params)
                 $.ajax({
                     type: "POST",
                     url: "/gateway/admin/add_api",
@@ -333,6 +338,8 @@
                 });
             })
         })
+
+
         function modifyData(id) {
             var tdArray = document.querySelectorAll('#ApiTable #tr-'+id+' td:not(.operation)');
             console.log("tdArray="+tdArray[0])
@@ -353,7 +360,7 @@
         function CreateXMLHttpRequest()
         {
             if(window.ActiveXObject)
-//如果当前浏览器支持Active Xobject，则创建ActiveXObject对象
+            //如果当前浏览器支持Active Xobject，则创建ActiveXObject对象
             {
                 //xmlobj = new ActiveXObject("Microsoft.XMLHTTP");
                 try {
@@ -367,11 +374,12 @@
                 }
             }
             else if(window.XMLHttpRequest)
-//如果当前浏览器支持XMLHttp Request，则创建XMLHttpRequest对象
+            //如果当前浏览器支持XMLHttp Request，则创建XMLHttpRequest对象
             {
                 xmlobj = new XMLHttpRequest();
             }
         }
+
         function deleteData(id) {
             if(confirm('您确定删除这行数据吗？')) {
                 console.log('执行删除操作');
@@ -382,7 +390,7 @@
                 xmlobj.setRequestHeader("cache-control","no-cache");
                 xmlobj.setRequestHeader("contentType","text/html;charset=uft-8"); //指定发送的编码
                 xmlobj.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;");  //设置请求头信息
-//                xmlobj.onreadystatechange = StatHandler;  //判断URL调用的状态值并处理
+                //                xmlobj.onreadystatechange = StatHandler;  //判断URL调用的状态值并处理
                 xmlobj.send(parm); //设置为发送给服务器数据
                 self.location='/'
             }

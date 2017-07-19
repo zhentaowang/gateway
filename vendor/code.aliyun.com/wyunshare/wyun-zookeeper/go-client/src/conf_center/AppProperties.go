@@ -5,6 +5,7 @@ import (
 	"time"
 	"strings"
 	"os"
+	"log"
 )
 
 type AppProperties struct {
@@ -18,6 +19,7 @@ type AppProperties struct {
 }
 
 func New(appName string) AppProperties {
+	log.SetFlags(log.Llongfile)
 	appProperties := AppProperties{AppName:appName}
 	appProperties.AppPath = "/wyun/" + appName
 	appProperties.zkServers = []string{os.Getenv("zk_servers")}
@@ -59,7 +61,7 @@ func (appProperties *AppProperties)extractData(data string) map[string]string {
 			data = plaintext
 		}
 	}, func(e interface{}) {
-		println("Not enrypt data.")
+		log.Printf("Not enrypt data.")
 	})
 	properties := map[string]string{}
 	splits := strings.Split(data, "\n")

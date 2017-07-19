@@ -4,12 +4,22 @@ metadata:
   name: gateway
   namespace: platform
 spec:
-  replicas: 1
+  replicas: 2
   template:
     metadata:
       labels:
         app: gateway
     spec:
+     affinity:
+       podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: "app"
+                    operator: In
+                    values:
+                    - gateway
+              topologyKey: "kubernetes.io/hostname"
       containers:
         - name: gateway
           image: golang:1.8

@@ -19,6 +19,7 @@ import (
 
 func main() {
     // 读取配置文件
+    log.SetFlags(log.Llongfile)
     conf := util.GetConfigCenterInstance()
 
     log.Println("init gateway success")
@@ -39,6 +40,7 @@ func main() {
 }
 
 func DataChange(h *proxy.HttpProxy)  {
+    log.SetFlags(log.Lshortfile)
 
     conf := util.GetConfigCenterInstance()
 
@@ -46,7 +48,7 @@ func DataChange(h *proxy.HttpProxy)  {
 
     conn, _, err := zk.Connect(host, 10*time.Second)
     if nil != err {
-        log.Panic("load config error: ", err)
+        log.Print("load config error: ", err)
         return
     }
 
