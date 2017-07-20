@@ -10,16 +10,16 @@ spec:
       labels:
         app: gateway
     spec:
-     affinity:
-       podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            - labelSelector:
-                matchExpressions:
-                  - key: "app"
-                    operator: In
-                    values:
-                    - gateway
-              topologyKey: "kubernetes.io/hostname"
+      affinity:
+        podAntiAffinity:
+           requiredDuringSchedulingIgnoredDuringExecution:
+           - labelSelector:
+               matchExpressions:
+               - key: app
+                 operator: In
+                 values:
+                 - gateway
+             topologyKey: "kubernetes.io/hostname"
       containers:
         - name: gateway
           image: golang:1.8
@@ -48,7 +48,7 @@ metadata:
   annotations:
       service.beta.kubernetes.io/alicloud-loadbalancer-ProtocolPort: "https:443"
       service.beta.kubernetes.io/alicloud-loadbalancer-Bandwidth: "60"
-      service.beta.kubernetes.io/alicloud-loadbalancer-CertID: "xxxx"
+      service.beta.kubernetes.io/alicloud-loadbalancer-CertID: "XXXX"
       service.beta.kubernetes.io/alicloud-loadbalancer-HealthCheckFlag: "off"
   ###
 spec:

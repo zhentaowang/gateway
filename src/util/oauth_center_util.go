@@ -9,13 +9,22 @@ import (
 )
 
 func GetToken(username string , password string)  string{
-	post := "{\"username\":"+username+"," +
-		"\"password\":"+password+"," +
-		"\"grant_type\":\"password\"," +
-		"\"client_id\":\"gateway\" ," +
-		"\"client_secret\":\"A9B1-4D6F3F3044B1\"}"
 
-	resp, err := http.Post("oauth-center.platform:443/oauth/access_token",
+	conf := GetConfigCenterInstance()
+	grant_type := conf.ConfProperties["oauth_center"]["grant_type"]
+	client_id := conf.ConfProperties["oauth_center"]["client_id"]
+	client_secret := conf.ConfProperties["oauth_center"]["client_secret"]
+
+	post := "{\"username\":"+"\""+username+"\""+"," +
+		"\"password\":"+"\""+password+"\""+"," +
+		"\"grant_type\":"+"\""+grant_type+"\""+"," +
+		"\"client_id\":"+"\""+client_id+"\""+"," +
+		"\"client_secret\":"+"\""+client_secret+"\""+"}"
+
+
+	//resp, err := http.Post("https://front.zhiweicloud.com/oauth/access_token",
+	//	"application/json",strings.NewReader(post))
+	resp, err := http.Post("http://oauth-center.platform:443/oauth/access_token",
 		"application/json",strings.NewReader(post))
 	if err != nil {
 		log.Printf("get access_token error",err)
@@ -40,7 +49,8 @@ func GetToken(username string , password string)  string{
 
 func GetPermission(username string,password string,permission string)  (bool,int){
 	access_token := GetToken(username,password)
-	resp, err := http.Get("oauth-center.platform:443/user/permission?access_token="+access_token+"&permission="+permission)
+	resp, err := http.Get("http://oauth-center.platform:443/user/permission?access_token="+access_token+"&permission="+permission)
+	//resp, err := http.Get("https://front.zhiweicloud.com/user/permission?access_token="+access_token+"&permission="+permission)
 	if err != nil {
 		log.Printf(err.Error())
 	}

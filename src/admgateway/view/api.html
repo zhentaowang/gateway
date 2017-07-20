@@ -51,6 +51,7 @@
         <div style="border: 1px solid #e0e0e0; padding: 10px 0;">
             <form class="form-inline" role="form" id="form1" action="/gateway/admin/add_api" method="post">
                     <input type="hidden" class="form-control" name="Api_Api_id" id="Api_Api_id" placeholder="不需要填写">
+                    <input type="hidden" class="form-control" name="flag" id="flag" placeholder="不需要填写">
                 <table class="gridtable">
                     <tr>
                         <td>
@@ -106,7 +107,7 @@
                                 <label class="control-label" for="Api_Service_id">service_id：</label>
                                 <select id="Api_Service_id" name="Api_Service_id">
                                     {{range .ServiceData}}
-                                    <option value={{.ServiceId}}>{{.Name}}</option>
+                                    <option value={{.ServiceId}}>{{.Namespace}}.{{.Name}}:{{.Port}}</option>
                                     {{end}}
                                 </select>
                             </div>
@@ -114,7 +115,7 @@
                         <td>
                             <div class="form-group  col-lg-3">
                                 <label class="control-label" for="Api_Service_Provider_name">Service_Provider_name：</label>
-                                <input type="text" class="form-control" name="Api_Service_Provider_name" id="Api_Service_Provider_name" placeholder="可不填写，用作servicename">
+                                <input type="text" class="form-control" name="Api_Service_Provider_name" id="Api_Service_Provider_name" placeholder="thrift必填，ServiceName参数的值">
                             </div>
                         </td>
                     </tr>
@@ -191,11 +192,11 @@
             {
                 var IfRepeat=false;
                 var tableObj = document.getElementById("ApiTable");
-                console.log("tableObj="+tableObj.rows.length);
+                console.log("flag="+$('#flag').val())
                 for (var i = 1; i < tableObj.rows.length; i++) {    //遍历Table的所有Row
                     tableInfo = tableObj.rows[i].cells[1].innerText;   //获取Table中单元格的内容
                     console.log("tableInfo="+tableInfo)
-                    if (tableInfo == value) {
+                    if (tableInfo == value&&$('#flag').val()!=-1) {
                         IfRepeat = true;
                         break;
                     }
@@ -354,6 +355,7 @@
             $('#Api_mock').val(tdArray[8].innerText);
             $('#Api_desc').val(tdArray[9].innerText);
             $('#Api_Api_id').val(tdArray[10].innerText);
+            $('#flag').val(-1)
         }
 
         var xmlobj; //定义XMLHttpRequest对象
@@ -392,7 +394,7 @@
                 xmlobj.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;");  //设置请求头信息
                 //                xmlobj.onreadystatechange = StatHandler;  //判断URL调用的状态值并处理
                 xmlobj.send(parm); //设置为发送给服务器数据
-                self.location='/'
+                location.reload()
             }
         }
     </script>

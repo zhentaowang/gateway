@@ -33,7 +33,7 @@
                         <td>
                             <div class="form-group  col-lg-2">
                                 <label class="control-label" for="Filter_Api_id">api_id：</label>
-                                <input type="text" class="form-control" id="Filter_Api_id" name="Filter_Api_id" vlaue="" placeholder="可不填写，filter对应的api">
+                                <input type="text" class="form-control" id="Filter_Api_id" name="Filter_Api_id" vlaue="" placeholder="必须填写，-1所有api都执行，filter对应的api id">
                             </div>
                         </td>
                         <td>
@@ -52,7 +52,7 @@
                         <td>
                             <div class="form-group  col-lg-2">
                                 <label class="control-label" for="Filter_seq">seq：</label>
-                                <input type="text" class="form-control" id="Filter_seq" name="Filter_seq" vlaue="" placeholder="必须填写，-1所有api都要执行，表示filter执行次序">
+                                <input type="text" class="form-control" id="Filter_seq" name="Filter_seq" vlaue="" placeholder="必须填写，表示filter执行次序">
                             </div>
                         </td>
                     </tr>
@@ -122,8 +122,12 @@
 
                 with ($("#form2"))
                 {
-                    if (validate_required(Filter_seq,"Filter_seq 不能为空且只能为数字!")==false) {
+                    if (validate_required(Filter_seq,"seq 不能为空且只能为数字!")==false) {
                         Filter_seq.focus();
+                        return false
+                    }
+                    if (validate_required(Filter_Api_id,"Api_id 不能为空且只能为数字!")==false) {
+                        Filter_Api_id.focus();
                         return false
                     }
                 }
