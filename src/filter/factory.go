@@ -60,7 +60,7 @@ func NewFilters(filterNames []string) (*list.List) {
             log.Panicf("Proxy unknow filter <%+v>", filterName)
         }
 
-        log.Println(f)
+        log.Printf("Filter <%s> added",f.Name())
         filters.PushBack(f)
     }
 

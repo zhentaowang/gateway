@@ -11,7 +11,13 @@ import (
 	"os"
 )
 
-
+type WebData struct {
+	Title       string
+	ApiData     []Api
+	ServiceData []Service
+	FilterData  []Filter
+	Name        string
+}
 
 
 func GetApiFormData(ctx *fasthttp.RequestCtx) (*Api,int) {
@@ -70,8 +76,18 @@ func GetFilterFormData(ctx *fasthttp.RequestCtx)  *Filter {
 
 }
 
+func GetLoginData(ctx *fasthttp.RequestCtx)  *LoginData{
+	postValues := ctx.PostArgs()
+	FormData := new(LoginData)
 
-func Render(ctx *fasthttp.RequestCtx, url string, data interface{}) {
+	FormData.name = string(postValues.Peek("txtName")[:])
+	FormData.password = string(postValues.Peek("txtPwd")[:])
+
+	return FormData
+}
+
+
+func Render(ctx *fasthttp.RequestCtx, url string,data interface{}) {
 
 	if(url == "") {
 		JsonResult(ctx,data)
@@ -90,7 +106,6 @@ func Render(ctx *fasthttp.RequestCtx, url string, data interface{}) {
 
 	wr := bytes.NewBufferString("")
 	t.ExecuteTemplate(wr,"content",data)
-	//err = t.Execute(wr, data)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -111,8 +126,8 @@ func JsonResult(ctx *fasthttp.RequestCtx, data interface{}) {
 
 func RedirectIndex(ctx *fasthttp.RequestCtx, data interface{})  {
 
-	url := filepath.Join( "src","admgateway","view", "delete.html")
+	//url := filepath.Join( "src","admgateway","view", "delete.html")
+	//
+	//Render(ctx, url, data)
 
-	Render(ctx, url, data)
-	
 }

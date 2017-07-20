@@ -20,9 +20,9 @@
 package thrift
 
 import (
-	"log"
 	"runtime/debug"
 	"sync"
+	"github.com/labstack/gommon/log"
 )
 
 // Simple, non-concurrent server for testing.
@@ -133,7 +133,7 @@ func (p *TSimpleServer) AcceptLoop() error {
 		if client != nil {
 			go func() {
 				if err := p.processRequests(client); err != nil {
-					log.Println("error processing request:", err)
+					log.Debug("error processing request:", err)
 				}
 			}()
 		}
@@ -182,7 +182,7 @@ func (p *TSimpleServer) processRequests(client TTransport) error {
 		if err, ok := err.(TTransportException); ok && err.TypeId() == END_OF_FILE {
 			return nil
 		} else if err != nil {
-			log.Printf("error processing request: %s", err)
+			log.Debug("error processing request: %s", err)
 			return err
 		}
 		if err, ok := err.(TApplicationException); ok && err.TypeId() == UNKNOWN_METHOD {

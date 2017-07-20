@@ -2,6 +2,9 @@ package handler
 
 import (
 	"github.com/valyala/fasthttp"
+	"gateway/src/util"
+	"log"
+	"strings"
 )
 
 
@@ -9,18 +12,27 @@ import (
 func indexHandler(ctx *fasthttp.RequestCtx) {
 
 	url := "api.html"
+	var LoginInfo LoginData = LoginData{}
 
-	data := struct {
-		Title string
-		ApiData []Api
-		ServiceData []Service
-		FilterData []Filter
-	}{
-		Title: "Gateway Manager",
-		ApiData: MQueryApi(new(Api)),
-		ServiceData: MQueryService(new(Service)),
-		FilterData: MQueryFilter(new(Filter)),
-	}
+	data := new(WebData)
+
+	GetCookie(ctx,&LoginInfo)
+
+	ToOauth(&LoginInfo,data)
+
+	Render(ctx, url, data)
+}
+
+func ToFilter(ctx *fasthttp.RequestCtx)  {
+
+	url := "filter.html"
+	var LoginInfo LoginData = LoginData{}
+
+	data := new(WebData)
+
+	GetCookie(ctx,&LoginInfo)
+
+	ToOauth(&LoginInfo,data)
 
 	ctx.Response.Header.Set("Location", "/")
 
@@ -29,43 +41,57 @@ func indexHandler(ctx *fasthttp.RequestCtx) {
 
 func ToService(ctx *fasthttp.RequestCtx)  {
 
-	url := "filter.html"
+	url := "service.html"
+	var LoginInfo LoginData = LoginData{}
 
-	data := struct {
-		Title string
-		ApiData []Api
-		ServiceData []Service
-		FilterData []Filter
-	}{
-		Title: "Gateway Manager",
-		ApiData: MQueryApi(new(Api)),
-		ServiceData: MQueryService(new(Service)),
-		FilterData: MQueryFilter(new(Filter)),
-	}
+	data := new(WebData)
 
+	GetCookie(ctx,&LoginInfo)
 
-	Render(ctx, url, data)
+	ToOauth(&LoginInfo,data)
+
+	ctx.Response.Header.Set("Location", "/")
+
+	Render(ctx, url,data)
+
 }
 
-func ToFilter(ctx *fasthttp.RequestCtx)  {
+func Login(ctx *fasthttp.RequestCtx)  {
+	log.Printf("logining...")
 
-	url := "service.html"
+	indexHandler(ctx)
 
-	data := struct {
-		Title string
-		ApiData []Api
-		ServiceData []Service
-		FilterData []Filter
-	}{
-		Title: "Gateway Manager",
-		ApiData: MQueryApi(new(Api)),
-		ServiceData: MQueryService(new(Service)),
-		FilterData: MQueryFilter(new(Filter)),
+	cookie := fasthttp.AcquireCookie()
+	LoginInfo := GetLoginData(ctx)
+
+	cookie.SetKey("login")
+	log.Printf("name=%s,password=%s",LoginInfo.name,LoginInfo.password)
+	cookie.SetValue(LoginInfo.name+"&"+LoginInfo.password)
+	ctx.Response.Header.SetCookie(cookie)
+}
+
+func ToOauth(LoginInfo *LoginData,data *WebData)  {
+	allowed, _ := util.GetPermission(LoginInfo.name,LoginInfo.password,"gateway_list")
+
+	if allowed==true {
+		data.Title = "Gateway Manager"
+		data.ApiData = MQueryApi(new(Api))
+		data.ServiceData = MQueryService(new(Service))
+		data.FilterData = MQueryFilter(new(Filter))
+		data.Name = LoginInfo.name
+	} else {
+		data.Name = "登陆"
 	}
+}
 
-
-	Render(ctx, url, data)
-
+func GetCookie(ctx *fasthttp.RequestCtx,LoginInfo *LoginData)  {
+	clientCookie := ctx.Request.Header.Cookie("login")
+	//log.Printf(string(clientCookie))
+	if clientCookie!=nil&&len(clientCookie)!=0 {
+		info := strings.Split(string(clientCookie),"&")
+		LoginInfo.name = info[0]
+		LoginInfo.password = info[1]
+	}
 }
 
 
