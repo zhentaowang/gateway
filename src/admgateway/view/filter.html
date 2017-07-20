@@ -33,7 +33,7 @@
                         <td>
                             <div class="form-group  col-lg-2">
                                 <label class="control-label" for="Filter_Api_id">api_id：</label>
-                                <input type="text" class="form-control" id="Filter_Api_id" name="Filter_Api_id" vlaue="" placeholder="可不填写，filter对应的api">
+                                <input type="text" class="form-control" id="Filter_Api_id" name="Filter_Api_id" vlaue="" placeholder="必须填写，-1所有api都执行，filter对应的api id">
                             </div>
                         </td>
                         <td>
@@ -52,7 +52,7 @@
                         <td>
                             <div class="form-group  col-lg-2">
                                 <label class="control-label" for="Filter_seq">seq：</label>
-                                <input type="text" class="form-control" id="Filter_seq" name="Filter_seq" vlaue="" placeholder="必须填写，-1所有api都要执行，表示filter执行次序">
+                                <input type="text" class="form-control" id="Filter_seq" name="Filter_seq" vlaue="" placeholder="必须填写，表示filter执行次序">
                             </div>
                         </td>
                     </tr>
@@ -113,10 +113,21 @@
             //ajax提交
             $("#ajaxBtn").click (function () {
                 console.log("ajax submit")
+                console.log("Name="+{{.Name}})
+                if ({{.Name}} == '登陆')
+                {
+                    alert("请登陆！！！！！！！！")
+                    return false
+                }
+
                 with ($("#form2"))
                 {
-                    if (validate_required(Filter_seq,"Filter_seq 不能为空且只能为数字!")==false) {
+                    if (validate_required(Filter_seq,"seq 不能为空且只能为数字!")==false) {
                         Filter_seq.focus();
+                        return false
+                    }
+                    if (validate_required(Filter_Api_id,"Api_id 不能为空且只能为数字!")==false) {
+                        Filter_Api_id.focus();
                         return false
                     }
                 }
@@ -127,7 +138,7 @@
                     url: "/gateway/admin/add_filter",
                     data: params,
                     success: function (msg) {
-
+                        location.reload()
                     }
                 });
             })
@@ -143,7 +154,7 @@
         function CreateXMLHttpRequest()
         {
             if(window.ActiveXObject)
-//如果当前浏览器支持Active Xobject，则创建ActiveXObject对象
+            //如果当前浏览器支持Active Xobject，则创建ActiveXObject对象
             {
                 //xmlobj = new ActiveXObject("Microsoft.XMLHTTP");
                 try {
@@ -157,7 +168,7 @@
                 }
             }
             else if(window.XMLHttpRequest)
-//如果当前浏览器支持XMLHttp Request，则创建XMLHttpRequest对象
+            //如果当前浏览器支持XMLHttp Request，则创建XMLHttpRequest对象
             {
                 xmlobj = new XMLHttpRequest();
             }
@@ -174,7 +185,7 @@
                 xmlobj.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;");  //设置请求头信息
 //                xmlobj.onreadystatechange = StatHandler;  //判断URL调用的状态值并处理
                 xmlobj.send(parm); //设置为发送给服务器数据
-                self.location='/'
+                location.reload()
             }
         }
     </script>

@@ -5,6 +5,7 @@ import (
 	"time"
 	"strings"
 	"os"
+	"log"
 )
 
 type AppProperties struct {
@@ -59,7 +60,7 @@ func (appProperties *AppProperties)extractData(data string) map[string]string {
 			data = plaintext
 		}
 	}, func(e interface{}) {
-		println("Not enrypt data.")
+		log.Printf("Not enrypt data.")
 	})
 	properties := map[string]string{}
 	splits := strings.Split(data, "\n")

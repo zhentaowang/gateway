@@ -7,10 +7,12 @@ import (
     "code.aliyun.com/wyunshare/thrift-server/gen-go/server"
     "code.aliyun.com/wyunshare/thrift-server/processor"
     "code.aliyun.com/wyunshare/thrift-server/business"
+    "log"
 )
 
 func StartServer(address string, port string, handler server.MyService) {
 
+    log.SetFlags(log.Llongfile)
     processor := server.NewMyServiceProcessor(handler)
     serverTransport, err := thrift.NewTServerSocket(address + ":" + port)
     transportFactory := thrift.NewTFramedTransportFactory(thrift.NewTTransportFactory())
@@ -21,7 +23,7 @@ func StartServer(address string, port string, handler server.MyService) {
     }
 
     server := thrift.NewTSimpleServer4(processor, serverTransport, transportFactory, protocolFactory)
-    fmt.Println("thrift server in", address + ":" + port)
+    log.Printf("thrift server in %s", address + ":" + port)
     server.Serve()
 }
 

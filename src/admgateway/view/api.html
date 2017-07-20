@@ -9,13 +9,33 @@
     <title>表管理界面</title>
     <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
     <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <!--<link rel="stylesheet" href="src/admgateway/view/index.css">-->
     <style type="text/css">
         {{template "css"}}
     </style>
 </head>
 
 <body>
+
+<div id="LoginBox">
+    <form class="form-inline" role="form" action="/login" method="post">
+    <div class="row1">
+        登陆网关<a href="javascript:void(0)" title="关闭窗口" class="close_btn" id="closeBtn">×</a>
+    </div>
+    <div class="row">
+        用户名: <span class="inputBox">
+                <input type="text" id="txtName" name="txtName" placeholder="账号/邮箱" />
+            </span><a href="javascript:void(0)" title="提示" class="warning" id="warn">*</a>
+    </div>
+    <div class="row">
+        密&nbsp;&nbsp;&nbsp;&nbsp;码: <span class="inputBox">
+                <input type="text" id="txtPwd" name="txtPwd" placeholder="密码" />
+            </span><a href="javascript:void(0)" title="提示" class="warning" id="warn2">*</a>
+    </div >
+        <div class="row">
+            <input type="submit" class="btn btn-primary" value="登陆" id="loginbtn" ></input>
+        </div>
+    </form>
+</div>
     <div class="page-content" style="padding: 20px;">
         <nav class="navbar navbar-default">
             <div class="container-fluid">
@@ -24,6 +44,7 @@
                     <li><a href="filter.html">filter表</a></li>
                     <li><a href="service.html">service表</a></li>
                 </ul>
+                <a href="#" id="example" class="nav pull-right">{{.Name}}</a>
             </div>
         </nav>
 
@@ -31,6 +52,7 @@
             <form class="form-inline" role="form" id="form1" action="/gateway/admin/add_api" method="post">
                     <input type="hidden" class="form-control" name="flag" id="flag" placeholder="不需要填写">
                     <input type="hidden" class="form-control" name="Api_Api_id" id="Api_Api_id" placeholder="不需要填写">
+                    <input type="hidden" class="form-control" name="flag" id="flag" placeholder="不需要填写">
                 <table class="gridtable">
                     <tr>
                         <td>
@@ -86,7 +108,7 @@
                                 <label class="control-label" for="Api_Service_id">service_id：</label>
                                 <select id="Api_Service_id" name="Api_Service_id">
                                     {{range .ServiceData}}
-                                    <option value={{.ServiceId}}>{{.Name}}</option>
+                                    <option value={{.ServiceId}}>{{.Namespace}}.{{.Name}}:{{.Port}}</option>
                                     {{end}}
                                 </select>
                             </div>
@@ -94,7 +116,7 @@
                         <td>
                             <div class="form-group  col-lg-3">
                                 <label class="control-label" for="Api_Service_Provider_name">Service_Provider_name：</label>
-                                <input type="text" class="form-control" name="Api_Service_Provider_name" id="Api_Service_Provider_name" placeholder="可不填写，用作servicename">
+                                <input type="text" class="form-control" name="Api_Service_Provider_name" id="Api_Service_Provider_name" placeholder="thrift必填，ServiceName参数的值">
                             </div>
                         </td>
                     </tr>
@@ -180,14 +202,14 @@
             {
                 var IfRepeat=false;
                 var tableObj = document.getElementById("ApiTable");
-                console.log("tableObj="+tableObj.rows.length);
+                console.log("flag="+$('#flag').val())
                 for (var i = 1; i < tableObj.rows.length; i++) {    //遍历Table的所有Row
-                        tableInfo = tableObj.rows[i].cells[1].innerText;   //获取Table中单元格的内容
-                        console.log("tableInfo="+tableInfo)
-                        if (tableInfo == value) {
-                            IfRepeat = true;
-                            break;
-                        }
+                    tableInfo = tableObj.rows[i].cells[1].innerText;   //获取Table中单元格的内容
+                    console.log("tableInfo="+tableInfo)
+                    if (tableInfo == value&&$('#flag').val()!=-1) {
+                        IfRepeat = true;
+                        break;
+                    }
                 }
                 if (value==null||value==""||IfRepeat) {
                     alert(alerttxt);
@@ -200,6 +222,7 @@
                 return true
             }
         }
+
         function validateOperation_required(field,alerttxt)
         {
             with (field)
@@ -212,10 +235,100 @@
                 }
             }
         }
+
         $(function() {
+            $("#example").hover(function () {
+                $(this).stop().animate({
+                    opacity: '1'
+                }, 600);
+            }, function () {
+                $(this).stop().animate({
+                    opacity: '0.6'
+                }, 1000);
+            }).on('click', function () {
+                $("body").append("<div id='mask'></div>");
+                $("#mask").addClass("mask").fadeIn("slow");
+                $("#LoginBox").fadeIn("slow");
+            });
+//
+//按钮的透明度
+            $("#loginbtn").hover(function () {
+                $(this).stop().animate({
+                    opacity: '1'
+                }, 600);
+            }, function () {
+                $(this).stop().animate({
+                    opacity: '0.8'
+                }, 1000);
+            });
+//文本框不允许为空---按钮触发
+
+            $("#loginbtn").on('click', function () {
+                var txtName = $("#txtName").val();
+                var txtPwd = $("#txtPwd").val();
+                if (txtName == "" || txtName == undefined || txtName == null) {
+                    if (txtPwd == "" || txtPwd == undefined || txtPwd == null) {
+                        $(".warning").css({ display: 'block' });
+                    }
+                    else {
+                        $("#warn").css({ display: 'block' });
+                        $("#warn2").css({ display: 'none' });
+                    }
+                }
+                else {
+                    if (txtPwd == "" || txtPwd == undefined || txtPwd == null) {
+                        $("#warn").css({ display: 'none' });
+                        $(".warn2").css({ display: 'block' });
+                    }
+                    else {
+                        $(".warning").css({ display: 'none' });
+                    }
+                }
+                params = "txtName="+txtName+"&"+"txtPwd="+txtPwd
+
+            });
+//文本框不允许为空---单个文本触发
+            $("#txtName").on('blur', function () {
+                var txtName = $("#txtName").val();
+                if (txtName == "" || txtName == undefined || txtName == null) {
+                    $("#warn").css({ display: 'block' });
+                }
+                else {
+                    $("#warn").css({ display: 'none' });
+                }
+            });
+            $("#txtName").on('focus', function () {
+                $("#warn").css({ display: 'none' });
+            });
+//
+            $("#txtPwd").on('blur', function () {
+                var txtName = $("#txtPwd").val();
+                if (txtName == "" || txtName == undefined || txtName == null) {
+                    $("#warn2").css({ display: 'block' });
+                }
+                else {
+                    $("#warn2").css({ display: 'none' });
+                }
+            });
+            $("#txtPwd").on('focus', function () {
+                $("#warn2").css({ display: 'none' });
+            });
+            //关闭
+            $(".close_btn").hover(function () {
+                    $(this).css({ color: 'black' }) },
+                function () { $(this).css({ color: '#999' }) }).on('click', function () {
+                $("#LoginBox").fadeOut("fast");
+                $("#mask").css({ display: 'none' });
+            });
             //ajax提交
             $("#ajaxBtn").click(function () {
                 console.log("ajax submit")
+                console.log("name="+$("#example").text())
+                if ($("#example").text() == '登陆')
+                {
+                    alert("请登陆！！！！！！！！")
+                    return false
+                }
                 with ($("#form1"))
                 {
                     if (validateUri_required(Api_uri,flag,"Api_uri 不能为空和重复!")==false) {
@@ -228,17 +341,19 @@
                     }
                 }
                 var params = $("#form1").serialize();
+                console.log("params="+params)
                 $.ajax({
                     type: "POST",
                     url: "/gateway/admin/add_api",
                     data: params,
                     success: function (msg) {
-                        console.log("ajax success");
-                        location.reload();
+                        location.reload()
                     }
                 });
             })
         })
+
+
         function modifyData(id) {
             var tdArray = document.querySelectorAll('#ApiTable #tr-'+id+' td:not(.operation)');
             $('#flag').val("-1");
@@ -253,13 +368,14 @@
             $('#Api_mock').val(tdArray[8].innerText);
             $('#Api_desc').val(tdArray[9].innerText);
             $('#Api_Api_id').val(tdArray[10].innerText);
+            $('#flag').val(-1)
         }
 
         var xmlobj; //定义XMLHttpRequest对象
         function CreateXMLHttpRequest()
         {
             if(window.ActiveXObject)
-//如果当前浏览器支持Active Xobject，则创建ActiveXObject对象
+            //如果当前浏览器支持Active Xobject，则创建ActiveXObject对象
             {
                 //xmlobj = new ActiveXObject("Microsoft.XMLHTTP");
                 try {
@@ -273,11 +389,12 @@
                 }
             }
             else if(window.XMLHttpRequest)
-//如果当前浏览器支持XMLHttp Request，则创建XMLHttpRequest对象
+            //如果当前浏览器支持XMLHttp Request，则创建XMLHttpRequest对象
             {
                 xmlobj = new XMLHttpRequest();
             }
         }
+
         function deleteData(id) {
             if(confirm('您确定删除这行数据吗？')) {
                 console.log('执行删除操作');
@@ -288,9 +405,9 @@
                 xmlobj.setRequestHeader("cache-control","no-cache");
                 xmlobj.setRequestHeader("contentType","text/html;charset=uft-8"); //指定发送的编码
                 xmlobj.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;");  //设置请求头信息
-//                xmlobj.onreadystatechange = StatHandler;  //判断URL调用的状态值并处理
+                //                xmlobj.onreadystatechange = StatHandler;  //判断URL调用的状态值并处理
                 xmlobj.send(parm); //设置为发送给服务器数据
-                self.location='/'
+                location.reload()
             }
         }
     </script>

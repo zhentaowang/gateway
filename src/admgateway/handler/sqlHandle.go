@@ -4,7 +4,7 @@ package handler
 import (
 
 	"github.com/go-xorm/xorm"
-	"github.com/labstack/gommon/log"
+	"log"
 	"gateway/src/util"
 )
 
@@ -56,6 +56,11 @@ type Filter struct {
 	Seq      int
 }
 
+type LoginData struct {
+	name	string
+	password	string
+}
+
 /**
 初始化数据库连接
  */
@@ -66,7 +71,6 @@ func init()  {
 	var MysqlUrl string = conf.ConfProperties["jdbc"]["db_username"] + ":" + conf.ConfProperties["jdbc"]["db_password"] + "@tcp(" + conf.ConfProperties["jdbc"]["db_host"] + ")/" +
 		conf.ConfProperties["jdbc"]["db_name"] + "?charset=utf8"
 
-	//print("MysqlUrl    " + MysqlUrl)
 	Engine, _ = xorm.NewEngine("mysql", MysqlUrl)
 
 }
