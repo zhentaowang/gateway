@@ -18,10 +18,18 @@ type AppProperties struct {
 }
 
 func New(appName string) AppProperties {
-	appProperties := AppProperties{AppName:appName}
-	appProperties.AppPath = "/wyun/" + appName
+	appProperties := AppProperties{AppName: appName}
+	appProperties.AppPath = os.Getenv("zk_root")+ appName
 	appProperties.zkServers = []string{os.Getenv("zk_servers")}
 	appProperties.secretKey = os.Getenv("secret_key")
+	return appProperties
+}
+
+func NewWithArgs(zkRootPath string,appName string,zkServer []string,secretKey string) AppProperties {
+	appProperties := AppProperties{AppName: appName}
+	appProperties.AppPath = zkRootPath + appName
+	appProperties.zkServers = zkServer
+	appProperties.secretKey = secretKey
 	return appProperties
 }
 
@@ -98,7 +106,7 @@ func (appProperties *AppProperties)watch(event <- chan zk.Event) {
 		newData := appProperties.getData(path, true)
 		index := strings.LastIndex(path, "/")
 		confName := path[index + 1 :]
-		appProperties.doConfUpdated(confName, newData, appProperties.ConfProperties[confName])
+		appProperties.doConfUpdated(confName, appProperties.ConfProperties[confName], newData)
 	}
 }
 
@@ -127,4 +135,5 @@ func (appProperties *AppProperties) doConfUpdated(updatedConf string, oldPropert
 	for _, dataChangeHandler := range appProperties.dataChangeHandlers {
 		dataChangeHandler.OnConfUpdated(updatedConf, oldProperties, newProperties)
 	}
+	appProperties.ConfProperties[updatedConf] = newProperties
 }

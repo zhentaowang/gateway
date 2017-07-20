@@ -19,7 +19,7 @@ import (
 
 func main() {
     // 读取配置文件
-    conf := util.GetConfigCenterInstance()
+    conf := util.GetConfigCenterInstancePro("gateway")
 
     log.Println("init gateway success")
     // 获取数据库

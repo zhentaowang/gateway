@@ -14,7 +14,6 @@ import (
     "log"
     "strings"
     "code.aliyun.com/wyunshare/thrift-server/conf"
-    "conf_center"
     "strconv"
 )
 
@@ -27,8 +26,7 @@ type HttpProxy struct {
 
 func NewHttpProxy(store model.Store) *HttpProxy {
 
-    cf := conf_center.New("gateway")
-    cf.Init()
+    cf := util.GetConfigCenterInstance()
 
     conf.TConfig = conf.T{}
 

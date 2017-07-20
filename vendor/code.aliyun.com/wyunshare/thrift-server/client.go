@@ -9,24 +9,24 @@ import (
 	"code.aliyun.com/wyunshare/thrift-server/conf"
 	"code.aliyun.com/wyunshare/thrift-server/gen-go/server"
 	"strconv"
-	"gateway/src/util"
+	"code.aliyun.com/wyunshare/thrift-server/utils"
 )
 
 func GetPool(hostPort string) (*pool.Pool) {
 
-	cf := util.GetConfigCenterInstance()
+	cf := utils.GetConfigCenterInstance("thrift-server")
 
 	conf.TConfig = conf.T{}
 
-	conf.TConfig.MaxConnDuration, _= strconv.Atoi(cf.ConfProperties["jdbc"]["max_conn_duration"])
-	conf.TConfig.MaxConns, _= strconv.Atoi(cf.ConfProperties["jdbc"]["max_conns"])
-	conf.TConfig.MaxIdle, _= strconv.Atoi(cf.ConfProperties["jdbc"]["max_idle"])
-	conf.TConfig.MaxIdleConnDuration, _= strconv.Atoi(cf.ConfProperties["jdbc"]["max_idle_conn_duration"])
-	conf.TConfig.MaxResponseBodySize, _= strconv.Atoi(cf.ConfProperties["jdbc"]["max_response_body_size"])
-	conf.TConfig.ReadTimeout, _ = strconv.Atoi(cf.ConfProperties["jdbc"]["read_timeout"])
-	conf.TConfig.ReadTimeout, _ = strconv.Atoi(cf.ConfProperties["jdbc"]["write_timeout"])
-	conf.TConfig.ReadBufferSize, _ = strconv.Atoi(cf.ConfProperties["jdbc"]["read_buffer_size"])
-	conf.TConfig.WriteBufferSize, _ = strconv.Atoi(cf.ConfProperties["jdbc"]["write_buffer_size"])
+	conf.TConfig.MaxConnDuration, _= strconv.Atoi(cf.ConfProperties["go"]["max.conn.duration"])
+	conf.TConfig.MaxConns, _= strconv.Atoi(cf.ConfProperties["go"]["max.conn.duration"])
+	conf.TConfig.MaxIdle, _= strconv.Atoi(cf.ConfProperties["go"]["max.idle"])
+	conf.TConfig.MaxIdleConnDuration, _= strconv.Atoi(cf.ConfProperties["go"]["max.conn.duration"])
+	conf.TConfig.MaxResponseBodySize, _= strconv.Atoi(cf.ConfProperties["go"]["max.response.body.size"])
+	conf.TConfig.ReadTimeout, _ = strconv.Atoi(cf.ConfProperties["go"]["read.timeout"])
+	conf.TConfig.ReadTimeout, _ = strconv.Atoi(cf.ConfProperties["go"]["write.timeout"])
+	conf.TConfig.ReadBufferSize, _ = strconv.Atoi(cf.ConfProperties["go"]["read.buffer.size"])
+	conf.TConfig.WriteBufferSize, _ = strconv.Atoi(cf.ConfProperties["go"]["write.buffer.size"])
 
 	// client
     return &pool.Pool{
