@@ -12,7 +12,7 @@ var once sync.Once
 func GetConfigCenterInstancePro(appName string) conf_center.AppProperties{
 	envName := GetEnvName("local_env")
 	if(len(envName) > 0){
-		appName = appName + "-" + GetEnvName("local_env")
+		appName = appName + "-" + envName
 	}
 	once.Do(func() {
 		m = conf_center.New(appName)
