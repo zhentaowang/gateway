@@ -21,7 +21,7 @@ type AppProperties struct {
 func New(appName string) AppProperties {
 	appProperties := AppProperties{AppName: appName}
 	zkRoot := os.Getenv("zk_root")
-	if(len(zkRoot) == 0){
+	if(len(zkRoot) == 0 || "" == zkRoot){
 		zkRoot = "/wyun/"
 	}
 	appProperties.AppPath = zkRoot + appName
