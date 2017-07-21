@@ -20,7 +20,11 @@ type AppProperties struct {
 
 func New(appName string) AppProperties {
 	appProperties := AppProperties{AppName: appName}
-	appProperties.AppPath = os.Getenv("zk_root")+ appName
+	zkRoot := os.Getenv("zk_root")
+	if(len(zkRoot) == 0){
+		zkRoot = "/wyun/"
+	}
+	appProperties.AppPath = zkRoot + appName
 	appProperties.zkServers = []string{os.Getenv("zk_servers")}
 	appProperties.secretKey = os.Getenv("secret_key")
 	return appProperties
