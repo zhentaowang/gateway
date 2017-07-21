@@ -9,19 +9,16 @@ import (
 var m conf_center.AppProperties
 var once sync.Once
 
-func GetConfigCenterInstancePro(appName string) conf_center.AppProperties{
-	envName := GetEnvName("local_env")
-	if(len(envName) > 0){
-		appName = appName + "-" + envName
-	}
+func GetConfigCenterInstance() conf_center.AppProperties{
 	once.Do(func() {
+		envName := GetEnvName("local_env")
+		var appName = "gateway"
+		if(len(envName) > 0){
+			appName = appName + "-" + envName
+		}
 		m = conf_center.New(appName)
 		m.Init()
 	})
-	return m
-}
-
-func GetConfigCenterInstance() conf_center.AppProperties{
 	return m
 }
 
