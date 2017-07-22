@@ -8,6 +8,10 @@ import (
 	"github.com/bitly/go-simplejson"
 )
 
+type OauthCenter struct {
+	UserName string
+}
+
 func GetToken(username string , password string)  string{
 
 	conf := GetConfigCenterInstance()
@@ -21,10 +25,7 @@ func GetToken(username string , password string)  string{
 		"\"client_id\":"+"\""+client_id+"\""+"," +
 		"\"client_secret\":"+"\""+client_secret+"\""+"}"
 
-
-	//resp, err := http.Post("https://front.zhiweicloud.com/oauth/access_token",
-	//	"application/json",strings.NewReader(post))
-	resp, err := http.Post("http://oauth-center.platform:443/oauth/access_token",
+	resp, err := http.Post(conf.ConfProperties["oauth_center"]["oauth_addr"]+"/oauth/access_token",
 		"application/json",strings.NewReader(post))
 	if err != nil {
 		log.Printf("get access_token error",err)
@@ -48,9 +49,9 @@ func GetToken(username string , password string)  string{
 }
 
 func GetPermission(username string,password string,permission string)  (bool,int){
+	conf := GetConfigCenterInstance()
 	access_token := GetToken(username,password)
-	resp, err := http.Get("http://oauth-center.platform:443/user/permission?access_token="+access_token+"&permission="+permission)
-	//resp, err := http.Get("https://front.zhiweicloud.com/user/permission?access_token="+access_token+"&permission="+permission)
+	resp, err := http.Get(conf.ConfProperties["oauth_center"]["oauth_addr"]+"/user/permission?access_token="+access_token+"&permission="+permission)
 	if err != nil {
 		log.Printf(err.Error())
 	}
@@ -70,6 +71,7 @@ func GetPermission(username string,password string,permission string)  (bool,int
 
 	allowed, _ := js_allowed.Bool()
 	status, _ := js_status.Int()
+
 
 	return allowed,status
 }

@@ -4,8 +4,9 @@ package handler
 import (
 
 	"github.com/go-xorm/xorm"
-	"log"
 	"gateway/src/util"
+	"strconv"
+	"log"
 )
 
 
@@ -98,7 +99,7 @@ func MInsertApi(data *Api, filter_seq int) {
 	}
 	affected, err := Engine.Insert(data)
 	CheckErr(err)
-	log.Print("insert api " + string(affected))
+	log.Println("  insert api " +data.Uri+ " success "+strconv.FormatInt(affected,10))
 
 	util.SetData()
 }
@@ -117,7 +118,7 @@ func MInsertService(data *Service)  {
 	
 	affected, err := Engine.Insert(data)
 	CheckErr(err)
-	log.Print("insert service " + string(affected))
+	log.Println("  insert service " +data.Namespace+"."+ data.Name +":"+data.Port+ " success "+strconv.FormatInt(affected,10))
 
 	util.SetData()
 }
@@ -136,7 +137,7 @@ func MInsertFilter(data *Filter)  {
 	affected, err := Engine.Insert(data)
 	CheckErr(err)
 
-	log.Print("insert filter " + string(affected))
+	log.Println("  insert filter " + data.Name + " success " + strconv.FormatInt(affected,10))
 	util.SetData()
 }
 
@@ -212,7 +213,7 @@ func MDeleteApi(data *Api) {
 	affected, err := Engine.Id(data.ApiId).Delete(api)
 
 	CheckErr(err)
-	log.Print("have deleted api " + string(affected))
+	log.Println("  have deleted api " + data.Uri +"  id="+strconv.Itoa(data.ApiId)+ "  success " + strconv.FormatInt(affected,10))
 
 	util.SetData()
 }
@@ -222,12 +223,12 @@ func MDeleteService(data *Service) {
 	service := new(Service)
 	affected, err := Engine.Id(data.ServiceId).Delete(service)
 	CheckErr(err)
-	log.Print("have deleted service " + string(affected))
+	log.Println("  have deleted service " +data.Namespace+"."+ data.Name +":"+data.Port+"  id="+strconv.Itoa(data.ServiceId)+ " success " + strconv.FormatInt(affected,10))
 
-	var ApiData = Api{0, "", "", "", 0, "", data.ServiceId, 0, "" ,"", "", ""}
+	var ApiData = Api{0, "", "", "", 0, "", 0,data.ServiceId,"" ,"", "", ""}
 	affected, err = Engine.Delete(ApiData)
 	CheckErr(err)
-	log.Print("have deleted api " + string(affected))
+	log.Println("  have deleted api where ServiceId =  " + strconv.Itoa(data.ServiceId)+ " success " + strconv.FormatInt(affected,10))
 
 	util.SetData()
 }
@@ -237,7 +238,7 @@ func MDeleteFilter(data *Filter)  {
 	filter := new(Filter)
 	affected, err := Engine.Id(data.FilterId).Delete(filter)
 	CheckErr(err)
-	log.Print("haved deleted filter " + string(affected))
+	log.Println("  haved deleted filter " + data.Name+"  id="+strconv.Itoa(data.FilterId) + "  success " + strconv.FormatInt(affected,10))
 
 	util.SetData()
 

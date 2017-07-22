@@ -18,7 +18,7 @@ import (
 
 
 func main() {
-    log.SetFlags(log.Llongfile)
+    util.SetLogFlag()
     // 读取配置文件
     conf := util.GetConfigCenterInstance()
 
@@ -40,7 +40,7 @@ func main() {
 }
 
 func DataChange(h *proxy.HttpProxy)  {
-    log.SetFlags(log.Lshortfile)
+    util.SetLogFlag()
 
     conf := util.GetConfigCenterInstance()
 

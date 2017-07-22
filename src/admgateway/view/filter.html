@@ -99,7 +99,7 @@
         {
             with (field)
             {
-                var patt = /^[0-9]*$/;
+                var patt = /^-?[0-9]\d*$/;
                 var result = patt.test(value);
                 if (value==null||value==""||!result) {
                     alert(alerttxt);
@@ -146,8 +146,8 @@
         function modifyData(id) {
             var tdArray = document.querySelectorAll('#FilterTable #tr-'+id+' td:not(.operation)');
             $('#Filter_id').val(tdArray[0].innerText);
-            $('#Filter_Api_id').val(tdArray[1].innerText);
-            $('#Filter_name').val(tdArray[2].innerText);
+            $('#Filter_Api_id').val(tdArray[2].innerText);
+            $('#Filter_name').val(tdArray[1].innerText);
             $('#Filter_seq').val(tdArray[3].innerText);
         }
         var xmlobj; //定义XMLHttpRequest对象

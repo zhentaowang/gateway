@@ -1,5 +1,7 @@
 package filter
 
+import "log"
+
 /**
  * 把代理的响应头原封设置到Response Head里面
  */
@@ -17,8 +19,12 @@ func (f ResponseHeaderFilter) Name() string {
 
 // set default response
 func (f ResponseHeaderFilter) Post(c Context) (statusCode int, err error) {
-    c.GetProxyResponse().Header.VisitAll(func(key, value []byte) {
-        c.GetOriginRequestCtx().Response.Header.Set(string(key),string(value))
-    })
+    if c.GetProxyResponse()!=nil {
+        c.GetProxyResponse().Header.VisitAll(func(key, value []byte) {
+            c.GetOriginRequestCtx().Response.Header.Set(string(key),string(value))
+        })
+    } else {
+        log.Println("response is null")
+    }
     return f.BaseFilter.Pre(c)
 }

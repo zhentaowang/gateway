@@ -191,9 +191,8 @@
         {
             var id_value
 
-            with(id) {
-                id_value = value;
-            }
+
+                id_value = id.value;
 
             console.log("id="+id_value);
 
@@ -356,7 +355,7 @@
 
         function modifyData(id) {
             var tdArray = document.querySelectorAll('#ApiTable #tr-'+id+' td:not(.operation)');
-            $('#flag').val("-1");
+            console.log("tdArray="+tdArray[0])
             $('#Api_name').val(tdArray[0].innerText);
             $('#Api_uri').val(tdArray[1].innerText);
             $('#Api_method').val(tdArray[2].innerText);

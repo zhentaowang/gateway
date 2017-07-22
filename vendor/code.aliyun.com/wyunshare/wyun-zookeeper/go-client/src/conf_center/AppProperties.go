@@ -30,14 +30,6 @@ func New(appName string) AppProperties {
 	return appProperties
 }
 
-func NewWithArgs(zkRootPath string,appName string,zkServer []string,secretKey string) AppProperties {
-	appProperties := AppProperties{AppName: appName}
-	appProperties.AppPath = zkRootPath + appName
-	appProperties.zkServers = zkServer
-	appProperties.secretKey = secretKey
-	return appProperties
-}
-
 func (appProperties *AppProperties)Init() {
 	conn, _, _ := zk.Connect(appProperties.zkServers, time.Second * 10)
 	appProperties.conn = conn
@@ -111,7 +103,7 @@ func (appProperties *AppProperties)watch(event <- chan zk.Event) {
 		newData := appProperties.getData(path, true)
 		index := strings.LastIndex(path, "/")
 		confName := path[index + 1 :]
-		appProperties.doConfUpdated(confName, appProperties.ConfProperties[confName], newData)
+		appProperties.doConfUpdated(confName, newData, appProperties.ConfProperties[confName])
 	}
 }
 
@@ -140,5 +132,4 @@ func (appProperties *AppProperties) doConfUpdated(updatedConf string, oldPropert
 	for _, dataChangeHandler := range appProperties.dataChangeHandlers {
 		dataChangeHandler.OnConfUpdated(updatedConf, oldProperties, newProperties)
 	}
-	appProperties.ConfProperties[updatedConf] = newProperties
 }
