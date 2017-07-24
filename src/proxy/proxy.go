@@ -88,9 +88,9 @@ func (h *HttpProxy) ReverseProxyHandler(ctx *fasthttp.RequestCtx) {
         if result.API.Mock != nil {
             result.API.RenderMock(ctx)
 	    if result.Res!=nil {
-                log.Println("网关结束处理  "+result.API.URI+ "，返回的响应为 HEAD = " + result.Res.Header.String()+" \n  返回的响应 BODY = "+ string(result.Res.Body()))
+                log.Println("网关结束处理  "+string(ctx.Request.RequestURI())+ "，返回的响应为 HEAD = " + result.Res.Header.String()+" \n  返回的响应 BODY = "+ string(result.Res.Body()))
 	    } else {
-                log.Println("网关结束处理  "+result.API.URI+"返回的响应为空")
+                log.Println("网关结束处理  "+string(ctx.Request.RequestURI())+"返回的响应为空")
 	    }
             result.Release()
             return
@@ -102,9 +102,9 @@ func (h *HttpProxy) ReverseProxyHandler(ctx *fasthttp.RequestCtx) {
     } else {
         h.writeResult(ctx, result.Res)
 	if result.Res!=nil {
-		log.Println("网关结束处理  "+result.API.URI+ "，返回的响应为 HEAD = " + result.Res.Header.String()+" \n  返回的响应 BODY = "+ string(result.Res.Body()))
+		log.Println("网关结束处理  "+string(ctx.Request.RequestURI())+ "，返回的响应为 HEAD = " + result.Res.Header.String()+" \n  返回的响应 BODY = "+ string(result.Res.Body()))
 	} else {
-		log.Println("网关结束处理  "+result.API.URI+",返回的响应为空")
+		log.Println("网关结束处理  "+string(ctx.Request.RequestURI())+",返回的响应为空")
 	}
         result.Release()
         return
