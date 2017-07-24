@@ -38,14 +38,14 @@ func GetPool(hostPort string) (*pool.Pool) {
 			transport, err := thrift.NewTSocket(hostPort)
 			if err != nil {
 				fmt.Fprintln(os.Stderr, "error resolving address:", err)
-				os.Exit(1)
+				//os.Exit(1)
 			}
 
 			useTransport := transportFactory.GetTransport(transport)
 			client := server.NewMyServiceClientFactory(useTransport, protocolFactory)
 			if err := transport.Open(); err != nil {
 				fmt.Fprintln(os.Stderr, "Error opening socket to"+hostPort + " ", err)
-				os.Exit(1)
+				//os.Exit(1)
 			}
 			return client, nil
 		},
