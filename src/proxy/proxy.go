@@ -228,7 +228,7 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
 
         log.Println("网关处理thrift请求，paramJson= "+string(req.ParamJSON)+"  ,operation= "+req.Operation+"  ,ServiceName="+req.ServiceName)
         res, err := rawClient.Send(req)
-        log.Println("网关结束处理thrift请求，ResponseCode="+strconv.FormatInt(res.ResponeCode,10)+"  ,ResponseJson="+string(res.ResponseJSON))
+        log.Println("网关结束处理thrift请求，ResponseCode="+strconv.FormatInt(int64(res.ResponeCode),10)+"  ,ResponseJson="+string(res.ResponseJSON))
         c.SetEndAt(time.Now().UnixNano())
 
         if err != nil {
