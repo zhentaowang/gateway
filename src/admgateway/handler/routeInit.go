@@ -9,6 +9,7 @@ func InitRoute(router *fasthttprouter.Router) {
 
 	router.GET("/", indexHandler)
 	router.POST("/login",Login)
+	router.POST("/uploadFile", InsertUploadFile)
 	router.GET("/filter.html", ToFilter)
 	router.GET("/service.html", ToService)
 	router.GET("/api.html", indexHandler)

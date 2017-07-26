@@ -104,6 +104,29 @@ func MInsertApi(data *Api, filter_seq int) {
 	util.SetData()
 }
 
+func MutiInsertApi(data []*Api)  {
+
+	for _,d := range data {
+		service := new(Service)
+		api := new(Api)
+		_ ,err := Engine.Get(service)
+		d.ServiceId = service.ServiceId
+
+		total, err := Engine.Where("uri =?", d.Uri).Count(api)
+
+		CheckErr(err)
+
+		if total == 0 {
+			affected, err := Engine.Insert(d)
+
+			CheckErr(err)
+			log.Println("  insert api " +d.Uri+ " success "+strconv.FormatInt(affected,10))
+		}
+	}
+
+	util.SetData()
+}
+
 
 func MInsertService(data *Service)  {
 

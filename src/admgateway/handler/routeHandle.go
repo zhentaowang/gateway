@@ -110,6 +110,19 @@ func AddApi(ctx *fasthttp.RequestCtx) {
 	indexHandler(ctx)
 }
 
+func InsertUploadFile(ctx *fasthttp.RequestCtx)  {
+
+	data := GetUploadApiFile(ctx)
+	lg := util.GetCommonLog()
+	var LoginInfo LoginData = LoginData{}
+	GetCookie(ctx,&LoginInfo)
+
+	MutiInsertApi(data)
+
+	lg.Println(LoginInfo.name+"  insert api from file ")
+
+}
+
 
 func AddService(ctx *fasthttp.RequestCtx)  {
 
