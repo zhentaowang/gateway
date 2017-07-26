@@ -43,6 +43,12 @@
                     <li class="active"><a href="#">api表</a></li>
                     <li><a href="filter.html">filter表</a></li>
                     <li><a href="service.html">service表</a></li>
+                    <li>
+                        <form class="form-inline" role="form" id="uploadFile" name="uploadFile" action="/uploadFile" method="post" enctype="multipart/form-data">
+                            <input type="file" name="fileUpload" />
+                            <input type="button" value="上传文件" id="upload"/>
+                        </form>
+                    </li>
                 </ul>
                 <a href="#" id="example" class="nav pull-right">{{.Name}}</a>
             </div>
@@ -133,6 +139,9 @@
                                 <input type="text" class="form-control" name="Api_desc" id="Api_desc" placeholder="可不填写，描述api">
                             </div>
                         </td>
+                        <td>
+                            上传按钮上传从rap导出的文件，但是只自动填写uri和method，<br />其他的需要自己继续编辑。uri重复的不覆盖
+                        </td>
                     </tr>
                     <tr>
                         <td colspan="4" align="center" valign="middle">
@@ -191,9 +200,8 @@
         {
             var id_value
 
-            with(id) {
-                id_value = value;
-            }
+
+                id_value = id.value;
 
             console.log("id="+id_value);
 
@@ -320,6 +328,33 @@
                 $("#LoginBox").fadeOut("fast");
                 $("#mask").css({ display: 'none' });
             });
+
+
+            $("#upload").click(function () {
+                console.log("name="+$("#example").text())
+                if ($("#example").text() == '登陆') {
+                    alert("请登陆！！！！！！！！")
+                    return false
+                }
+
+                var formData = new FormData($("#uploadFile")[0]);
+
+                $.ajax({
+                    url: "/uploadFile",
+                    type: 'POST',
+                    data: formData,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    success: function (returndata) {
+                        location.reload()
+                    },
+                    error: function (returndata) {
+                    }
+                });
+
+            });
+
             //ajax提交
             $("#ajaxBtn").click(function () {
                 console.log("ajax submit")
@@ -356,7 +391,7 @@
 
         function modifyData(id) {
             var tdArray = document.querySelectorAll('#ApiTable #tr-'+id+' td:not(.operation)');
-            $('#flag').val("-1");
+            console.log("tdArray="+tdArray[0])
             $('#Api_name').val(tdArray[0].innerText);
             $('#Api_uri').val(tdArray[1].innerText);
             $('#Api_method').val(tdArray[2].innerText);

@@ -5,6 +5,7 @@ import (
 	"gateway/src/util"
 	"log"
 	"strings"
+	"strconv"
 )
 
 
@@ -71,7 +72,7 @@ func Login(ctx *fasthttp.RequestCtx)  {
 }
 
 func ToOauth(LoginInfo *LoginData,data *WebData)  {
-	allowed, _ := util.GetPermission(LoginInfo.name,LoginInfo.password,"gateway_list")
+	allowed, _ := util.GetPermission(LoginInfo.name, LoginInfo.password, "gateway_list")
 
 	if allowed==true {
 		data.Title = "Gateway Manager"
@@ -98,18 +99,40 @@ func GetCookie(ctx *fasthttp.RequestCtx,LoginInfo *LoginData)  {
 func AddApi(ctx *fasthttp.RequestCtx) {
 
 	form_data, filter_seq := GetApiFormData(ctx)
+	lg := util.GetCommonLog()
+	var LoginInfo LoginData = LoginData{}
+	GetCookie(ctx,&LoginInfo)
 
 	MInsertApi(form_data, filter_seq)
 
+	lg.Println(LoginInfo.name+"  insert api " +form_data.Uri+ " success ")
+
 	indexHandler(ctx)
+}
+
+func InsertUploadFile(ctx *fasthttp.RequestCtx)  {
+
+	data := GetUploadApiFile(ctx)
+	lg := util.GetCommonLog()
+	var LoginInfo LoginData = LoginData{}
+	GetCookie(ctx,&LoginInfo)
+
+	MutiInsertApi(data)
+
+	lg.Println(LoginInfo.name+"  insert api from file ")
+
 }
 
 
 func AddService(ctx *fasthttp.RequestCtx)  {
 
 	form_data := GetServiceFormData(ctx)
+	lg := util.GetCommonLog()
+	var LoginInfo LoginData = LoginData{}
+	GetCookie(ctx,&LoginInfo)
 
 	MInsertService(form_data)
+	lg.Println(LoginInfo.name+"  insert service " +form_data.Namespace+"."+ form_data.Name +":"+form_data.Port+ " success ")
 
 	indexHandler(ctx)
 
@@ -119,8 +142,12 @@ func AddService(ctx *fasthttp.RequestCtx)  {
 func AddFilter(ctx *fasthttp.RequestCtx)  {
 
 	form_data := GetFilterFormData(ctx)
+	lg := util.GetCommonLog()
+	var LoginInfo LoginData = LoginData{}
+	GetCookie(ctx,&LoginInfo)
 
 	MInsertFilter(form_data)
+	lg.Println(LoginInfo.name + "  insert filter " + form_data.Name + " success ")
 
 	indexHandler(ctx)
 
@@ -185,7 +212,12 @@ func ModifyFilter(ctx *fasthttp.RequestCtx)  {
 func DeleteApi(ctx *fasthttp.RequestCtx)  {
 
 	form_data , _:= GetApiFormData(ctx)
+	lg := util.GetCommonLog()
+	var LoginInfo LoginData = LoginData{}
+	GetCookie(ctx,&LoginInfo)
+
 	MDeleteApi(form_data)
+	lg.Println(LoginInfo.name+"  have deleted api " + form_data.Uri +"  id="+strconv.Itoa(form_data.ApiId)+ "  success ")
 
 	indexHandler(ctx)
 
@@ -195,8 +227,12 @@ func DeleteApi(ctx *fasthttp.RequestCtx)  {
 func DeleteService(ctx *fasthttp.RequestCtx)  {
 
 	form_data := GetServiceFormData(ctx)
+	lg := util.GetCommonLog()
+	var LoginInfo LoginData = LoginData{}
+	GetCookie(ctx,&LoginInfo)
 
 	MDeleteService(form_data)
+	lg.Println(LoginInfo.name+"  have deleted service " +form_data.Namespace+"."+ form_data.Name +":"+form_data.Port+"  id="+strconv.Itoa(form_data.ServiceId)+ " success ")
 
 	indexHandler(ctx)
 
@@ -206,8 +242,12 @@ func DeleteService(ctx *fasthttp.RequestCtx)  {
 func DeleteFilter(ctx *fasthttp.RequestCtx)  {
 
 	form_data := GetFilterFormData(ctx)
+	lg := util.GetCommonLog()
+	var LoginInfo LoginData = LoginData{}
+	GetCookie(ctx,&LoginInfo)
 
 	MDeleteFilter(form_data)
+	lg.Println(LoginInfo.name+"  haved deleted filter " + form_data.Name+"  id="+strconv.Itoa(form_data.FilterId) + "  success ")
 
 	indexHandler(ctx)
 

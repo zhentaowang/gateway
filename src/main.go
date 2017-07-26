@@ -18,8 +18,8 @@ import (
 
 
 func main() {
+    util.SetLogFlag()
     // 读取配置文件
-    log.SetFlags(log.Llongfile)
     conf := util.GetConfigCenterInstance()
 
     log.Println("init gateway success")
@@ -40,7 +40,7 @@ func main() {
 }
 
 func DataChange(h *proxy.HttpProxy)  {
-    log.SetFlags(log.Lshortfile)
+    util.SetLogFlag()
 
     conf := util.GetConfigCenterInstance()
 

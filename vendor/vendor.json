@@ -54,10 +54,22 @@
 			"revision": ""
 		},
 		{
+			"checksumSHA1": "uKoapiicR88rwOpNQLmB4LjVFns=",
+			"path": "github.com/PuerkitoBio/goquery",
+			"revision": "8806ada2a4ab225c06e9106f9631be80932db7ce",
+			"revisionTime": "2017-06-23T16:21:02Z"
+		},
+		{
 			"checksumSHA1": "SaGVDqmReRgS8BTXZr8CjpyU1bk=",
 			"path": "github.com/Shopify/sarama",
 			"revision": "f7e3024a61603647461f4b40bd8f3db88871bf9d",
 			"revisionTime": "2017-06-15T15:11:31Z"
+		},
+		{
+			"checksumSHA1": "Bgs5fKx4V8jxL/m/krOLmhS4az4=",
+			"path": "github.com/andybalholm/cascadia",
+			"revision": "349dd0209470eabd9514242c688c403c0926d266",
+			"revisionTime": "2016-12-24T14:14:13Z"
 		},
 		{
 			"checksumSHA1": "HH2/aYk2z7YEcNSZBwYTaQEPPq8=",
@@ -226,6 +238,18 @@
 			"path": "github.com/valyala/fasttemplate",
 			"revision": "dcecefd839c4193db0d35b88ec65b4c12d360ab0",
 			"revisionTime": "2017-02-24T21:24:29Z"
+		},
+		{
+			"checksumSHA1": "vqc3a+oTUGX8PmD0TS+qQ7gmN8I=",
+			"path": "golang.org/x/net/html",
+			"revision": "1a68b1313cf4ad7778376e82641197b60c02f65c",
+			"revisionTime": "2017-06-09T23:57:59Z"
+		},
+		{
+			"checksumSHA1": "00eQaGynDYrv3tL+C7l9xH0IDZg=",
+			"path": "golang.org/x/net/html/atom",
+			"revision": "1a68b1313cf4ad7778376e82641197b60c02f65c",
+			"revisionTime": "2017-06-09T23:57:59Z"
 		},
 		{
 			"checksumSHA1": "nf+CWRQfmxmZkdYRpxEuA8u+qwI=",

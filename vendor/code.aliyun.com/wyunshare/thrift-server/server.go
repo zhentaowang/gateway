@@ -8,11 +8,12 @@ import (
     "code.aliyun.com/wyunshare/thrift-server/processor"
     "code.aliyun.com/wyunshare/thrift-server/business"
     "log"
+    "gateway/src/util"
 )
 
 func StartServer(address string, port string, handler server.MyService) {
 
-    log.SetFlags(log.Llongfile)
+    util.SetLogFlag()
     processor := server.NewMyServiceProcessor(handler)
     serverTransport, err := thrift.NewTServerSocket(address + ":" + port)
     transportFactory := thrift.NewTFramedTransportFactory(thrift.NewTTransportFactory())

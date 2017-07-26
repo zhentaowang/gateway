@@ -21,6 +21,7 @@ const (
     FilterResponseHead = "RESPONSE_HEAD" // 原响应头
     FilterVisitCount = "VISITCOUNT"
     FilterText = "FILTERTEXT"
+    FilterJson = "JSON"
 )
 
 func NewFilter(filterName string) (Filter, error) {
@@ -39,6 +40,8 @@ func NewFilter(filterName string) (Filter, error) {
         return newVisitCount(), nil
     case FilterText:
         return newTextFilter(), nil
+    case FilterJson:
+        return newJSONFilter(), nil
 
     default:
         return nil, ErrUnknownFilter

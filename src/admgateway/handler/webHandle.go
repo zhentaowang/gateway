@@ -9,6 +9,7 @@ import (
 	"strconv"
 	"encoding/json"
 	"os"
+	"github.com/PuerkitoBio/goquery"
 )
 
 type WebData struct {
@@ -47,6 +48,35 @@ func GetApiFormData(ctx *fasthttp.RequestCtx) (*Api,int) {
 
 	return FormData, FilterSeq
 
+}
+
+func GetUploadApiFile(ctx *fasthttp.RequestCtx) []*Api {
+	fileData := make([]*Api, 0)
+	temp,_ :=ctx.FormFile("fileUpload")
+	f ,_:= temp.Open()
+	defer f.Close()
+
+	doc, err := goquery.NewDocumentFromReader(f)
+	if err != nil {
+		log.Println(err.Error())
+	}
+
+	//dhead := doc.Find(".module .action")
+	doc.Find(".module .page").Each(func(i int, contentSelection *goquery.Selection) {
+		contentSelection.Find("h3").Each(func(i int, contentSelection2 *goquery.Selection) {
+			if contentSelection2.Text()=="URL" {
+				dataT := new(Api)
+				dataT.Uri = contentSelection2.Next().Text()
+				dataT.Method = contentSelection2.Next().Next().Next().Text()
+				dataT.Status = 0
+				if len(dataT.Uri)!=0 && (dataT.Method == "POST"||dataT.Method == "GET"||dataT.Method == "*") {
+					fileData = append(fileData,dataT)
+				}
+			}
+		})
+	})
+
+	return fileData
 }
 
 func GetServiceFormData(ctx *fasthttp.RequestCtx)  *Service {

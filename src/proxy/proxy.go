@@ -74,8 +74,7 @@ func (h *HttpProxy) Start() {
 }
 
 func (h *HttpProxy) ReverseProxyHandler(ctx *fasthttp.RequestCtx) {
-    log.Println(string(ctx.Request.RequestURI()))
-    log.Println(string(ctx.Request.Body()[:]))
+    log.Println("网关开始工作，请求的url = "+string(ctx.Request.RequestURI())+" \n  请求的 body = "+string(ctx.Request.Body()[:]))
     result := h.routeTable.Select(&ctx.Request)
 
     if nil == result {
@@ -88,6 +87,11 @@ func (h *HttpProxy) ReverseProxyHandler(ctx *fasthttp.RequestCtx) {
     if result.Err != nil {
         if result.API.Mock != nil {
             result.API.RenderMock(ctx)
+	    if result.Res!=nil {
+                log.Println("网关结束处理  "+string(ctx.Request.RequestURI())+ "，返回的响应为 HEAD = " + result.Res.Header.String()+" \n  返回的响应 BODY = "+ string(result.Res.Body()))
+	    } else {
+                log.Println("网关结束处理  "+string(ctx.Request.RequestURI())+"返回的响应为空")
+	    }
             result.Release()
             return
         }
@@ -97,6 +101,11 @@ func (h *HttpProxy) ReverseProxyHandler(ctx *fasthttp.RequestCtx) {
         return
     } else {
         h.writeResult(ctx, result.Res)
+	if result.Res!=nil {
+		log.Println("网关结束处理  "+string(ctx.Request.RequestURI())+ "，返回的响应为 HEAD = " + result.Res.Header.String()+" \n  返回的响应 BODY = "+ string(result.Res.Body()))
+	} else {
+		log.Println("网关结束处理  "+string(ctx.Request.RequestURI())+",返回的响应为空")
+	}
         result.Release()
         return
     }
@@ -216,7 +225,10 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
             log.Println("convert to raw client failed")
             return
         }
+
+        log.Println("网关处理thrift请求，paramJson= "+string(req.ParamJSON)+"  ,operation= "+req.Operation+"  ,ServiceName="+req.ServiceName)
         res, err := rawClient.Send(req)
+        log.Println("网关结束处理thrift请求，ResponseCode="+strconv.FormatInt(int64(res.ResponeCode),10)+"  ,ResponseJson="+string(res.ResponseJSON))
         c.SetEndAt(time.Now().UnixNano())
 
         if err != nil {
@@ -253,9 +265,10 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
 }
 
 func (h *HttpProxy) writeResult(ctx *fasthttp.RequestCtx, res *fasthttp.Response) {
-    ctx.SetStatusCode(res.StatusCode())
-    ctx.Write(res.Body())
-    res.Header.VisitAll(func (key []byte, value []byte) {
-        ctx.Response.Header.Set(string(key), string(value))
-    })
+    if res != nil {
+        ctx.SetStatusCode(res.StatusCode())
+        ctx.Write(res.Body())
+    } else {
+        log.Println("the reponse is null")
+    }
 }

@@ -2,12 +2,12 @@ package thrift
 
 import (
 	"code.aliyun.com/wyunshare/thrift-server"
-	"log"
+	"gateway/src/util"
 )
 
 func StartThriftServer()  {
 	//thrift服务
-	log.SetFlags(log.Lshortfile)
+	util.SetLogFlag()
 	const thrift_server_address = "0.0.0.0" // 0.0.0.0 表示监听所有端口
 	const thrift_server_port = "8889"
 
