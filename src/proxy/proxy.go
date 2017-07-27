@@ -39,6 +39,7 @@ func NewHttpProxy(store model.Store) *HttpProxy {
     conf.TConfig.ReadTimeout, _ = strconv.Atoi(cf.ConfProperties["jdbc"]["write_timeout"])
     conf.TConfig.ReadBufferSize, _ = strconv.Atoi(cf.ConfProperties["jdbc"]["read_buffer_size"])
     conf.TConfig.WriteBufferSize, _ = strconv.Atoi(cf.ConfProperties["jdbc"]["write_buffer_size"])
+    log.Println("jdbc配置成功")
 
     h := &HttpProxy{
         fastHTTPClient: util.NewFastHTTPClient(&conf.TConfig),
@@ -79,6 +80,7 @@ func (h *HttpProxy) ReverseProxyHandler(ctx *fasthttp.RequestCtx) {
 
     if nil == result {
         ctx.SetStatusCode(fasthttp.StatusNotFound)
+        log.Println("请求的url没有找到,或者请求方法不对，或者url为不可用状态")
         return
     }
 
@@ -97,6 +99,11 @@ func (h *HttpProxy) ReverseProxyHandler(ctx *fasthttp.RequestCtx) {
         }
 
         ctx.SetStatusCode(result.Code)
+        if result.Res!=nil {
+            log.Println("网关结束处理  "+string(ctx.Request.RequestURI())+ "，返回的响应为 HEAD = " + result.Res.Header.String()+" \n  返回的响应 BODY = "+ string(result.Res.Body()))
+        } else {
+            log.Println("网关结束处理  "+string(ctx.Request.RequestURI())+"返回的响应为空")
+        }
         result.Release()
         return
     } else {
@@ -126,6 +133,7 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
         if err != nil || !ok {
             result.Err = err
             result.Code = http.StatusForbidden
+            log.Println("认证中心认证失败")
             return
         }
     }
@@ -137,6 +145,8 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
         result.Err = err
         result.Code = code
         return
+    } else {
+        log.Printf("Proxy Filter-Pre<%s> success.", filterName, err)
     }
 
     // pre filters
@@ -146,19 +156,21 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
         result.Err = err
         result.Code = code
         return
+    } else {
+        log.Printf("Proxy Filter-Pre<%s> success.", filterName, err)
     }
 
     service := result.API.Service
     c.SetStartAt(time.Now().UnixNano())
     if strings.ToUpper(string(c.GetOriginRequestCtx().Request.Header.Method())) == "OPTIONS" {
-
+        log.Println("Request Method="+string(c.GetOriginRequestCtx().Request.Header.Method()))
     } else if service.Protocol == "http" {
 
         outReq.Header.Set("client_id",string(outReq.PostArgs().Peek("client_id")))
         outReq.Header.Set("user_id",string(outReq.PostArgs().Peek("user_id")))
 
         res, err := h.fastHTTPClient.Do(outReq, service.GetHost())
-        log.Println(outReq)
+        log.Println("outReq="+outReq.String())
         c.SetEndAt(time.Now().UnixNano())
         result.Res = res
 
@@ -184,6 +196,7 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
         req.ServiceName = "businessService"// 默认servicename = businessService
         if serviceProviderName := result.API.ServiceProviderName; len(serviceProviderName) > 0 {
             req.ServiceName = serviceProviderName
+            log.Println("Requst's ServiceName="+req.ServiceName)
         }
 
         // 解析参数，转化成json格式
@@ -209,6 +222,7 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
         operation := result.API.Name
         if value, ok := params["operation"].(string); ok {
             operation = result.API.GetOperation(value)
+            log.Println("Request's Operation="+operation)
         }
         req.Operation = operation
 
@@ -233,7 +247,7 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
 
         if err != nil {
             result.Err = err
-            log.Println(err)
+            log.Println("处理thrift请求失败  "+err.Error())
             return
         }
         result.Res = &fasthttp.Response{}

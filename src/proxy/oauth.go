@@ -19,8 +19,12 @@ func (h *HttpProxy) CheckToken(req *fasthttp.Request , result *model.RouteResult
     }
     //res, err := h.fastHTTPClient.Do(outReq, config.TConfig.OauthHost
     conf := util.GetConfigCenterInstance()
-    res, err := http.Get(conf.ConfProperties["jdbc"]["oauth_host"] + string(accessToken))
+    res, err := http.Get(conf.ConfProperties["oauth_center"]["oauth_addr"] +"/user/getUser?access_token="+ string(accessToken))
     result.Res = &fasthttp.Response{}
+
+    if res==nil {
+        res = new(http.Response)
+    }
 
     result.Res.SetStatusCode(res.StatusCode)
 
