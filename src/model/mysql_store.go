@@ -22,7 +22,7 @@ func (m *MysqlStore) dbInit(host string, username string, password string, dbNam
     var err error
     m.DB, err = sql.Open("mysql", username + ":" + password + "@tcp(" + host + ")/" + dbName) //返回一个连接池，不是单个连接
     if err != nil {
-        panic(err)
+        log.Println(err)
     }
     m.DB.SetMaxOpenConns(100) //最大连接数
     m.DB.SetMaxIdleConns(50)  //最大闲置数
@@ -32,7 +32,7 @@ func (m *MysqlStore) dbInit(host string, username string, password string, dbNam
 func (m *MysqlStore) GetAPIs() ([]*API, error) {
     rows, err := m.DB.Query("select api_id, name, uri, method, service_id, status, need_login, mock, service_provider_name from api")
     if err != nil {
-        log.Fatal(err)
+        log.Println(err)
         return nil, err
     }
     defer rows.Close()
@@ -45,7 +45,7 @@ func (m *MysqlStore) GetAPIs() ([]*API, error) {
         if len(mockStr) != 0 && mockStr != nil {
             err := json.Unmarshal(mockStr, mock)
             if err != nil {
-                log.Fatal(err)
+                log.Println(err)
                 return nil, err
             }
         } else {
@@ -63,7 +63,7 @@ func (m *MysqlStore) GetAPIs() ([]*API, error) {
 func (m *MysqlStore) GetServices() ([]*Service, error) {
     rows, err := m.DB.Query("select service_id, namespace, name, port, protocol from service")
     if err != nil {
-        log.Fatal(err)
+        log.Println(err)
         return nil, err
     }
     defer rows.Close()
@@ -84,7 +84,7 @@ func (m *MysqlStore) GetFilters(apiId int) ([]string, error) {
     var query = fmt.Sprintf("select name from filter where api_id=%d order by seq", apiId)
     rows, err := m.DB.Query(query)
     if err != nil {
-        log.Fatal(err)
+        log.Println(err)
         return nil, err
     }
     defer rows.Close()
