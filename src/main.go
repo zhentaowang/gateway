@@ -22,7 +22,6 @@ func main() {
     // 读取配置文件
     conf := util.GetConfigCenterInstance()
 
-    log.Println("init gateway success")
     // 获取数据库
     store := model.NewMysqlStore(conf.ConfProperties["jdbc"]["db_host"], conf.ConfProperties["jdbc"]["db_username"], conf.ConfProperties["jdbc"]["db_password"], conf.ConfProperties["jdbc"]["db_name"])
 
