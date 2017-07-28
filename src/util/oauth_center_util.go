@@ -14,6 +14,7 @@ type OauthCenter struct {
 
 func GetToken(username string , password string)  string{
 
+	defer ErrHandle()
 	conf := GetConfigCenterInstance()
 	grant_type := conf.ConfProperties["oauth_center"]["grant_type"]
 	client_id := conf.ConfProperties["oauth_center"]["client_id"]
@@ -28,17 +29,17 @@ func GetToken(username string , password string)  string{
 	resp, err := http.Post(conf.ConfProperties["oauth_center"]["oauth_addr"]+"/oauth/access_token",
 		"application/json",strings.NewReader(post))
 	if err != nil {
-		log.Printf("get access_token error",err)
+		log.Panic("get access_token error",err)
 	}
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		log.Printf(err.Error())
+		log.Panic(err.Error())
 	}
 
 	js, err := simplejson.NewJson(body)
 	if err != nil {
-		log.Printf(err.Error())
+		log.Panic(err.Error())
 	}
 
 	js_token := js.Get("access_token")
@@ -49,21 +50,22 @@ func GetToken(username string , password string)  string{
 }
 
 func GetPermission(username string,password string,permission string)  (bool,int){
+	defer ErrHandle()
 	conf := GetConfigCenterInstance()
 	access_token := GetToken(username,password)
 	resp, err := http.Get(conf.ConfProperties["oauth_center"]["oauth_addr"]+"/user/permission?access_token="+access_token+"&permission="+permission)
 	if err != nil {
-		log.Printf(err.Error())
+		log.Panic(err.Error())
 	}
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		log.Printf(err.Error())
+		log.Panic(err.Error())
 	}
 
 	js, err := simplejson.NewJson(body)
 	if err != nil {
-		log.Printf(err.Error())
+		log.Panic(err.Error())
 	}
 
 	js_allowed := js.Get("allowed")

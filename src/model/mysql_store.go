@@ -6,6 +6,7 @@ import (
     _ "github.com/go-sql-driver/mysql"
     "fmt"
     "encoding/json"
+    "gateway/src/util"
 )
 
 type MysqlStore struct {
@@ -18,11 +19,15 @@ func NewMysqlStore(host string, username string, password string, dbName string)
     return m
 }
 
+
 func (m *MysqlStore) dbInit(host string, username string, password string, dbName string) {
     var err error
+
+    defer util.ErrHandle()
+
     m.DB, err = sql.Open("mysql", username + ":" + password + "@tcp(" + host + ")/" + dbName) //返回一个连接池，不是单个连接
     if err != nil {
-        log.Println(err)
+        log.Panic(err)
     }
     m.DB.SetMaxOpenConns(100) //最大连接数
     m.DB.SetMaxIdleConns(50)  //最大闲置数
@@ -30,9 +35,10 @@ func (m *MysqlStore) dbInit(host string, username string, password string, dbNam
 }
 
 func (m *MysqlStore) GetAPIs() ([]*API, error) {
+    defer util.ErrHandle()
     rows, err := m.DB.Query("select api_id, name, uri, method, service_id, status, need_login, mock, service_provider_name from api")
     if err != nil {
-        log.Println(err)
+        log.Panic(err)
         return nil, err
     }
     defer rows.Close()
@@ -61,9 +67,10 @@ func (m *MysqlStore) GetAPIs() ([]*API, error) {
 }
 
 func (m *MysqlStore) GetServices() ([]*Service, error) {
+    defer util.ErrHandle()
     rows, err := m.DB.Query("select service_id, namespace, name, port, protocol from service")
     if err != nil {
-        log.Println(err)
+        log.Panic(err)
         return nil, err
     }
     defer rows.Close()
@@ -81,10 +88,11 @@ func (m *MysqlStore) GetServices() ([]*Service, error) {
 apiId 为-1的时候表示系统的filter
  */
 func (m *MysqlStore) GetFilters(apiId int) ([]string, error) {
+    defer util.ErrHandle()
     var query = fmt.Sprintf("select name from filter where api_id=%d order by seq", apiId)
     rows, err := m.DB.Query(query)
     if err != nil {
-        log.Println(err)
+        log.Panic(err)
         return nil, err
     }
     defer rows.Close()

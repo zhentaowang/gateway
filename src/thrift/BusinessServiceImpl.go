@@ -18,6 +18,7 @@ type BusinessServiceImpl struct {
 // 通过 BusinessServiceImpl 实现 IBusinessService 接口的 Send 方法，从而实现 IBusinessService 接口
 func (msi *BusinessServiceImpl) Handle(operation string, paramJSON []byte) (*server.Response, error) {
 
+	defer util.ErrHandle()
 	var pooled *pool.Pool
 	addr := strings.Split(operation, "/")
 
@@ -45,14 +46,14 @@ func (msi *BusinessServiceImpl) Handle(operation string, paramJSON []byte) (*ser
 	}
 	client, err := pooled.Get()
 	if err != nil {
-		log.Println("Thrift pool get client error", err)
+		log.Panic("Thrift pool get client error", err)
 	}
 
 	defer pooled.Put(client, false)
 
 	rawClient, ok := client.(*server.MyServiceClient)
 	if !ok {
-		log.Println("convert to raw client failed")
+		log.Panic("convert to raw client failed")
 	}
 
 	req := server.NewRequest()

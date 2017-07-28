@@ -52,6 +52,7 @@ func NewHttpProxy(store model.Store) *HttpProxy {
 }
 
 func (h *HttpProxy) Init() {
+    defer util.ErrHandle()
     err := h.InitRouteTable()
 
     if err != nil {
@@ -133,7 +134,7 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
         if err != nil || !ok {
             result.Err = err
             result.Code = http.StatusForbidden
-            log.Println("认证中心认证失败")
+            log.Println("认证中心认证失败  "+err.Error())
             return
         }
     }
@@ -247,7 +248,7 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
 	} else {
 		log.Println("网关结束处理thrift请求，返回的响应为空")
 	}
-	    c.SetEndAt(time.Now().UnixNano())
+        c.SetEndAt(time.Now().UnixNano())
 
         if err != nil {
             result.Err = err

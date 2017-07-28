@@ -10,6 +10,7 @@ import (
 	"encoding/json"
 	"os"
 	"github.com/PuerkitoBio/goquery"
+	"gateway/src/util"
 )
 
 type WebData struct {
@@ -119,6 +120,7 @@ func GetLoginData(ctx *fasthttp.RequestCtx)  *LoginData{
 
 func Render(ctx *fasthttp.RequestCtx, url string,data interface{}) {
 
+	defer util.ErrHandle()
 	if(url == "") {
 		JsonResult(ctx,data)
 		return

@@ -39,6 +39,8 @@ func main() {
 }
 
 func DataChange(h *proxy.HttpProxy)  {
+
+    defer util.ErrHandle()
     util.SetLogFlag()
 
     conf := util.GetConfigCenterInstance()
@@ -47,7 +49,7 @@ func DataChange(h *proxy.HttpProxy)  {
 
     conn, _, err := zk.Connect(host, 10*time.Second)
     if nil != err {
-        log.Print("load config error: ", err)
+        log.Panic("load config error: ", err)
         return
     }
 
