@@ -5,6 +5,7 @@ import (
     "github.com/valyala/fasthttp"
     "git.apache.org/thrift.git/lib/go/thrift"
     "log"
+    "gateway/src/util"
 )
 
 var (
@@ -56,6 +57,7 @@ func (r *RouteTable) Load() {
 }
 
 func (r *RouteTable) loadServices() {
+    defer util.ErrHandle()
     // 先清空 services map
     for k := range r.services {
         delete(r.services, k)
@@ -75,6 +77,7 @@ func (r *RouteTable) loadServices() {
 }
 
 func (r *RouteTable) loadAPIs() {
+    defer util.ErrHandle()
     // 先清空 apis map
     for k := range r.apis {
         delete(r.apis, k)
@@ -96,6 +99,7 @@ func (r *RouteTable) loadAPIs() {
 
 // AddNewService add a new service
 func (r *RouteTable) AddNewService(service *Service) error {
+    defer util.ErrHandle()
     key := service.getKey()
     _, ok := r.services[key]
 
@@ -116,6 +120,7 @@ func (r *RouteTable) AddNewService(service *Service) error {
 
 // AddNewAPI add a new API
 func (r *RouteTable) AddNewAPI(api *API) error {
+    defer util.ErrHandle()
     apiKey := api.getKey()
     _, ok := r.apis[apiKey]
 

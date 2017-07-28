@@ -16,6 +16,7 @@ type ZookeeperConfig struct {
 
 func SetData()  {
 
+	defer ErrHandle()
 	conf := GetConfigCenterInstance()
 
 	host := strings.Split(conf.ConfProperties["zookeeper"]["zookeeper_server"],",")

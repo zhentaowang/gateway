@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"sync"
+	"fmt"
 )
 
 var creLog sync.Once
@@ -32,10 +33,12 @@ func (cg *CommonLog) Init()  {
 
 	logFile, err := os.OpenFile(lf,os.O_APPEND|os.O_CREATE,0666);
 	if err != nil {
-		log.Println(err);
+		log.Println("创建日志文件失败 " + err.Error());
 	}
 
 	Lg = *log.New(logFile, "", log.LstdFlags|log.Llongfile)
+
+	log.Println("创建日志文件 " + lf + "成功！")
 }
 
 
@@ -50,6 +53,7 @@ func (cg *CommonLog) GetLogger() (log.Logger,error) {
 	_, err := os.Stat(lf)
 
 	if err == nil {
+		log.Println("创建日志文件 "+lf+" 成功！")
 		return Lg,nil
 	}
 
@@ -80,4 +84,10 @@ func GetCommonLog()  log.Logger{
 
 func SetLogFlag()  {
 	log.SetFlags(log.LstdFlags|log.Llongfile)
+}
+
+func ErrHandle()  {
+	if err := recover(); err != nil {
+		fmt.Println("ERROR!! ",err)
+	}
 }

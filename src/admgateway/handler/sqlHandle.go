@@ -82,14 +82,16 @@ func init()  {
  */
 func CheckErr(err error) {
 	if err != nil {
-		panic(err)
+		log.Panic(err)
 	}
 }
 
 
 
+
 func MInsertApi(data *Api, filter_seq int) {
 
+	defer util.ErrHandle()
 	api := new(Api)
 	total, err := Engine.Where("api_id =?", data.ApiId).Count(api)
 	CheckErr(err)
@@ -106,6 +108,7 @@ func MInsertApi(data *Api, filter_seq int) {
 
 func MutiInsertApi(data []*Api)  {
 
+	defer util.ErrHandle()
 	for _,d := range data {
 		service := new(Service)
 		api := new(Api)
@@ -130,6 +133,7 @@ func MutiInsertApi(data []*Api)  {
 
 func MInsertService(data *Service)  {
 
+	defer util.ErrHandle()
 	service := new(Service)
 
 	total, err := Engine.Where("service_id =?", data.ServiceId).Count(service)
@@ -149,6 +153,7 @@ func MInsertService(data *Service)  {
 
 func MInsertFilter(data *Filter)  {
 
+	defer util.ErrHandle()
 	filter := new(Filter)
 	total, err := Engine.Where("filter_id =?", data.FilterId).Count(filter)
 	CheckErr(err)
@@ -166,7 +171,7 @@ func MInsertFilter(data *Filter)  {
 
 func MQueryService(data *Service) []Service {
 
-
+	defer util.ErrHandle()
 	AllService := make([]Service, 0)
 	err := Engine.Find(&AllService, data)
 	CheckErr(err)
@@ -179,7 +184,7 @@ func MQueryService(data *Service) []Service {
 
 func MQueryApi(data *Api) []Api {
 
-
+	defer util.ErrHandle()
 	AllApi := make([]Api, 0)
 	err := Engine.Find(&AllApi, data)
 
@@ -192,7 +197,7 @@ func MQueryApi(data *Api) []Api {
 
 func MQueryFilter(data *Filter) []Filter {
 
-
+	defer util.ErrHandle()
 	AllFilter := make([]Filter, 0, 10)
 	err := Engine.Find(&AllFilter, data)
 
@@ -205,6 +210,7 @@ func MQueryFilter(data *Filter) []Filter {
 
 func MModifyApi(data *Api) {
 
+	defer util.ErrHandle()
 	affected, err := Engine.Id(data.ApiId).Update(data)
 	CheckErr(err)
 	println(affected)
@@ -214,6 +220,7 @@ func MModifyApi(data *Api) {
 
 func MModifyService(data *Service)  {
 
+	defer util.ErrHandle()
 	affected, err := Engine.Id(data.ServiceId).Update(data)
 	CheckErr(err)
 	println(affected)
@@ -223,6 +230,7 @@ func MModifyService(data *Service)  {
 
 func MModifyFilter(data *Filter) {
 
+	defer util.ErrHandle()
 	affected, err := Engine.Id(data.FilterId).Update(data)
 	CheckErr(err)
 	println(affected)
@@ -232,6 +240,7 @@ func MModifyFilter(data *Filter) {
 
 func MDeleteApi(data *Api) {
 
+	defer util.ErrHandle()
 	api := new(Api)
 	affected, err := Engine.Id(data.ApiId).Delete(api)
 
@@ -243,6 +252,7 @@ func MDeleteApi(data *Api) {
 
 func MDeleteService(data *Service) {
 
+	defer util.ErrHandle()
 	service := new(Service)
 	affected, err := Engine.Id(data.ServiceId).Delete(service)
 	CheckErr(err)
@@ -258,6 +268,7 @@ func MDeleteService(data *Service) {
 
 func MDeleteFilter(data *Filter)  {
 
+	defer util.ErrHandle()
 	filter := new(Filter)
 	affected, err := Engine.Id(data.FilterId).Delete(filter)
 	CheckErr(err)
