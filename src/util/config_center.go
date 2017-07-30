@@ -10,6 +10,7 @@ var m conf_center.AppProperties
 var once sync.Once
 
 func GetConfigCenterInstance() conf_center.AppProperties{
+	defer ErrHandle()
 	once.Do(func() {
 		envName := GetEnvName("local_env")
 		var appName = "gateway"
