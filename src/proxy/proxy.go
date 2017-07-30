@@ -134,7 +134,12 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
         if err != nil || !ok {
             result.Err = err
             result.Code = http.StatusForbidden
-            log.Println("认证中心认证失败  "+err.Error())
+            if err != nil {
+                log.Println("认证中心认证失败  "+err.Error())
+            } else {
+                log.Println("认证中心认证失败  ")
+            }
+
             return
         }
     }
