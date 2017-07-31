@@ -4,13 +4,19 @@ import (
 	"sync"
 	"code.aliyun.com/wyunshare/wyun-zookeeper/go-client/src/conf_center"
 	"os"
+	"fmt"
 )
 
 var m conf_center.AppProperties
 var once sync.Once
 
 func GetConfigCenterInstance() conf_center.AppProperties{
-	defer ErrHandle()
+	defer func () {
+		if err := recover(); err != nil {
+			fmt.Println("ERROR!! ,配置中心连接失败 ,",err)
+		}
+	}()
+
 	once.Do(func() {
 		envName := GetEnvName("local_env")
 		var appName = "gateway"
