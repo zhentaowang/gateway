@@ -66,7 +66,6 @@ func Login(ctx *fasthttp.RequestCtx)  {
 	LoginInfo := GetLoginData(ctx)
 
 	cookie.SetKey("login")
-	log.Printf("name=%s,password=%s",LoginInfo.name,LoginInfo.password)
 	cookie.SetValue(LoginInfo.name+"&"+LoginInfo.password)
 	ctx.Response.Header.SetCookie(cookie)
 }
