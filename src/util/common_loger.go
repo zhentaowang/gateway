@@ -28,6 +28,7 @@ func (cg *CommonLog) Error ()  string{
 func (cg *CommonLog) Init()  {
 
 	pwd, _ := os.Getwd()
+	log.Println("初始化日志文件")
 
 	lf := filepath.Join(pwd, "log",time.Now().Format("20060102") + ".log")
 
