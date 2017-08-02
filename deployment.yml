@@ -31,13 +31,13 @@ spec:
           volumeMounts:
           - mountPath: "/go/src"
             name: code
-            subPath: gateway
+            subPath: code/gateway/gateway
           ports:
             - containerPort: 8888
       volumes:
         - name: code
           persistentVolumeClaim:
-            claimName: code-claims
+            claimName: platform-nas
 ---
 apiVersion: v1
 kind: Service
@@ -56,13 +56,16 @@ spec:
   ports:
   - port: 443
     targetPort: 8888
+    nodePort: 30043
     protocol: TCP
     name: "tcp"
   - port: 1323
     targetPort: 1323
+    nodePort: 30023
     name: "admweb"
   - port: 8889
     targetPort: 8889
+    nodePort: 30089
     name: "thriftserver"
   selector:
     app: gateway
