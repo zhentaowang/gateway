@@ -76,6 +76,9 @@ func (h *HttpProxy) Start() {
 }
 
 func (h *HttpProxy) ReverseProxyHandler(ctx *fasthttp.RequestCtx) {
+
+    defer util.ErrHandle()
+
     log.Println("网关开始工作，请求的url = "+string(ctx.Request.RequestURI())+" \n  请求的 body = "+string(ctx.Request.Body()[:]))
     result := h.routeTable.Select(&ctx.Request)
 

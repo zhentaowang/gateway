@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"sync"
 	"fmt"
+	"runtime/debug"
 )
 
 var creLog sync.Once
@@ -90,5 +91,6 @@ func SetLogFlag()  {
 func ErrHandle()  {
 	if err := recover(); err != nil {
 		fmt.Println("ERROR!! ",err)
+		debug.PrintStack()
 	}
 }
