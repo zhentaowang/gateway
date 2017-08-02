@@ -58,7 +58,7 @@ func (msi *BusinessServiceImpl) Handle(operation string, paramJSON []byte) (*ser
 	sql := "select service.name,service.namespace,service.port ,api.service_provider_name from service,api where api.service_id = service.service_id and api.uri=?"
 	results, err := Engine.Query(sql,buffer.String())
 	if err != nil {
-		log.Panic("thrift从数据库获取Service失败 ",err)
+		log.Panic("thrift从数据库获取Service失败 , Operation格式为/uri/operation ",err)
 	}
 
 	if len(results)!=0 {
