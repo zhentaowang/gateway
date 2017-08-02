@@ -10,6 +10,8 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"code.aliyun.com/wyunshare/thrift-server/pool"
 	"gateway/src/util"
+	"time"
+	"strconv"
 )
 
 type BusinessServiceImpl struct {
@@ -19,8 +21,25 @@ type BusinessServiceImpl struct {
 func (msi *BusinessServiceImpl) Handle(operation string, paramJSON []byte) (*server.Response, error) {
 
 	defer util.ErrHandle()
+
+	log.Println("处理thrift,operation="+operation+"  paramJSON="+string(paramJSON))
+
+	if operation == "" {
+		log.Panic("Operation is null!")
+	}
+
+	HandleInfo := new(util.InfoCount)
+
+	HandleInfo.RequestUrl = operation
+	HandleInfo.RequestContent = string(paramJSON)
+
+	startTime := time.Now().UnixNano()
+
 	var pooled *pool.Pool
 	addr := strings.Split(operation, "/")
+	if len(addr)<3 {
+		log.Panic("Operation格式为/uri/operation")
+	}
 
 	buffer := bytes.NewBufferString("")
 
@@ -38,34 +57,50 @@ func (msi *BusinessServiceImpl) Handle(operation string, paramJSON []byte) (*ser
 
 	sql := "select service.name,service.namespace,service.port ,api.service_provider_name from service,api where api.service_id = service.service_id and api.uri=?"
 	results, err := Engine.Query(sql,buffer.String())
-
-	if len(string(results[0]["namespace"]))==0 {
-		pooled = thriftserver.GetPool(string(results[0]["name"])  + ":" + string(results[0]["port"]))
-	} else {
-		pooled = thriftserver.GetPool(string(results[0]["name"]) + "." + string(results[0]["namespace"]) + ":" + string(results[0]["port"]))
-	}
-	client, err := pooled.Get()
 	if err != nil {
-		log.Panic("Thrift pool get client error", err)
+		log.Panic("thrift从数据库获取Service失败 ",err)
 	}
 
-	defer pooled.Put(client, false)
+	if len(results)!=0 {
 
-	rawClient, ok := client.(*server.MyServiceClient)
-	if !ok {
-		log.Panic("convert to raw client failed")
+		if len(string(results[0]["namespace"]))==0 {
+			pooled = thriftserver.GetPool(string(results[0]["name"])  + ":" + string(results[0]["port"]))
+		} else {
+			pooled = thriftserver.GetPool(string(results[0]["name"]) + "." + string(results[0]["namespace"]) + ":" + string(results[0]["port"]))
+		}
+		client, err := pooled.Get()
+		if err != nil {
+			log.Panic("Thrift pool get client error", err)
+		}
+
+		defer pooled.Put(client, false)
+
+		rawClient, ok := client.(*server.MyServiceClient)
+		if !ok {
+			log.Panic("convert to raw client failed")
+		}
+
+		req := server.NewRequest()
+
+		req.ServiceName = string(results[0]["service_provider_name"])
+		req.Operation = operation
+		req.ParamJSON = paramJSON
+
+		res, err := rawClient.Send(req)
+
+		endTime := time.Now().UnixNano()
+		HandleInfo.UsedTime = endTime - startTime
+		HandleInfo.ResponseContent = "ResponseCode="+strconv.FormatInt(int64(res.ResponeCode),10)+"  content="+string(res.ResponseJSON)
+		util.SendToKafka(HandleInfo)
+
+		if err != nil {
+			log.Println(err)
+		}
+		log.Println("结束处理thrift,response="+res.String())
+		return res, err
 	}
 
-	req := server.NewRequest()
+	log.Println("没有查询到thrift相关服务")
 
-	req.ServiceName = string(results[0]["service_provider_name"])
-	req.Operation = operation
-	req.ParamJSON = paramJSON
-
-	res, err := rawClient.Send(req)
-	if err != nil {
-		log.Println(err)
-	}
-
-	return res, err
+	return nil,nil
 }
