@@ -40,11 +40,21 @@ func NewRouteTable(store Store) *RouteTable {
 }
 
 func (r *RouteTable) Select(req *fasthttp.Request) *RouteResult {
+    var maxLen int
+    var realResult *API
+
     for _, api := range r.apis {
         if api.matches(req) {
-            return &RouteResult{
-                API: api,
+            if len(api.URI) > maxLen {
+                maxLen = len(api.URI)
+                realResult = api
             }
+        }
+    }
+
+    if realResult != nil {
+        return &RouteResult{
+            API: realResult,
         }
     }
 
