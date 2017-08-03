@@ -199,14 +199,12 @@
         function viewOrHide() {
             var tableObj = document.getElementById("ApiTable");
             for (var i = 1; i < tableObj.rows.length; i++) {    //遍历Table的所有Row
-                rowId = tableObj.rows[i].cells[0].innerText;
                 $("tr#"+tableObj.rows[i].id).show();
             }
 
             for (var i = 1; i < tableObj.rows.length; i++) {    //遍历Table的所有Row
                 tableInfo = tableObj.rows[i].cells[6].innerText;   //获取Table中单元格的内容
                 if (tableInfo != $('#Api_Service_id').val()) {
-                    rowId = tableObj.rows[i].cells[0].innerText;
                     $("tr#"+tableObj.rows[i].id).hide();
                 }
             }
