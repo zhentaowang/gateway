@@ -58,7 +58,6 @@
             <form class="form-inline" role="form" id="form1" action="/gateway/admin/add_api" method="post">
                     <input type="hidden" class="form-control" name="flag" id="flag" placeholder="不需要填写">
                     <input type="hidden" class="form-control" name="Api_Api_id" id="Api_Api_id" placeholder="不需要填写">
-                    <input type="hidden" class="form-control" name="flag" id="flag" placeholder="不需要填写">
                 <table class="gridtable">
                     <tr>
                         <td>
@@ -71,7 +70,8 @@
                             <div class="form-group  col-lg-3">
                                 <label class="control-label" for="Api_uri">uri：</label>
                                 <input type="text" class="form-control" name="Api_uri" id="Api_uri" placeholder="必须填写，填写一个正则表达式，第一级为项目名称">
-                        </div>
+                                <input name="IfStr" id="IfStr" type="checkbox" value="" checked="checked"/>$
+                            </div>
                         </td>
                         <td>
                             <div class="form-group  col-lg-3">
@@ -387,6 +387,9 @@
                         Api_name.focus();
                         return false
                     }
+                };
+                if ($("#IfStr").prop( "checked" )==true) {
+                    $("#Api_uri").val($("#Api_uri").val()+"$");
                 }
                 var params = $("#form1").serialize();
                 console.log("params="+params)
