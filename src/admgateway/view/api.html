@@ -112,7 +112,7 @@
                         <td>
                             <div class="form-group  col-lg-3">
                                 <label class="control-label" for="Api_Service_id">service_id：</label>
-                                <select id="Api_Service_id" name="Api_Service_id">
+                                <select id="Api_Service_id" name="Api_Service_id" onchange="viewOrHide()">
                                     {{range .ServiceData}}
                                     <option value={{.ServiceId}}>{{.Namespace}}.{{.Name}}:{{.Port}}</option>
                                     {{end}}
@@ -196,6 +196,19 @@
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
     <script>
+        function viewOrHide() {
+            var tableObj = document.getElementById("ApiTable");
+            for (var i = 1; i < tableObj.rows.length; i++) {    //遍历Table的所有Row
+                $("tr#"+tableObj.rows[i].id).show();
+            }
+
+            for (var i = 1; i < tableObj.rows.length; i++) {    //遍历Table的所有Row
+                tableInfo = tableObj.rows[i].cells[6].innerText;   //获取Table中单元格的内容
+                if (tableInfo != $('#Api_Service_id').val()) {
+                    $("tr#"+tableObj.rows[i].id).hide();
+                }
+            }
+        }
         function validateUri_required(field,id,alerttxt)
         {
             var id_value
