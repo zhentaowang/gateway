@@ -63,7 +63,9 @@ func (a *API) isMethodMatches(req *fasthttp.Request) bool {
 }
 
 func (a *API) isURIMatches(req *fasthttp.Request) bool {
-        return a.Pattern.Match(req.URI().RequestURI())
+        uri := strings.Split(string(req.URI().RequestURI()), "?")
+
+        return a.Pattern.Match([]byte(uri[0]))
 }
 
 // RenderMock dender mock response
