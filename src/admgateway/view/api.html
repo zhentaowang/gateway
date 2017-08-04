@@ -6,16 +6,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
     <title>表管理界面</title>
     <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
     <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
+    <link href="//cdn.bootcss.com/tether/1.3.6/css/tether.min.css" rel="stylesheet">
     <style type="text/css">
         {{template "css"}}
     </style>
 </head>
 
 <body>
-
+<div class="wrapper">
+    <div class="fresh-table full-color-orange full-screen-table">
 <div id="LoginBox">
     <form class="form-inline" role="form" action="/login" method="post">
     <div class="row1">
@@ -37,7 +41,7 @@
     </form>
 </div>
     <div class="page-content" style="padding: 20px;">
-        <nav class="navbar navbar-default">
+        <nav class=" full-color-orange">
             <div class="container-fluid">
                 <ul class="nav navbar-nav">
                     <li class="active"><a href="#">api表</a></li>
@@ -45,7 +49,7 @@
                     <li><a href="service.html">service表</a></li>
                     <li>
                         <form class="form-inline" role="form" id="uploadFile" name="uploadFile" action="/uploadFile" method="post" enctype="multipart/form-data">
-                            <input type="file" name="fileUpload" />
+                            <input type="file" name="fileUpload" class="file"/>
                             <input type="button" value="上传文件" id="upload"/>
                         </form>
                     </li>
@@ -58,7 +62,7 @@
             <form class="form-inline" role="form" id="form1" action="/gateway/admin/add_api" method="post">
                     <input type="hidden" class="form-control" name="flag" id="flag" placeholder="不需要填写">
                     <input type="hidden" class="form-control" name="Api_Api_id" id="Api_Api_id" placeholder="不需要填写">
-                <table class="gridtable">
+                <table class="fresh-table full-color-orange full-screen-table table">
                     <tr>
                         <td>
                             <div class="form-group  col-lg-3">
@@ -76,7 +80,7 @@
                         <td>
                             <div class="form-group  col-lg-3">
                                 <label class="control-label" for="Api_method">method：</label>
-                                <select name="Api_method" id="Api_method">
+                                <select name="Api_method" id="Api_method" class="selectpicker">
                                     <option value="POST">POST</option>
                                     <option value="GET">GET</option>
                                     <option value="*">*</option>
@@ -86,7 +90,7 @@
                         <td>
                             <div class="form-group  col-lg-3">
                                 <label class="control-label" for="Api_need_login">need_login：</label>
-                                <select name="Api_need_login" id="Api_need_login">
+                                <select name="Api_need_login" id="Api_need_login" class="selectpicker">
                                     <option value="0">不需要</option>
                                 <option value="1">需要</option>
                                 </select>
@@ -103,7 +107,7 @@
                         <td>
                             <div class="form-group  col-lg-3">
                                 <label class="control-label" for="Api_status">status：</label>
-                                <select name="Api_status" id="Api_status">
+                                <select name="Api_status" id="Api_status" class="selectpicker">
                                     <option value="0">不生效</option>
                                     <option value="1">生效</option>
                                 </select>
@@ -112,9 +116,11 @@
                         <td>
                             <div class="form-group  col-lg-3">
                                 <label class="control-label" for="Api_Service_id">service_id：</label>
-                                <select id="Api_Service_id" name="Api_Service_id" onchange="viewOrHide()">
+                                <!--<select id="Api_Service_id" name="Api_Service_id" onchange="viewOrHide()" class="btn btn-warning" >-->
+                                <select id="Api_Service_id" name="Api_Service_id" onchange="viewOrHide()" class="selectpicker" >
                                     {{range .ServiceData}}
-                                    <option value={{.ServiceId}}>{{.Namespace}}.{{.Name}}:{{.Port}}</option>
+                                    <!--<option value={{.ServiceId}} class="hselect">{{.Namespace}}.{{.Name}}:{{.Port}}</option>-->
+                                    <option value={{.ServiceId}} >{{.Namespace}}.{{.Name}}:{{.Port}}</option>
                                     {{end}}
                                 </select>
                             </div>
@@ -154,7 +160,8 @@
             </form>
         </div>
 
-        <table class="gridtable" id="ApiTable">
+        <!--<table class="gridtable" id="ApiTable">-->
+        <table class="fresh-table full-color-orange full-screen-table table" id="ApiTable">
             <thead>
                 <tr>
                     <th>name</th>
@@ -195,6 +202,10 @@
     </div>
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+    <script src="//cdn.bootcss.com/tether/1.3.6/js/tether.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.1/bootstrap-table.min.js"></script>
+    <script src="//cdn.bootcss.com/bootstrap/4.0.0-alpha.5/js/bootstrap.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
     <script>
         function viewOrHide() {
             var tableObj = document.getElementById("ApiTable");
@@ -461,7 +472,53 @@
                 location.reload()
             }
         }
+
+
+
+
+
+
+
+        var $table = $('#ApiTable'),
+            $alertBtn = $('#alertBtn'),
+            full_screen = false,
+            window_height;
+
+        $().ready(function(){
+
+            window_height = $(window).height();
+            table_height = window_height - 20;
+
+
+            $table.bootstrapTable({
+                toolbar: ".toolbar",
+
+                showRefresh: false,
+                search: true,
+                showToggle: false,
+                showColumns: false,
+                pagination: true,
+                striped: true,
+                sortable: true,
+                height: table_height,
+                pageSize: 25,
+                pageList: [25,50,100],
+        icons: {
+            refresh: 'fa fa-refresh',
+                toggle: 'fa fa-th-list',
+                columns: 'fa fa-columns',
+                detailOpen: 'fa fa-plus-circle',
+                detailClose: 'fa fa-minus-circle'
+        }
+        });
+
+        $(window).resize(function () {
+            $table.bootstrapTable('resetView');
+        });
+        });
     </script>
+    </div>
+</div>
 </body>
 
 </html>

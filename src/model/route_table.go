@@ -114,6 +114,7 @@ func (r *RouteTable) AddNewService(service *Service) error {
     _, ok := r.services[key]
 
     if ok {
+        log.Print("Service  "+key+"   ")
         return ErrServiceExists
     }
 
@@ -135,6 +136,7 @@ func (r *RouteTable) AddNewAPI(api *API) error {
     _, ok := r.apis[apiKey]
 
     if ok {
+        log.Print("URI  "+apiKey+"   ")
         return ErrAPIExists
     }
 
