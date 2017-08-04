@@ -86,12 +86,12 @@
         <table class="fresh-table full-color-orange full-screen-table table" id="ServiceTable">
             <thead>
                 <tr>
-                    <th>service_id</th>
-                    <th>namespace</th>
-                    <th>name</th>
+                    <th data-sortable="true">service_id</th>
+                    <th data-sortable="true">namespace</th>
+                    <th data-sortable="true">name</th>
                     <th>desc</th>
-                    <th>port</th>
-                    <th>protocol</th>
+                    <th data-sortable="true">port</th>
+                    <th data-sortable="true">protocol</th>
                     <th>操作</th>
                 </tr>
             </thead>
@@ -281,8 +281,8 @@
                 striped: true,
                 sortable: true,
                 height: table_height,
-                pageSize: 25,
-                pageList: [25,50,100],
+                pageSize: 100000,
+                pageList: [25,50,100,100000],
                 icons: {
                     refresh: 'fa fa-refresh',
                     toggle: 'fa fa-th-list',

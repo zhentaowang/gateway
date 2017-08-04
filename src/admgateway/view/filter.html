@@ -74,10 +74,10 @@
         <table class="fresh-table full-color-orange full-screen-table table" id="FilterTable">
             <thead>
                 <tr>
-                    <th>filter_id</th>
-                    <th>name</th>
-                    <th>api_id</th>
-                    <th>seq</th>
+                    <th data-sortable="true">filter_id</th>
+                    <th data-sortable="true">name</th>
+                    <th data-sortable="true">api_id</th>
+                    <th data-sortable="true">seq</th>
                     <th>操作</th>
                 </tr>
             </thead>
@@ -226,8 +226,8 @@
                 striped: true,
                 sortable: true,
                 height: table_height,
-                pageSize: 25,
-                pageList: [25,50,100],
+                pageSize: 100000,
+                pageList: [25,50,100,100000],
                 icons: {
                     refresh: 'fa fa-refresh',
                     toggle: 'fa fa-th-list',

@@ -164,17 +164,17 @@
         <table class="fresh-table full-color-orange full-screen-table table" id="ApiTable">
             <thead>
                 <tr>
-                    <th>name</th>
-                    <th>uri</th>
-                    <th>method</th>
-                    <th>need_login</th>
-                    <th>display_name</th>
-                    <th>status</th>
-                    <th>service_id</th>
-                    <th>service_provider_name</th>
-                    <th>mock</th>
-                    <th>desc</th>
-                    <th>ApiId</th>
+                    <th data-sortable="true">name</th>
+                    <th data-sortable="true">uri</th>
+                    <th data-sortable="true">method</th>
+                    <th data-sortable="true">need_login</th>
+                    <th data-sortable="true">display_name</th>
+                    <th data-sortable="true">status</th>
+                    <th data-sortable="true">service_id</th>
+                    <th data-sortable="true">service_provider_name</th>
+                    <th data-sortable="true">mock</th>
+                    <th data-sortable="true">desc</th>
+                    <th data-sortable="true">ApiId</th>
                     <th>操作</th>
                 </tr>
             </thead>
@@ -495,14 +495,20 @@
 
                 showRefresh: false,
                 search: true,
-                showToggle: false,
-                showColumns: false,
+                showToggle: true,
+                showColumns: true,
                 pagination: true,
                 striped: true,
                 sortable: true,
                 height: table_height,
-                pageSize: 25,
-                pageList: [25,50,100],
+                pageSize: 100000,
+                pageList: [25,50,100,100000],
+                formatShowingRows: function(pageFrom, pageTo, totalRows){
+                    //do nothing here, we don't want to show the text "showing x of y from..."
+                },
+                formatRecordsPerPage: function(pageNumber){
+                    return pageNumber + " rows visible";
+                },
         icons: {
             refresh: 'fa fa-refresh',
                 toggle: 'fa fa-th-list',
