@@ -495,14 +495,14 @@
 
                 showRefresh: false,
                 search: true,
-                showToggle: false,
-                showColumns: false,
+                showToggle: true,
+                showColumns: true,
                 pagination: true,
                 striped: true,
                 sortable: true,
                 height: table_height,
-                pageSize: 25,
-                pageList: [25,50,100],
+                pageSize: 100000,
+                pageList: [25,50,100,100000],
                 formatShowingRows: function(pageFrom, pageTo, totalRows){
                     //do nothing here, we don't want to show the text "showing x of y from..."
                 },
