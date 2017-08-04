@@ -419,6 +419,7 @@
         function modifyData(id) {
             var tdArray = document.querySelectorAll('#ApiTable #tr-'+id+' td:not(.operation)');
             console.log("tdArray="+tdArray[0])
+            $("#IfStr").attr("checked", false)
             $('#Api_name').val(tdArray[0].innerText);
             $('#Api_uri').val(tdArray[1].innerText);
             $('#Api_method').val(tdArray[2].innerText);
