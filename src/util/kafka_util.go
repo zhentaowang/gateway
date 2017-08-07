@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"strings"
 	"log"
+	"fmt"
 )
 
 type InfoCount struct {
@@ -14,12 +15,17 @@ type InfoCount struct {
 	UsedTime int64	`json:"UsedTime"`
 }
 
-func SendToKafka(info *InfoCount)  {
 
-	defer ErrHandle()
+func SendToKafka(info *InfoCount , topic string)  {
+
+	defer func() {
+		if err := recover(); err != nil {
+			fmt.Println("ERROR!! ",err)
+		}
+	}()
 	jsons, errs := json.Marshal(info)
 	if errs != nil {
-		panic(errs)
+		log.Panic(errs)
 	}
 
 	//logger := log.New(os.Stderr, "[srama]", log.LstdFlags|log.Llongfile)
@@ -31,14 +37,14 @@ func SendToKafka(info *InfoCount)  {
 		config.Producer.Return.Successes = true
 		producer, err := sarama.NewSyncProducer(strings.Split(conf.ConfProperties["kafka"]["kafka_host"], ","), config)
 		if err != nil {
-			panic(err)
+			log.Panic(err)
 		}
 
 		defer producer.Close()
 
 		msg := &sarama.ProducerMessage{}
 
-		msg.Topic = conf.ConfProperties["kafka"]["kafka_topic"]
+		msg.Topic = conf.ConfProperties["kafka"][topic]
 		msg.Partition = int32(-1)
 		msg.Key = sarama.StringEncoder("info")
 		msg.Value = sarama.ByteEncoder(string(jsons))

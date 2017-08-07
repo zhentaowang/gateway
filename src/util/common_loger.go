@@ -90,7 +90,11 @@ func SetLogFlag()  {
 
 func ErrHandle()  {
 	if err := recover(); err != nil {
+                errInfo := new(InfoCount)
+		v := fmt.Sprintf("ERROR!!\n%s--\n  stack \n%s", err,string(debug.Stack()))
+		errInfo.ResponseContent = v
 		fmt.Println("ERROR!! ",err)
 		debug.PrintStack()
+                SendToKafka(errInfo,"gatewayErr")
 	}
 }

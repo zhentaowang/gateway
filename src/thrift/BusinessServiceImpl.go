@@ -91,7 +91,7 @@ func (msi *BusinessServiceImpl) Handle(operation string, paramJSON []byte) (*ser
 		endTime := time.Now().UnixNano()
 		HandleInfo.UsedTime = endTime - startTime
 		HandleInfo.ResponseContent = "ResponseCode="+strconv.FormatInt(int64(res.ResponeCode),10)+"  content="+string(res.ResponseJSON)
-		util.SendToKafka(HandleInfo)
+		util.SendToKafka(HandleInfo,"kafka_topic")
 
 		if err != nil {
 			log.Println(err)

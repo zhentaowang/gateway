@@ -23,6 +23,14 @@ spec:
       containers:
         - name: gateway
           image: golang:1.8
+          livenessProbe:
+            httpGet:
+              path: /api.html
+              port: 443
+              host: gateway.platform
+              scheme: HTTP
+            initialDelaySeconds: 90
+            timeoutSeconds: 60
           workingDir: "/go/src/gateway"
           command: ["go", "run", "src/main.go"]
           env:

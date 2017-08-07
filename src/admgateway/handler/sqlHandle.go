@@ -97,13 +97,21 @@ func MInsertApi(data *Api, filter_seq int) {
 	CheckErr(err)
 
 	if total >0 {
-		MDeleteApi(data)
+            affected, err := Engine.Id(data.ApiId).Delete(api)
+            CheckErr(err)
+            log.Println("  have deleted api " + data.Uri +"  id="+strconv.Itoa(data.ApiId)+ "  success " + strconv.FormatInt(affected,10))
 	}
 	affected, err := Engine.Insert(data)
 	CheckErr(err)
 	log.Println("  insert api " +data.Uri+ " success "+strconv.FormatInt(affected,10))
 
 	util.SetData()
+}
+
+func QueryOneApi(user *Api)  {
+    has, err := Engine.Get(user)
+
+    log.Println(has,err)
 }
 
 func MutiInsertApi(data []*Api)  {
@@ -140,7 +148,9 @@ func MInsertService(data *Service)  {
 	CheckErr(err)
 
 	if total >0 {
-		MDeleteService(data)
+		affected, err := Engine.Id(data.ServiceId).Delete(service)
+		CheckErr(err)
+		log.Println("  have deleted service " +data.Namespace+"."+ data.Name +":"+data.Port+"  id="+strconv.Itoa(data.ServiceId)+ " success " + strconv.FormatInt(affected,10))
 	}
 	
 	affected, err := Engine.Insert(data)
@@ -159,7 +169,9 @@ func MInsertFilter(data *Filter)  {
 	CheckErr(err)
 
 	if total >0 {
-		MDeleteFilter(data)
+		affected, err := Engine.Id(data.FilterId).Delete(filter)
+		CheckErr(err)
+		log.Println("  haved deleted filter " + data.Name+"  id="+strconv.Itoa(data.FilterId) + "  success " + strconv.FormatInt(affected,10))
 	}
 
 	affected, err := Engine.Insert(data)
@@ -180,6 +192,11 @@ func MQueryService(data *Service) []Service {
 
 }
 
+func QueryOneService(user *Service)  {
+	has, err := Engine.Get(user)
+
+	log.Println(has,err)
+}
 
 
 func MQueryApi(data *Api) []Api {
