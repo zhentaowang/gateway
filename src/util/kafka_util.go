@@ -6,6 +6,7 @@ import (
 	"strings"
 	"log"
 	"fmt"
+	"runtime/debug"
 )
 
 type InfoCount struct {
@@ -21,8 +22,11 @@ func SendToKafka(info *InfoCount , topic string)  {
 	defer func() {
 		if err := recover(); err != nil {
 			fmt.Println("ERROR!! ",err)
+			v := fmt.Sprintf("ERROR!!\n%s--\n  stack \n%s", err,string(debug.Stack()))
+			SendToDingDing(v)
 		}
 	}()
+
 	jsons, errs := json.Marshal(info)
 	if errs != nil {
 		log.Panic(errs)
