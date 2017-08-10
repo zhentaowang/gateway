@@ -24,7 +24,7 @@
 
 <body>
 <div class="wrapper">
-    <div class="fresh-table full-color-orange full-screen-table">
+    <!--<div class="fresh-table full-color-orange full-screen-table">-->
 <div id="LoginBox">
     <form class="form-inline" role="form" action="/login" method="post">
     <div class="row1">
@@ -67,7 +67,7 @@
             <form class="form-inline" role="form" id="form1" action="/gateway/admin/add_api" method="post">
                     <input type="hidden" class="form-control" name="flag" id="flag" placeholder="不需要填写">
                     <input type="hidden" class="form-control" name="Api_Api_id" id="Api_Api_id" placeholder="不需要填写">
-                <table class="fresh-table full-color-orange full-screen-table table">
+                <table class="fresh-table full-screen-table table">
                     <tr>
                         <td>
                             <div class="form-group  col-lg-3">
@@ -166,7 +166,7 @@
         </div>
 
         <!--<table class="gridtable" id="ApiTable">-->
-        <table class="fresh-table full-color-orange full-screen-table table" id="ApiTable">
+        <table class="fresh-table full-screen-table table" id="ApiTable">
             <thead>
                 <tr>
                     <th data-sortable="true">name</th>
@@ -180,7 +180,7 @@
                     <th data-sortable="true">mock</th>
                     <th data-sortable="true">desc</th>
                     <th data-sortable="true">ApiId</th>
-                    <th>操作</th>
+                    <th >操作</th>
                 </tr>
             </thead>
             <tbody>
@@ -197,8 +197,8 @@
                     <td >{{.Mock}}</td>
                     <td >{{.Desc}}</td>
                     <td >{{.ApiId}}</td>
-                    <td class="operation">
-                        <a href="#" onclick="modifyData({{.ApiId}});">修改</a><a href="#" onclick="deleteData({{.ApiId}});">删除</a>
+                    <td >
+                        <button class="btn btn-xs" onclick="modifyData({{.ApiId}});">修改</button><button class="btn btn-xs" onclick="deleteData({{.ApiId}});">删除</button>
                     </td>
                 </tr>
             {{end}}
@@ -491,7 +491,7 @@
             window_height;
 
         $().ready(function(){
-
+            console.log("i'm in ready");
             window_height = $(window).height();
             table_height = window_height - 20;
 
@@ -523,13 +523,27 @@
                 detailClose: 'fa fa-minus-circle'
         }
         });
-
         $(window).resize(function () {
-            $table.bootstrapTable('resetView');
+                $table.bootstrapTable('resetView');
+            });
         });
-        });
+
+
+        function operateFormatter(value, row, index) {
+            return [
+//                '<a rel="tooltip" title="Like" class="table-action like" href="javascript:void(0)" title="Like">',
+//                    '<i class="fa fa-heart"></i>',
+//                '</a>',
+                '<a rel="tooltip" title="Edit" class="table-action edit" href="javascript:void(0)" title="Edit">',
+                '<button class="fa fa-edit">编辑</button>',
+                '</a>',
+                '<a rel="tooltip" title="Remove" class="table-action remove" href="javascript:void(0)" title="Remove">',
+                '<button class="fa fa-remove">删除</button>',
+                '</a>'
+            ].join('');
+        }
     </script>
-    </div>
+    <!--</div>-->
 </div>
 </body>
 

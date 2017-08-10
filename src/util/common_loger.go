@@ -109,9 +109,11 @@ func ErrHandle()  {
 func SendToDingDing(v string)  {
     host, _ := os.Hostname()
 
+    conf := GetConfigCenterInstance()
+
     post := "{\"msgtype\": \"markdown\",\"markdown\": { \"title\": \"gateway错误详解\",\"text\":\"### <font color=red>详细信息</font>\n"+
             "<font color=green> host:"+host+"</font>\n <p><code>"+ v+"</p></code>\"}}"
-    http.Post("https://oapi.dingtalk.com/robot/send?access_token=87af5fab81c44442bc39824628e9acbbe38e6fdc6c738be4e5b73d63276ca642",
+    http.Post(conf.ConfProperties["kafka"]["DingDing"],
         "application/json",
         strings.NewReader(post))
 }

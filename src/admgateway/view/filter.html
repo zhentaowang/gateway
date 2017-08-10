@@ -23,7 +23,7 @@
 
 <body>
 <div class="wrapper">
-    <div class="fresh-table full-color-orange full-screen-table">
+    <!--<div class="fresh-table full-color-orange full-screen-table">-->
     <div class="page-content" style="padding: 20px;">
         <nav class="full-color-orange">
             <div class="container-fluid">
@@ -37,7 +37,7 @@
         <div style="border: 1px solid #e0e0e0; padding: 10px 0;">
             <form class="form-inline" role="form" id="form2">
                 <input type="hidden" id="Filter_id" name="Filter_id" value="" />
-                <table class="fresh-table full-color-orange full-screen-table table">
+                <table class="fresh-table full-screen-table table">
                     <tr>
                         <td>
                             <div class="form-group  col-lg-2">
@@ -76,7 +76,7 @@
             </form>
         </div>
 
-        <table class="fresh-table full-color-orange full-screen-table table" id="FilterTable">
+        <table class="fresh-table full-screen-table table" id="FilterTable">
             <thead>
                 <tr>
                     <th data-sortable="true">filter_id</th>
@@ -94,7 +94,7 @@
                 <td>{{.ApiId}}</td>
                 <td>{{.Seq}}</td>
                 <td class="operation">
-                    <a href="#" onclick="modifyData({{.FilterId}});">修改</a><a href="#" onclick="deleteData({{.FilterId}});">删除</a>
+                    <button class="btn btn-xs" onclick="modifyData({{.FilterId}});">修改</button><button class="btn btn-xs" onclick="deleteData({{.FilterId}});">删除</button>
                 </td>
             </tr>
             {{end}}
@@ -247,7 +247,7 @@
             });
         });
     </script>
-    </div>
+    <!--</div>-->
 </div>
 </body>
 

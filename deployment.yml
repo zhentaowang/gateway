@@ -26,11 +26,9 @@ spec:
           livenessProbe:
             httpGet:
               path: /api.html
-              host: gateway.platform
-              port: 443
-              scheme: HTTP
-            initialDelaySeconds: 90
-            timeoutSeconds: 60
+              port: 8888
+            initialDelaySeconds: 20
+            timeoutSeconds: 20
             periodSeconds: 60
           workingDir: "/go/src/gateway"
           command: ["go", "run", "src/main.go"]

@@ -42,9 +42,12 @@ func GetToken(username string , password string)  string{
 		log.Panic(err.Error())
 	}
 
-	js_token := js.Get("access_token")
+	token := ""
+	if js != nil {
+		js_token := js.Get("access_token")
 
-	token, _ := js_token.String()
+		token, _ = js_token.String()
+	}
 
 	return token
 }
@@ -53,6 +56,9 @@ func GetPermission(username string,password string,permission string)  (bool,int
 	defer ErrHandle()
 	conf := GetConfigCenterInstance()
 	access_token := GetToken(username,password)
+	if access_token == "" {
+		return false,0
+	}
 	resp, err := http.Get(conf.ConfProperties["oauth_center"]["oauth_addr"]+"/user/permission?access_token="+access_token+"&permission="+permission)
 	if err != nil {
 		log.Panic(err.Error())
@@ -65,7 +71,7 @@ func GetPermission(username string,password string,permission string)  (bool,int
 
 	js, err := simplejson.NewJson(body)
 	if err != nil {
-		log.Panic(err.Error())
+		log.Println(err.Error())
 	}
 
 	js_allowed := js.Get("allowed")
