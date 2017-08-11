@@ -8,7 +8,6 @@ import (
     "sync/atomic"
     "time"
     "github.com/valyala/fasthttp"
-    "log"
     "code.aliyun.com/wyunshare/thrift-server/conf"
 )
 
@@ -131,7 +130,6 @@ func (c *FastHTTPClient) doNonNilReqResp(req *fasthttp.Request, resp *fasthttp.R
     }
 
     bw := c.acquireWriter(conn)
-    log.Print(req)
     err = req.Write(bw)
 
     if resetConnection {

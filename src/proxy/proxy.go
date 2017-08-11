@@ -79,7 +79,15 @@ func (h *HttpProxy) ReverseProxyHandler(ctx *fasthttp.RequestCtx) {
 
     defer util.ErrHandle()
 
-    log.Println("网关开始工作，请求的url = " + string(ctx.Request.RequestURI()) + " \n 请求的HEAD=" + ctx.Request.Header.String() + " \n  请求的 body = " + string(ctx.Request.Body()[:]))
+
+    args := ctx.QueryArgs()
+    isTest := false
+
+    if strings.Compare(string(args.Peek("type")),"gateway_test")==0 {
+        isTest = true
+    } else {
+        log.Println("网关开始工作，请求的url = " + string(ctx.Request.RequestURI()) + " \n 请求的HEAD=" + ctx.Request.Header.String() + " \n  请求的 body = " + string(ctx.Request.Body()[:]))
+    }
     result := h.routeTable.Select(&ctx.Request)
 
     if nil == result {
@@ -93,30 +101,34 @@ func (h *HttpProxy) ReverseProxyHandler(ctx *fasthttp.RequestCtx) {
     if result.Err != nil {
         if result.API.Mock != nil {
             result.API.RenderMock(ctx)
-	    if result.Res!=nil {
-                log.Println("网关结束处理  "+string(ctx.Request.RequestURI())+ "，返回的响应为 HEAD = " + result.Res.Header.String()+" \n  返回的响应 BODY = "+ string(result.Res.Body()))
-	    } else {
-                log.Println("网关结束处理  "+string(ctx.Request.RequestURI())+"返回的响应为空")
-	    }
+            if isTest == false {
+                    log.Println("网关结束处理  "+string(ctx.Request.RequestURI())+ "，返回的是mock数据， HEAD = " + result.Res.Header.String())
+            }
             result.Release()
             return
         }
 
         ctx.SetStatusCode(result.Code)
-        if result.Res!=nil {
-            log.Println("网关结束处理  "+string(ctx.Request.RequestURI())+ "，返回的响应为 HEAD = " + result.Res.Header.String()+" \n  返回的响应 BODY = "+ string(result.Res.Body()))
-        } else {
-            log.Println("网关结束处理  "+string(ctx.Request.RequestURI())+"返回的响应为空")
+        if isTest == false {
+            if result.Res!=nil {
+                log.Println("网关结束处理  "+string(ctx.Request.RequestURI())+ "，  出错，返回的响应为 HEAD = " + result.Res.Header.String()+",error="+result.Err.Error())
+            } else {
+                log.Println("网关结束处理  "+string(ctx.Request.RequestURI())+"，  出错，返回的响应为空,error="+result.Err.Error())
+            }
         }
+
         result.Release()
         return
     } else {
         h.writeResult(ctx, result.Res)
-	if result.Res!=nil {
-		log.Println("网关结束处理  "+string(ctx.Request.RequestURI())+ "，返回的响应为 HEAD = " + result.Res.Header.String()+" \n  返回的响应 BODY = "+ string(result.Res.Body()))
-	} else {
-		log.Println("网关结束处理  "+string(ctx.Request.RequestURI())+",返回的响应为空")
-	}
+        if isTest == false {
+            if result.Res!=nil {
+                log.Println("网关结束处理  "+string(ctx.Request.RequestURI())+ "，返回的响应为 HEAD = " + result.Res.Header.String())
+            } else {
+                log.Println("网关结束处理  "+string(ctx.Request.RequestURI())+",返回的响应为空")
+            }
+        }
+
         result.Release()
         return
     }
@@ -179,7 +191,6 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
         outReq.Header.Set("user_id",string(outReq.PostArgs().Peek("user_id")))
 
         res, err := h.fastHTTPClient.Do(outReq, service.GetHost())
-        log.Println("outReq="+outReq.String())
         c.SetEndAt(time.Now().UnixNano())
         result.Res = res
 
@@ -197,7 +208,6 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
             result.Code = resCode
             return
         }
-        log.Printf("Backend server[%s] responsed, code <%d>, body<%s>", service.GetHost(), res.StatusCode(), res.Body())
     } else if service.Protocol == "thrift" {
         req := server.NewRequest()
 
@@ -252,7 +262,7 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
         log.Println("网关处理thrift请求，paramJson= "+string(req.ParamJSON)+"  ,operation= "+req.Operation+"  ,ServiceName="+req.ServiceName)
         res, err := rawClient.Send(req)
 	if res != nil {
-		log.Println("网关结束处理thrift请求，ResponseCode="+strconv.FormatInt(int64(res.ResponeCode),10)+"  ,ResponseJson="+string(res.ResponseJSON))
+		log.Println("网关结束处理thrift请求，ResponseCode="+strconv.FormatInt(int64(res.ResponeCode),10))
 	} else {
 		log.Println("网关结束处理thrift请求，返回的响应为空")
 	}

@@ -25,7 +25,7 @@ spec:
           image: golang:1.8
           livenessProbe:
             httpGet:
-              path: /api.html
+              path: /api.html?type=gateway_test
               port: 8888
             initialDelaySeconds: 20
             timeoutSeconds: 20

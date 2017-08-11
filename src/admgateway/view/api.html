@@ -125,7 +125,7 @@
                                 <select id="Api_Service_id" name="Api_Service_id" onchange="viewOrHide()" class="selectpicker" >
                                     {{range .ServiceData}}
                                     <!--<option value={{.ServiceId}} class="hselect">{{.Namespace}}.{{.Name}}:{{.Port}}</option>-->
-                                    <option value={{.ServiceId}} >{{.Namespace}}.{{.Name}}:{{.Port}}</option>
+                                    <option value={{.ServiceId}} >{{.Name}}.{{.Namespace}}:{{.Port}}</option>
                                     {{end}}
                                 </select>
                             </div>
@@ -437,6 +437,7 @@
             $('#Api_desc').val(tdArray[9].innerText);
             $('#Api_Api_id').val(tdArray[10].innerText);
             $('#flag').val(-1)
+            document.getElementById("Api_uri").focus();
         }
 
         var xmlobj; //定义XMLHttpRequest对象
@@ -528,20 +529,6 @@
             });
         });
 
-
-        function operateFormatter(value, row, index) {
-            return [
-//                '<a rel="tooltip" title="Like" class="table-action like" href="javascript:void(0)" title="Like">',
-//                    '<i class="fa fa-heart"></i>',
-//                '</a>',
-                '<a rel="tooltip" title="Edit" class="table-action edit" href="javascript:void(0)" title="Edit">',
-                '<button class="fa fa-edit">编辑</button>',
-                '</a>',
-                '<a rel="tooltip" title="Remove" class="table-action remove" href="javascript:void(0)" title="Remove">',
-                '<button class="fa fa-remove">删除</button>',
-                '</a>'
-            ].join('');
-        }
     </script>
     <!--</div>-->
 </div>
