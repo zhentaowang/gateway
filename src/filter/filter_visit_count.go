@@ -25,7 +25,7 @@ func (inf *VisitCount) Post(c Context)  (int, error){
 	handleInfo.ResponseContent = c.GetProxyResponse().String()
 	handleInfo.RequestContent = c.GetOriginRequestCtx().Request.String()
 
-	util.SendToKafka(handleInfo)
+	util.SendToKafka(handleInfo,"kafka_topic")
 
 	return c.GetProxyResponse().StatusCode(), nil
 }

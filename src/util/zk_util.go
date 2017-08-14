@@ -3,10 +3,9 @@ package util
 import (
 	"github.com/samuel/go-zookeeper/zk"
 	"time"
-	"encoding/binary"
 	"log"
-	"bytes"
 	"strings"
+	"strconv"
 )
 
 type ZookeeperConfig struct {
@@ -31,9 +30,12 @@ func SetData()  {
 
 	cur := time.Now()
 	timestamp := cur.UnixNano()
+	timeStr:=strconv.FormatInt(timestamp,10)
 
-	b_buf := bytes.NewBuffer([]byte{})
-	binary.Write(b_buf, binary.BigEndian, timestamp)
+	//b_buf := bytes.NewBuffer([]byte{})
+	//binary.Write(b_buf, binary.BigEndian, timestamp)
 
-	conn.Set(conf.ConfProperties["zookeeper"]["zookeeper_path"], b_buf.Bytes(), stat.Version)
+	conn.Set(conf.ConfProperties["zookeeper"]["zookeeper_path"], []byte(timeStr), stat.Version)
+
+	log.Println("设置zookeepers时间戳 "+timeStr)
 }

@@ -142,7 +142,7 @@ func (r *RouteTable) AddNewAPI(api *API) error {
 
     err := api.init(r.services)
     if nil != err {
-        log.Panic(err, "API init error")
+        log.Panic(err, "\n API init error")
     }
 
     r.apis[apiKey] = api

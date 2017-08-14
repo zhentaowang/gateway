@@ -3,7 +3,6 @@
 package main
 
 import (
-    //"gateway/src/admin"
     "gateway/src/model"
     "log"
     "gateway/src/proxy"

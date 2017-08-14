@@ -24,7 +24,7 @@
 
 <body>
 <div class="wrapper">
-    <div class="fresh-table full-color-orange full-screen-table">
+    <!--<div class="fresh-table full-color-orange full-screen-table">-->
 <div id="LoginBox">
     <form class="form-inline" role="form" action="/login" method="post">
     <div class="row1">
@@ -67,7 +67,7 @@
             <form class="form-inline" role="form" id="form1" action="/gateway/admin/add_api" method="post">
                     <input type="hidden" class="form-control" name="flag" id="flag" placeholder="不需要填写">
                     <input type="hidden" class="form-control" name="Api_Api_id" id="Api_Api_id" placeholder="不需要填写">
-                <table class="fresh-table full-color-orange full-screen-table table">
+                <table class="fresh-table full-screen-table table">
                     <tr>
                         <td>
                             <div class="form-group  col-lg-3">
@@ -97,7 +97,7 @@
                                 <label class="control-label" for="Api_need_login">need_login：</label>
                                 <select name="Api_need_login" id="Api_need_login" class="selectpicker">
                                     <option value="0">不需要</option>
-                                <option value="1">需要</option>
+                                    <option value="1">需要</option>
                                 </select>
                             </div>
                         </td>
@@ -125,7 +125,7 @@
                                 <select id="Api_Service_id" name="Api_Service_id" onchange="viewOrHide()" class="selectpicker" >
                                     {{range .ServiceData}}
                                     <!--<option value={{.ServiceId}} class="hselect">{{.Namespace}}.{{.Name}}:{{.Port}}</option>-->
-                                    <option value={{.ServiceId}} >{{.Namespace}}.{{.Name}}:{{.Port}}</option>
+                                    <option value={{.ServiceId}} >{{.Name}}.{{.Namespace}}:{{.Port}}</option>
                                     {{end}}
                                 </select>
                             </div>
@@ -166,7 +166,7 @@
         </div>
 
         <!--<table class="gridtable" id="ApiTable">-->
-        <table class="fresh-table full-color-orange full-screen-table table" id="ApiTable">
+        <table class="fresh-table full-screen-table table" id="ApiTable">
             <thead>
                 <tr>
                     <th data-sortable="true">name</th>
@@ -180,7 +180,7 @@
                     <th data-sortable="true">mock</th>
                     <th data-sortable="true">desc</th>
                     <th data-sortable="true">ApiId</th>
-                    <th>操作</th>
+                    <th >操作</th>
                 </tr>
             </thead>
             <tbody>
@@ -197,8 +197,8 @@
                     <td >{{.Mock}}</td>
                     <td >{{.Desc}}</td>
                     <td >{{.ApiId}}</td>
-                    <td class="operation">
-                        <a href="#" onclick="modifyData({{.ApiId}});">修改</a><a href="#" onclick="deleteData({{.ApiId}});">删除</a>
+                    <td >
+                        <button class="btn btn-xs" onclick="modifyData({{.ApiId}});">修改</button><button class="btn btn-xs" onclick="deleteData({{.ApiId}});">删除</button>
                     </td>
                 </tr>
             {{end}}
@@ -437,6 +437,7 @@
             $('#Api_desc').val(tdArray[9].innerText);
             $('#Api_Api_id').val(tdArray[10].innerText);
             $('#flag').val(-1)
+            document.getElementById("Api_uri").focus();
         }
 
         var xmlobj; //定义XMLHttpRequest对象
@@ -491,7 +492,7 @@
             window_height;
 
         $().ready(function(){
-
+            console.log("i'm in ready");
             window_height = $(window).height();
             table_height = window_height - 20;
 
@@ -523,13 +524,13 @@
                 detailClose: 'fa fa-minus-circle'
         }
         });
-
         $(window).resize(function () {
-            $table.bootstrapTable('resetView');
+                $table.bootstrapTable('resetView');
+            });
         });
-        });
+
     </script>
-    </div>
+    <!--</div>-->
 </div>
 </body>
 

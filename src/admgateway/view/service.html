@@ -24,7 +24,7 @@
 
 <body>
 <div class="wrapper">
-    <div class="fresh-table full-color-orange full-screen-table">
+    <!--<div class="fresh-table full-color-orange full-screen-table">-->
     <div class="page-content" style="padding: 20px;">
         <nav class="full-color-orange">
             <div class="container-fluid">
@@ -39,7 +39,7 @@
         <div style="border: 1px solid #e0e0e0; padding: 10px 0;">
             <form class="form-inline" role="form" id="form3">
                 <input type="hidden" id="Service_id" name="Service_id" value="" />
-                <table class="fresh-table full-color-orange full-screen-table table">
+                <table class="fresh-table full-screen-table table">
                     <tr>
                         <td>
                             <div class="form-group  col-lg-2">
@@ -88,7 +88,7 @@
             </form>
         </div>
 
-        <table class="fresh-table full-color-orange full-screen-table table" id="ServiceTable">
+        <table class="fresh-table full-screen-table table" id="ServiceTable">
             <thead>
                 <tr>
                     <th data-sortable="true">service_id</th>
@@ -110,7 +110,7 @@
                 <td>{{.Port}}</td>
                 <td>{{.Protocol}}</td>
                 <td class="operation">
-                    <a href="#" onclick="modifyData({{.ServiceId}});">修改</a><a href="#" onclick="deleteData({{.ServiceId}});">删除</a>
+                    <button class="btn btn-xs" onclick="modifyData({{.ServiceId}});">修改</button><button class="btn btn-xs" onclick="deleteData({{.ServiceId}});">删除</button>
                 </td>
             </tr>
             {{end}}
@@ -216,6 +216,7 @@
             $('#Service_desc').val(tdArray[3].innerText);
             $('#Service_port').val(tdArray[4].innerText);
             $('#Service_protocol').val(tdArray[5].innerText);
+            document.getElementById("Service_namespace").focus();
         }
 
         var xmlobj; //定义XMLHttpRequest对象
@@ -302,7 +303,7 @@
             });
         });
     </script>
-    </div>
+    <!--</div>-->
 </div>
 </body>
 

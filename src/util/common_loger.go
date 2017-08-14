@@ -8,6 +8,8 @@ import (
 	"sync"
 	"fmt"
 	"runtime/debug"
+	"net/http"
+	"strings"
 )
 
 var creLog sync.Once
@@ -90,7 +92,28 @@ func SetLogFlag()  {
 
 func ErrHandle()  {
 	if err := recover(); err != nil {
+                errInfo := new(InfoCount)
+
+		v := fmt.Sprintf("ERROR!!\n%s--\n  stack \n%s", err,string(debug.Stack()))
+		errInfo.ResponseContent = v
+
 		fmt.Println("ERROR!! ",err)
 		debug.PrintStack()
+
+                SendToKafka(errInfo,"gatewayErr")
+
+                SendToDingDing(v)
 	}
+}
+
+func SendToDingDing(v string)  {
+    host, _ := os.Hostname()
+
+    conf := GetConfigCenterInstance()
+
+    post := "{\"msgtype\": \"markdown\",\"markdown\": { \"title\": \"gateway错误详解\",\"text\":\"### <font color=red>详细信息</font>\n"+
+            "<font color=green> host:"+host+"</font>\n <p><code>"+ v+"</p></code>\"}}"
+    http.Post(conf.ConfProperties["kafka"]["DingDing"],
+        "application/json",
+        strings.NewReader(post))
 }
