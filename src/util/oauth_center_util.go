@@ -39,7 +39,7 @@ func GetToken(username string , password string)  string{
 
 	js, err := simplejson.NewJson(body)
 	if err != nil {
-		log.Panic(err.Error())
+		log.Println(err.Error())
 	}
 
 	token := ""
