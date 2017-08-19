@@ -90,13 +90,21 @@ func (msi *BusinessServiceImpl) Handle(operation string, paramJSON []byte) (*ser
 
 		endTime := time.Now().UnixNano()
 		HandleInfo.UsedTime = endTime - startTime
-		HandleInfo.ResponseContent = "ResponseCode="+strconv.FormatInt(int64(res.ResponeCode),10)+"  content="+string(res.ResponseJSON)
+
+		if res != nil {
+                    HandleInfo.ResponseContent = "ResponseCode="+strconv.FormatInt(int64(res.ResponeCode),10)+"  content="+string(res.ResponseJSON)
+                    log.Println("结束处理thrift,response="+res.String())
+		} else {
+                    HandleInfo.ResponseContent = "返回了空结果"
+                    log.Println("结束处理thrift,response=空")
+                }
+
 		util.SendToKafka(HandleInfo,"kafka_topic")
 
 		if err != nil {
 			log.Println(err)
 		}
-		log.Println("结束处理thrift,response="+res.String())
+
 		return res, err
 	}
 

@@ -215,7 +215,6 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
         req.ServiceName = "businessService"// 默认servicename = businessService
         if serviceProviderName := result.API.ServiceProviderName; len(serviceProviderName) > 0 {
             req.ServiceName = serviceProviderName
-            log.Println("Requst's ServiceName="+req.ServiceName)
         }
 
         // 解析参数，转化成json格式
@@ -274,8 +273,12 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
             return
         }
         result.Res = &fasthttp.Response{}
-        result.Res.SetStatusCode(int(res.ResponeCode))
-        result.Res.SetBody(res.ResponseJSON)
+        if res != nil {
+            result.Res.SetStatusCode(int(res.ResponeCode))
+            result.Res.SetBody(res.ResponseJSON)
+        } else {
+            result.Res.SetStatusCode(500)
+        }
     } else {
         return
     }
