@@ -2,6 +2,7 @@ package filter
 
 import (
 	"gateway/src/util"
+	"strings"
 )
 
 type VisitCount struct {
@@ -25,7 +26,9 @@ func (inf *VisitCount) Post(c Context)  (int, error){
 	handleInfo.ResponseContent = c.GetProxyResponse().String()
 	handleInfo.RequestContent = c.GetOriginRequestCtx().Request.String()
 
-	util.SendToKafka(handleInfo,"kafka_topic")
+	if strings.Compare(handleInfo.RequestUrl,"/api.html?type=gateway_test") != 0 {
+            util.SendToKafka(handleInfo,"kafka_topic")
+	}
 
 	return c.GetProxyResponse().StatusCode(), nil
 }

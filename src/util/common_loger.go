@@ -35,7 +35,7 @@ func (cg *CommonLog) Init()  {
 
 	lf := filepath.Join(pwd, "log",time.Now().Format("20060102") + ".log")
 
-	logFile, err := os.OpenFile(lf,os.O_APPEND|os.O_CREATE,0666);
+	logFile, err := os.OpenFile(lf,os.O_RDWR|os.O_APPEND|os.O_CREATE,0666);
 	if err != nil {
 		log.Println("创建日志文件失败 " + err.Error());
 	}

@@ -35,6 +35,7 @@ func (h *HttpProxy) CheckToken(req *fasthttp.Request , result *model.RouteResult
     defer res.Body.Close()
 
     if res.StatusCode == 200 {
+
         var oauthResult map[string]interface{}
         body, _ := ioutil.ReadAll(res.Body)
         json.Unmarshal(body, &oauthResult)

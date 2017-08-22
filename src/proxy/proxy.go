@@ -79,7 +79,6 @@ func (h *HttpProxy) ReverseProxyHandler(ctx *fasthttp.RequestCtx) {
 
     defer util.ErrHandle()
 
-
     args := ctx.QueryArgs()
     isTest := false
 
