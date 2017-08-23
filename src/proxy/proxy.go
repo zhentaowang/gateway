@@ -15,6 +15,7 @@ import (
     "strings"
     "code.aliyun.com/wyunshare/thrift-server/conf"
     "strconv"
+    "github.com/juju/errors"
 )
 
 type HttpProxy struct {
@@ -152,6 +153,7 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
             if err != nil {
                 log.Println("认证中心认证失败  "+err.Error())
             } else {
+                result.Err = errors.New("token认证失败")
                 log.Println("认证中心认证失败  ")
             }
 
