@@ -15,7 +15,7 @@ import (
     "strings"
     "code.aliyun.com/wyunshare/thrift-server/conf"
     "strconv"
-    "github.com/juju/errors"
+    "errors"
 )
 
 type HttpProxy struct {
