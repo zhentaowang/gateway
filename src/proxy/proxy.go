@@ -108,6 +108,7 @@ func (h *HttpProxy) ReverseProxyHandler(ctx *fasthttp.RequestCtx) {
         }
 
         ctx.SetStatusCode(result.Code)
+        ctx.Response.AppendBody([]byte(result.Err.Error()))
         if isTest == false {
             if result.Res!=nil {
                 log.Println("网关结束处理  "+string(ctx.Request.RequestURI())+ "，  出错，返回的响应为 HEAD = " + result.Res.Header.String()+",error="+result.Err.Error())
