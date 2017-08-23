@@ -92,6 +92,7 @@ func (h *HttpProxy) ReverseProxyHandler(ctx *fasthttp.RequestCtx) {
 
     if nil == result {
         ctx.SetStatusCode(fasthttp.StatusNotFound)
+        ctx.Response.AppendBody([]byte("请求的url没有找到,或者请求方法不对，或者url为不可用状态"))
         log.Println("请求的url没有找到,或者请求方法不对，或者url为不可用状态")
         return
     }
