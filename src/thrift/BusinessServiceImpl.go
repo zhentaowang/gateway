@@ -65,8 +65,10 @@ func (msi *BusinessServiceImpl) Handle(operation string, paramJSON []byte) (*ser
 
 		if len(string(results[0]["namespace"]))==0 {
 			pooled = thriftserver.GetPool(string(results[0]["name"])  + ":" + string(results[0]["port"]))
+			HandleInfo.Service = string(results[0]["name"])  + ":" + string(results[0]["port"])
 		} else {
 			pooled = thriftserver.GetPool(string(results[0]["name"]) + "." + string(results[0]["namespace"]) + ":" + string(results[0]["port"]))
+			HandleInfo.Service = string(results[0]["name"]) + "." + string(results[0]["namespace"]) + ":" + string(results[0]["port"])
 		}
 		client, err := pooled.Get()
 		if err != nil {
@@ -93,7 +95,7 @@ func (msi *BusinessServiceImpl) Handle(operation string, paramJSON []byte) (*ser
 
 		if res != nil {
                     HandleInfo.ResponseContent = "ResponseCode="+strconv.FormatInt(int64(res.ResponeCode),10)+"  content="+string(res.ResponseJSON)
-                    log.Println("结束处理thrift,response="+res.String())
+                    log.Println("结束处理thrift")
 		} else {
                     HandleInfo.ResponseContent = "返回了空结果"
                     log.Println("结束处理thrift,response=空")

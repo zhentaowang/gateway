@@ -14,6 +14,7 @@ type InfoCount struct {
 	RequestContent string	`json:"RequestContent"`
 	ResponseContent string	`json:"ResponseContent"`
 	UsedTime int64	`json:"UsedTime"`
+	Service string	`json:"Service"`
 }
 
 

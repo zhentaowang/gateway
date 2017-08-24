@@ -185,7 +185,9 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
     }
 
     service := result.API.Service
+    serviceStr := service.Name+"."+service.Namespace+":"+service.Port
     c.SetStartAt(time.Now().UnixNano())
+    c.GetProxyOuterRequest().Header.Set("Service",serviceStr)
     if strings.ToUpper(string(c.GetOriginRequestCtx().Request.Header.Method())) == "OPTIONS" {
         log.Println("Request Method="+string(c.GetOriginRequestCtx().Request.Header.Method()))
     } else if service.Protocol == "http" {
