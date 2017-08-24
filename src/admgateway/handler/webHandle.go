@@ -24,10 +24,6 @@ type WebData struct {
 
 func GetApiFormData(ctx *fasthttp.RequestCtx) (*Api,int) {
 
-	aa := ctx.Request.String()
-
-	println(aa)
-
 	postValues := ctx.PostArgs()
 	FormData := new(Api)
 

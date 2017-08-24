@@ -65,8 +65,10 @@ func (msi *BusinessServiceImpl) Handle(operation string, paramJSON []byte) (*ser
 
 		if len(string(results[0]["namespace"]))==0 {
 			pooled = thriftserver.GetPool(string(results[0]["name"])  + ":" + string(results[0]["port"]))
+			HandleInfo.Service = string(results[0]["name"])  + ":" + string(results[0]["port"])
 		} else {
 			pooled = thriftserver.GetPool(string(results[0]["name"]) + "." + string(results[0]["namespace"]) + ":" + string(results[0]["port"]))
+			HandleInfo.Service = string(results[0]["name"]) + "." + string(results[0]["namespace"]) + ":" + string(results[0]["port"])
 		}
 		client, err := pooled.Get()
 		if err != nil {
@@ -90,13 +92,21 @@ func (msi *BusinessServiceImpl) Handle(operation string, paramJSON []byte) (*ser
 
 		endTime := time.Now().UnixNano()
 		HandleInfo.UsedTime = endTime - startTime
-		HandleInfo.ResponseContent = "ResponseCode="+strconv.FormatInt(int64(res.ResponeCode),10)+"  content="+string(res.ResponseJSON)
+
+		if res != nil {
+                    HandleInfo.ResponseContent = "ResponseCode="+strconv.FormatInt(int64(res.ResponeCode),10)+"  content="+string(res.ResponseJSON)
+                    log.Println("结束处理thrift")
+		} else {
+                    HandleInfo.ResponseContent = "返回了空结果"
+                    log.Println("结束处理thrift,response=空")
+                }
+
 		util.SendToKafka(HandleInfo,"kafka_topic")
 
 		if err != nil {
 			log.Println(err)
 		}
-		log.Println("结束处理thrift,response="+res.String())
+
 		return res, err
 	}
 

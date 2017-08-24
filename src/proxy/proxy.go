@@ -15,6 +15,7 @@ import (
     "strings"
     "code.aliyun.com/wyunshare/thrift-server/conf"
     "strconv"
+    "errors"
 )
 
 type HttpProxy struct {
@@ -79,7 +80,6 @@ func (h *HttpProxy) ReverseProxyHandler(ctx *fasthttp.RequestCtx) {
 
     defer util.ErrHandle()
 
-
     args := ctx.QueryArgs()
     isTest := false
 
@@ -92,6 +92,7 @@ func (h *HttpProxy) ReverseProxyHandler(ctx *fasthttp.RequestCtx) {
 
     if nil == result {
         ctx.SetStatusCode(fasthttp.StatusNotFound)
+        ctx.Response.AppendBody([]byte("请求的url没有找到,或者请求方法不对，或者url为不可用状态"))
         log.Println("请求的url没有找到,或者请求方法不对，或者url为不可用状态")
         return
     }
@@ -109,6 +110,7 @@ func (h *HttpProxy) ReverseProxyHandler(ctx *fasthttp.RequestCtx) {
         }
 
         ctx.SetStatusCode(result.Code)
+        ctx.Response.AppendBody([]byte(result.Err.Error()))
         if isTest == false {
             if result.Res!=nil {
                 log.Println("网关结束处理  "+string(ctx.Request.RequestURI())+ "，  出错，返回的响应为 HEAD = " + result.Res.Header.String()+",error="+result.Err.Error())
@@ -152,6 +154,7 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
             if err != nil {
                 log.Println("认证中心认证失败  "+err.Error())
             } else {
+                result.Err = errors.New("token认证失败")
                 log.Println("认证中心认证失败  ")
             }
 
@@ -182,7 +185,9 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
     }
 
     service := result.API.Service
+    serviceStr := service.Name+"."+service.Namespace+":"+service.Port
     c.SetStartAt(time.Now().UnixNano())
+    c.GetProxyOuterRequest().Header.Set("Service",serviceStr)
     if strings.ToUpper(string(c.GetOriginRequestCtx().Request.Header.Method())) == "OPTIONS" {
         log.Println("Request Method="+string(c.GetOriginRequestCtx().Request.Header.Method()))
     } else if service.Protocol == "http" {
@@ -215,7 +220,6 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
         req.ServiceName = "businessService"// 默认servicename = businessService
         if serviceProviderName := result.API.ServiceProviderName; len(serviceProviderName) > 0 {
             req.ServiceName = serviceProviderName
-            log.Println("Requst's ServiceName="+req.ServiceName)
         }
 
         // 解析参数，转化成json格式
@@ -274,8 +278,12 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
             return
         }
         result.Res = &fasthttp.Response{}
-        result.Res.SetStatusCode(int(res.ResponeCode))
-        result.Res.SetBody(res.ResponseJSON)
+        if res != nil {
+            result.Res.SetStatusCode(int(res.ResponeCode))
+            result.Res.SetBody(res.ResponseJSON)
+        } else {
+            result.Res.SetStatusCode(500)
+        }
     } else {
         return
     }

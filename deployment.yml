@@ -39,9 +39,14 @@ spec:
           - mountPath: "/go/src"
             name: code
             subPath: code/gateway/gateway
+          - mountPath: /etc/localtime
+            name: lt-config
           ports:
             - containerPort: 8888
       volumes:
         - name: code
           persistentVolumeClaim:
             claimName: platform-nas
+        - hostPath:
+            path: /etc/localtime
+          name: lt-config

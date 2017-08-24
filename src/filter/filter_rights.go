@@ -2,16 +2,13 @@ package filter
 
 import (
     "errors"
-    "encoding/json"
     "net/http"
     "io/ioutil"
-    "bytes"
     "log"
-    "github.com/valyala/fasthttp"
-)
-
-var (
-    ErrRightsFailure = errors.New("没有权限")
+    "code.aliyun.com/wyunshare/thrift-server/gen-go/server"
+    "code.aliyun.com/wyunshare/thrift-server"
+    "github.com/bitly/go-simplejson"
+    "gateway/src/util"
 )
 
 /*
@@ -32,36 +29,47 @@ func (v RightsFilter) Name() string {
 // Pre pre filter, before proxy request
 func (v RightsFilter) Pre(c Context) (statusCode int, err error) {
     // 检查用户是否有权限
-    c.GetOriginRequestCtx().QueryArgs().Add("url", string(c.GetOriginRequestCtx().URI().Path()))
+    conf := util.GetConfigCenterInstance()
+    accessToken := c.GetProxyOuterRequest().URI().QueryArgs().Peek("access_token")
 
-    params := make(map[string]interface{})
-    c.GetOriginRequestCtx().QueryArgs().VisitAll(func(k []byte, v []byte) {
-        params[string(k)] = string(v)
-    })
+    log.Println("accessToken="+string(accessToken))
+    res, err := http.Get(conf.ConfProperties["oauth_center"]["oauth_addr"]+"/user/getUser?access_token="+ string(accessToken))
+    body, _ := ioutil.ReadAll(res.Body)
+    log.Println("body="+string(body))
 
-    c.GetProxyOuterRequest().PostArgs().VisitAll(func(k []byte, v []byte) {
-        params[string(k)] = string(v)
-    })
+    thriftreq := server.NewRequest()
+    thriftreq.ServiceName = "PermissionValidate"
+    thriftreq.Operation = "validate"
+    thriftreq.ParamJSON = body
 
-    paramString, _ := json.Marshal(params)
-    log.Println(string(paramString))
-
-    resp, err := http.Post("http://testapi.iairportcloud.com/guest-permission/get-user-permission", "application/json", bytes.NewReader(paramString))
-    //resp, err := http.Post("http://101.37.106.176/guest-permission/get-user-permission", "application/json", bytes.NewReader(paramString))
-    //resp, err := http.Post("http://localhost:8080/get-user-permission", "application/json", bytes.NewReader(paramString))
+    Pool := thriftserver.GetPool(conf.ConfProperties["oauth_center"]["permission_thrift"])
+    pooledClient, err := Pool.Get()
     if err != nil {
-        log.Fatal(err)
+        log.Println("Thrift pool get client error")
+        return 500,err
     }
-    defer resp.Body.Close()
-    var permission map[string]string
-    body, _ := ioutil.ReadAll(resp.Body)
-    json.Unmarshal(body, &permission)
 
-    if permission[params["url"].(string)] == "false" {
-        return fasthttp.StatusForbidden, ErrRightsFailure
+    defer Pool.Put(pooledClient, false)
+    rawClient, ok := pooledClient.(*server.MyServiceClient)
+    if !ok {
+        log.Println("convert to raw client failed")
+        return 503,errors.New("convert to raw client failed")
     }
-    c.GetProxyOuterRequest().PostArgs().Add("role-ids", permission["roleId"])
-    log.Println(permission["roleId"])
-    log.Println(string(c.GetProxyOuterRequest().PostArgs().Peek("role-ids")))
-    return
+
+    thriftres, err := rawClient.Send(thriftreq)
+    if err != nil {
+        log.Println("处理thrift请求失败  ")
+        return http.StatusInternalServerError,err
+    }
+
+    js, err := simplejson.NewJson(thriftres.ResponseJSON)
+    thriftresValue := js.Get("success")
+    Checked ,_:= thriftresValue.Bool()
+
+    if Checked {
+        return http.StatusOK,nil
+    }
+
+    return http.StatusForbidden,errors.New("you don't have permission")
+
 }
