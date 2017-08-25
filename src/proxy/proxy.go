@@ -110,6 +110,9 @@ func (h *HttpProxy) ReverseProxyHandler(ctx *fasthttp.RequestCtx) {
         }
 
         ctx.SetStatusCode(result.Code)
+        if result.Res != nil {
+            ctx.Response.AppendBodyString(string(result.Res.Body())+"\n")
+        }
         ctx.Response.AppendBody([]byte(result.Err.Error()))
         if isTest == false {
             if result.Res!=nil {

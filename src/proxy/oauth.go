@@ -27,6 +27,8 @@ func (h *HttpProxy) CheckToken(req *fasthttp.Request , result *model.RouteResult
     }
 
     result.Res.SetStatusCode(res.StatusCode)
+    body, _ := ioutil.ReadAll(res.Body)
+    result.Res.AppendBody(body)
 
     if err != nil {
         log.Println(err)
