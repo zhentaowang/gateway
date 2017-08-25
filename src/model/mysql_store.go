@@ -52,7 +52,6 @@ func (m *MysqlStore) GetAPIs() ([]*API, error) {
             err := json.Unmarshal(mockStr, mock)
             if err != nil {
                 log.Println(err)
-                return nil, err
             }
         } else {
             mock = nil
