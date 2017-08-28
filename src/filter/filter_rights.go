@@ -59,7 +59,7 @@ func (v RightsFilter) Pre(c Context) (statusCode int, err error) {
     delete(params, "access_token")
     requestParam , _ := json.Marshal(params)
     bodyStr := string(body)
-    bodyStr = bodyStr[:len(bodyStr)-1]+",\"params\":\""+string(requestParam)+"\",\"path\":\""+string(c.GetOriginRequestCtx().RequestURI())+"\"}"
+    bodyStr = bodyStr[:len(bodyStr)-1]+",\"params\":"+string(requestParam)+",\"path\":\""+string(c.GetOriginRequestCtx().RequestURI())+"\"}"
 
     println("bodyStr="+bodyStr)
     thriftreq.ParamJSON = []byte(bodyStr)
