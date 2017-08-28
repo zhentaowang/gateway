@@ -59,15 +59,16 @@ func (v RightsFilter) Pre(c Context) (statusCode int, err error) {
     delete(params, "access_token")
     requestParam , _ := json.Marshal(params)
     bodyStr := string(body)
-    bodyStr = bodyStr[:len(bodyStr)-1]+",params:"+string(requestParam)+",path:"+string(c.GetOriginRequestCtx().RequestURI())+"}"
+    bodyStr = bodyStr[:len(bodyStr)-1]+",\"params\":\""+string(requestParam)+"\",\"path\":\""+string(c.GetOriginRequestCtx().RequestURI())+"\"}"
 
+    println("bodyStr="+bodyStr)
     thriftreq.ParamJSON = []byte(bodyStr)
 
     Pool := thriftserver.GetPool(conf.ConfProperties["oauth_center"]["permission_thrift"])
     pooledClient, err := Pool.Get()
     if err != nil {
         log.Println("Thrift pool get client error")
-        return 500,err
+        return http.StatusInternalServerError,err
     }
 
     defer Pool.Put(pooledClient, false)
@@ -77,6 +78,7 @@ func (v RightsFilter) Pre(c Context) (statusCode int, err error) {
         return http.StatusInternalServerError,errors.New("convert to raw client failed")
     }
 
+    println("thirftreq="+string(thriftreq.ParamJSON))
     thriftres, err := rawClient.Send(thriftreq)
     if err != nil {
         log.Println("处理thrift请求失败  ")
