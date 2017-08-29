@@ -141,7 +141,10 @@
                         <td>
                             <div class="form-group  col-lg-3">
                                 <label class="control-label" for="Api_mock">mock：</label>
-                                <input type="text" class="form-control" name="Api_mock" id="Api_mock" placeholder="可不填写，填写json字符串，模拟http响应">
+                                <input type="hidden" class="form-control" name="Api_mock" id="Api_mock" placeholder="可不填写，填写json字符串，模拟http响应">
+                                <button class="btn" data-toggle="modal"  data-target="#addUserModal" type="button">
+                                    Click!
+                                </button>
                             </div>
                         </td>
                         <td>
@@ -204,6 +207,83 @@
             {{end}}
             </tbody>
         </table>
+
+
+        <!-- 模态框示例（Modal） -->
+            <div class="modal fade" id="addUserModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                &times;
+                            </button>
+                            <h4 class="modal-title" id="myModalLabel">
+                                Mock
+                            </h4>
+                        </div>
+                        <div class="modal-body">
+                                <div class="form-group">
+                                    <label for="MockValue" class="col-sm-3 control-label">Mock.Value</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" class="form-control" id="MockValue" name="MockValue"
+                                               placeholder="Mock.Value">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="ContentType" class="col-sm-3 control-label">Mock.ContentType</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" class="form-control" name="ContentType" value="" id="ContentType"
+                                               placeholder="Mock.ContentType">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="Headers.key" class="col-sm-3 control-label">Mock.Headers</label>
+                                    <div class="col-sm-9">
+                                        <table id="MockHeaders">
+                                            <th>key</th>
+                                            <th>value</th>
+                                            <tr>
+                                                <td>
+                                                    <input type="text" class="form-control" name="Headers.key" value="" id="Headers.key"
+                                                           placeholder="Headers.key">
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control" name="Headers.value" value="" id="Headers.value"
+                                                           placeholder="Headers.value">
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        <p id="addTr1">添加</p>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Mock.Cookies</label>
+                                    <div class="col-sm-9">
+                                        <table id="mockCookies">
+                                            <th>cookies</th>
+                                            <tr>
+                                                <td>
+                                                    <input type="text" class="form-control" name="Mock.Cookies" value=""  id= 1
+                                                           placeholder="Mock.Cookies">
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        <p id="addTr2">添加</p>
+                                    </div>
+                                </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                            </button>
+                            <button type="button" class="btn btn-primary" id="subMock">
+                                保存
+                            </button><span id="tip"> </span>
+                        </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal -->
+            </div>
     </div>
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
@@ -274,6 +354,54 @@
         }
 
         $(function() {
+
+            $("#addTr1").on('click', function () {
+                //获取table最后一行 $("#tab tr:last")
+                //获取table第一行 $("#tab tr").eq(0)
+                //获取table倒数第二行 $("#tab tr").eq(-2)
+                var $tr=$("#MockHeaders tr:last").clone();
+                $("#MockHeaders").append($tr);
+            })
+
+            $("#addTr2").on('click', function () {
+                //获取table最后一行 $("#tab tr:last")
+                //获取table第一行 $("#tab tr").eq(0)
+                //获取table倒数第二行 $("#tab tr").eq(-2)
+                var $tr=$("#mockCookies tr:last").clone();
+                $("#mockCookies").append($tr);
+            })
+
+            $("#subMock").on('click', function () {
+                var str = '{"contentType":"'+$("#ContentType").val()+'","value":"'+$("#MockValue").val()+'",'+'"headers":['
+                var tableObj = document.getElementById("MockHeaders");
+                for (var i = 1; i < tableObj.rows.length; i++) {    //遍历Table的所有Row
+                    tableInfo = $("#MockHeaders tr").eq(1).find('input').val();   //获取Table中单元格的内容
+                    console.log("tableInfo="+tableInfo)
+                    if (i!=tableObj.rows.length-1) {
+                        str = str+'{"'+ $("#MockHeaders tr").eq(i).find('input').val()+'":"'+$("#MockHeaders tr").eq(i).find('input').eq(1).val()+'"},'
+                    } else {
+                        str = str+'{"'+ $("#MockHeaders tr").eq(i).find('input').val()+'":"'+$("#MockHeaders tr").eq(i).find('input').eq(1).val()+'"}'
+                    }
+                }
+                str =str + '],"cookies":['
+                var tableObj2 = document.getElementById("mockCookies");
+                for (var i = 1; i < tableObj2.rows.length; i++) {    //遍历Table的所有Row
+                    if (i!=tableObj2.rows.length-1) {
+                        str = str+'"'+$("#mockCookies tr").eq(i).find('input').val()+'",'
+                    } else {
+                        str = str+'"'+$("#mockCookies tr").eq(i).find('input').val()+'"'
+                    }
+                }
+                str =str + ']}'
+                $('#Api_mock').val(str);
+                $('#addUserModal').modal('hide');
+                console.log("MockStr="+str)
+            });
+
+
+
+
+
             $("#example").hover(function () {
                 $(this).stop().animate({
                     opacity: '1'
@@ -524,7 +652,7 @@
                 detailClose: 'fa fa-minus-circle'
         }
         });
-        $(window).resize(function () {
+            $(window).resize(function () {
                 $table.bootstrapTable('resetView');
             });
         });
