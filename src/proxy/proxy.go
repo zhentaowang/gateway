@@ -103,13 +103,16 @@ func (h *HttpProxy) ReverseProxyHandler(ctx *fasthttp.RequestCtx) {
         if result.API.Mock != nil {
             result.API.RenderMock(ctx)
             if isTest == false {
-                    log.Println("网关结束处理  "+string(ctx.Request.RequestURI())+ "，返回的是mock数据， HEAD = " + result.Res.Header.String())
+                    log.Println("网关结束处理  "+string(ctx.Request.RequestURI())+ "，返回的是mock数据， HEAD = " + ctx.Response.Header.String())
             }
             result.Release()
             return
         }
 
         ctx.SetStatusCode(result.Code)
+        if result.Res != nil {
+            ctx.Response.AppendBodyString(string(result.Res.Body())+"\n")
+        }
         ctx.Response.AppendBody([]byte(result.Err.Error()))
         if isTest == false {
             if result.Res!=nil {
