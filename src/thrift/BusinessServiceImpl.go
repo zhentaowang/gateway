@@ -4,8 +4,6 @@ import (
 	"code.aliyun.com/wyunshare/thrift-server/gen-go/server"
 	"code.aliyun.com/wyunshare/thrift-server"
 	"log"
-	"strings"
-	"bytes"
 	"github.com/go-xorm/xorm"
 	_ "github.com/go-sql-driver/mysql"
 	"code.aliyun.com/wyunshare/thrift-server/pool"
@@ -14,6 +12,8 @@ import (
 	"strconv"
 	"github.com/juju/errors"
 	"net/http"
+	"strings"
+	"bytes"
 )
 
 type BusinessServiceImpl struct {
@@ -104,7 +104,7 @@ func (msi *BusinessServiceImpl) Handle(operation string, paramJSON []byte) (*ser
 		req := server.NewRequest()
 
 		req.ServiceName = string(results[0]["service_provider_name"])
-		req.Operation = operation
+		req.Operation = string(results[0]["name"])
 		req.ParamJSON = paramJSON
 
 		res, err := rawClient.Send(req)
