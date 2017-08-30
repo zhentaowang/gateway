@@ -12,6 +12,8 @@ import (
 	"gateway/src/util"
 	"time"
 	"strconv"
+	"github.com/juju/errors"
+	"net/http"
 )
 
 type BusinessServiceImpl struct {
@@ -25,7 +27,12 @@ func (msi *BusinessServiceImpl) Handle(operation string, paramJSON []byte) (*ser
 	log.Println("处理thrift,operation="+operation+"  paramJSON="+string(paramJSON))
 
 	if operation == "" {
-		log.Panic("Operation is null!")
+		log.Println("Operation is null!")
+
+		eRes := new(server.Response)
+		eRes.ResponeCode = http.StatusBadRequest
+
+		return eRes,errors.New("Operation is null!")
 	}
 
 	HandleInfo := new(util.InfoCount)
@@ -38,7 +45,12 @@ func (msi *BusinessServiceImpl) Handle(operation string, paramJSON []byte) (*ser
 	var pooled *pool.Pool
 	addr := strings.Split(operation, "/")
 	if len(addr)<3 {
-		log.Panic("Operation格式为/uri/operation")
+		log.Println("Operation格式为/uri/operation")
+
+		eRes := new(server.Response)
+		eRes.ResponeCode = http.StatusBadRequest
+
+		return eRes,errors.New("Operation格式为/uri/operation")
 	}
 
 	buffer := bytes.NewBufferString("")
@@ -58,7 +70,12 @@ func (msi *BusinessServiceImpl) Handle(operation string, paramJSON []byte) (*ser
 	sql := "select service.name,service.namespace,service.port ,api.service_provider_name from service,api where api.service_id = service.service_id and api.uri=?"
 	results, err := Engine.Query(sql,buffer.String())
 	if err != nil {
-		log.Panic("thrift从数据库获取Service失败 , Operation格式为/uri/operation ",err)
+		log.Println("thrift从数据库获取Service失败 , Operation格式为/uri/operation ",err)
+
+		eRes := new(server.Response)
+		eRes.ResponeCode = http.StatusBadRequest
+
+		return eRes,errors.New("thrift从数据库获取Service失败 , Operation格式为/uri/operation ,检查调用的参数或网关配置")
 	}
 
 	if len(results)!=0 {
@@ -72,14 +89,16 @@ func (msi *BusinessServiceImpl) Handle(operation string, paramJSON []byte) (*ser
 		}
 		client, err := pooled.Get()
 		if err != nil {
-			log.Panic("Thrift pool get client error", err)
+			log.Println("Thrift pool get client error", err)
+			return nil,err
 		}
 
 		defer pooled.Put(client, false)
 
 		rawClient, ok := client.(*server.MyServiceClient)
 		if !ok {
-			log.Panic("convert to raw client failed")
+			log.Println("convert to raw client failed")
+			return nil,errors.New("convert to raw client failed")
 		}
 
 		req := server.NewRequest()
@@ -112,5 +131,5 @@ func (msi *BusinessServiceImpl) Handle(operation string, paramJSON []byte) (*ser
 
 	log.Println("没有查询到thrift相关服务")
 
-	return nil,nil
+	return nil,errors.New("没有查询到thrift相关服务")
 }
