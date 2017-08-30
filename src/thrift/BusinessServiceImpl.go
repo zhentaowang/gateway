@@ -114,7 +114,7 @@ func (msi *BusinessServiceImpl) Handle(operation string, paramJSON []byte) (*ser
 
 		if res != nil {
                     HandleInfo.ResponseContent = "ResponseCode="+strconv.FormatInt(int64(res.ResponeCode),10)+"  content="+string(res.ResponseJSON)
-                    log.Println("结束处理thrift")
+                    log.Println("结束处理thrift,ResponseCode="+strconv.FormatInt(int64(res.ResponeCode),10))
 		} else {
                     HandleInfo.ResponseContent = "返回了空结果"
                     log.Println("结束处理thrift,response=空")
@@ -123,7 +123,7 @@ func (msi *BusinessServiceImpl) Handle(operation string, paramJSON []byte) (*ser
 		util.SendToKafka(HandleInfo,"kafka_topic")
 
 		if err != nil {
-			log.Println(err)
+			log.Println("处理thrift请求出错，"+err.Error())
 		}
 
 		return res, err
