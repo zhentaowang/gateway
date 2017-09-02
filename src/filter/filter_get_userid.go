@@ -3,7 +3,7 @@ package filter
 import (
     "net/http"
     "gateway/src/util"
-    "github.com/juju/errors"
+    "errors"
 )
 
 type VisitOauth struct {
