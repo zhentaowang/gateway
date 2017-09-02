@@ -5,6 +5,7 @@ import (
 
     "github.com/valyala/fasthttp"
     "container/list"
+    "log"
 )
 
 
@@ -55,8 +56,10 @@ func DoPreFilters(c Context, filters *list.List) (filterName string, statusCode 
 
         statusCode, err = f.Pre(c)
         if nil != err {
+            log.Printf("Proxy Filter-Pre<%s> fail.", filterName, err)
             return filterName, statusCode, err
         }
+        log.Printf("Proxy Filter-Pre<%s> success.", filterName)
     }
 
     return "", http.StatusOK, nil
@@ -68,8 +71,11 @@ func DoPostFilters(c Context, filters *list.List) (filterName string, statusCode
 
         statusCode, err = f.Post(c)
         if nil != err {
+            log.Printf("Proxy Filter-Post<%s> fail: %s ", filterName, err.Error())
             return filterName, statusCode, err
         }
+
+        log.Printf("Proxy Filter-Post<%s> success ", filterName)
     }
 
     return "", http.StatusOK, nil

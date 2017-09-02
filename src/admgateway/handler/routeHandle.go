@@ -8,7 +8,7 @@ import (
 	"strconv"
 )
 
-
+var fsHandle  = fasthttp.FSHandler("src/admgateway/view",1)
 
 func indexHandler(ctx *fasthttp.RequestCtx) {
 
