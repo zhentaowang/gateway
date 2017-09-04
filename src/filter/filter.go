@@ -69,6 +69,8 @@ func DoPostFilters(c Context, filters *list.List) (filterName string, statusCode
     for item := filters.Back(); item != nil; item = item.Prev() {
         f, _ := item.Value.(Filter)
 
+        filterName = f.Name()
+
         statusCode, err = f.Post(c)
         if nil != err {
             log.Printf("Proxy Filter-Post<%s> fail: %s ", filterName, err.Error())
