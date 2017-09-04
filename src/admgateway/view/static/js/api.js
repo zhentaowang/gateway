@@ -162,7 +162,26 @@ $(function() {
                 $(".warning").css({ display: 'none' });
             }
         }
-        params = "txtName="+txtName+"&"+"txtPwd="+txtPwd
+
+        var params = $("#loginForm").serialize();
+
+        $.ajax({
+            url: "/login",
+            type: 'POST',
+            data: params,
+            success: function (data, status, returndata) {
+                if (returndata.getResponseHeader('status')=="true") {
+                    location.reload()
+                } else {
+                    alert("登陆失败")
+                    location.reload()
+                }
+
+            },
+            error: function (returndata) {
+                alert("登陆请求失败")
+            }
+        });
 
     });
 //文本框不允许为空---单个文本触发
