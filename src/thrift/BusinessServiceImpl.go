@@ -116,7 +116,7 @@ func (msi *BusinessServiceImpl) Handle(operation string, paramJSON []byte) (*ser
 
 		if res != nil {
                     HandleInfo.ResponseContent = "ResponseCode="+strconv.FormatInt(int64(res.ResponeCode),10)+"  content="+string(res.ResponseJSON)
-                    log.Println("结束处理thrift,ResponseCode="+strconv.FormatInt(int64(res.ResponeCode),10))
+                    log.Println("结束处理thrift,ResponseCode="+strconv.FormatInt(int64(res.ResponeCode),10)+",uri="+buffer.String())
 		} else {
                     HandleInfo.ResponseContent = "返回了空结果"
                     log.Println("结束处理thrift,response=空")

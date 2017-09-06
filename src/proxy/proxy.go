@@ -145,12 +145,13 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
     }
 
     outReq := copyRequest(&ctx.Request)
+    result.Res = &fasthttp.Response{}
 
     c := model.NewContext(h.routeTable, ctx, outReq, result)
 
     // 验证用户权限，同时获取用户id
     if result.API.NeedLogin {
-        ok, err := h.CheckToken(outReq, result)
+        ok, err := util.CheckToken(outReq, result.Res)
         if err != nil || !ok {
             result.Err = err
             result.Code = http.StatusForbidden
@@ -166,25 +167,19 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
     }
 
     // 系统统一的filters
-    filterName, code, err := filter.DoPreFilters(c, h.filters)
+    _, code, err := filter.DoPreFilters(c, h.filters)
     if nil != err {
-        log.Printf("Proxy Filter-Pre<%s> fail.", filterName, err)
         result.Err = err
         result.Code = code
         return
-    } else {
-        log.Printf("Proxy Filter-Pre<%s> success.", filterName, err)
     }
 
     // pre filters
-    filterName, code, err = filter.DoPreFilters(c, result.API.Filters)
+    _, code, err = filter.DoPreFilters(c, result.API.Filters)
     if nil != err {
-        log.Printf("Proxy Filter-Pre<%s> fail.", filterName, err)
         result.Err = err
         result.Code = code
         return
-    } else {
-        log.Printf("Proxy Filter-Pre<%s> success.", filterName, err)
     }
 
     service := result.API.Service
@@ -206,6 +201,7 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
             resCode := http.StatusServiceUnavailable
 
             if nil != err {
+                result.Res.SetStatusCode(http.StatusServiceUnavailable)
                 log.Printf("Proxy Fail <%s>", service.GetHost(), err)
             } else {
                 resCode = res.StatusCode()
@@ -252,6 +248,7 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
         }
         req.Operation = operation
 
+        log.Println("网关处理thrift请求，paramJson= "+string(req.ParamJSON)+"  ,operation= "+req.Operation+"  ,ServiceName="+req.ServiceName)
         pooledClient, err := service.Pool.Get()
         if err != nil {
             result.Err = err
@@ -292,9 +289,8 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
     }
 
     // 系统统一的 post filters
-    filterName, code, err = filter.DoPostFilters(c, h.filters)
+    _, code, err = filter.DoPostFilters(c, h.filters)
     if nil != err {
-        log.Printf("Proxy Filter-Post<%s> fail: %s ", filterName, err.Error())
 
         result.Err = err
         result.Code = code
@@ -302,9 +298,8 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
     }
 
     // api 自己的 post filters
-    filterName, code, err = filter.DoPostFilters(c, result.API.Filters)
+    _, code, err = filter.DoPostFilters(c, result.API.Filters)
     if nil != err {
-        log.Printf("Proxy Filter-Post<%s> fail: %s ", filterName, err.Error())
 
         result.Err = err
         result.Code = code

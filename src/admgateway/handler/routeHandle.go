@@ -8,48 +8,76 @@ import (
 	"strconv"
 )
 
-
+var fsHandle  = fasthttp.FSHandler("src/admgateway/view",1)
 
 func indexHandler(ctx *fasthttp.RequestCtx) {
 
 	url := "api.html"
-	var LoginInfo LoginData = LoginData{}
 
 	data := new(WebData)
 
-	GetCookie(ctx,&LoginInfo)
+    cookiesData := new(LoginData)
+    GetCookie(ctx,cookiesData)
 
-	ToOauth(&LoginInfo,data)
+    data.Title = "Gateway Manager"
+
+    if len(cookiesData.name)!=0 {
+        log.Println("i'm not null  "+cookiesData.name)
+        data.ApiData = MQueryApi(new(Api))
+        data.ServiceData = MQueryService(new(Service))
+        data.FilterData = MQueryFilter(new(Filter))
+        data.Name = cookiesData.name
+    } else {
+        data.Name = "登陆"
+    }
 
 	Render(ctx, url, data)
 }
 
 func ToFilter(ctx *fasthttp.RequestCtx)  {
 
-	url := "filter.html"
-	var LoginInfo LoginData = LoginData{}
+    url := "filter.html"
 
-	data := new(WebData)
+    data := new(WebData)
 
-	GetCookie(ctx,&LoginInfo)
+    cookiesData := new(LoginData)
+    GetCookie(ctx,cookiesData)
 
-	ToOauth(&LoginInfo,data)
+    data.Title = "Gateway Manager"
 
-	ctx.Response.Header.Set("Location", "/")
+    if len(cookiesData.name)!=0 {
+        data.ApiData = MQueryApi(new(Api))
+        data.ServiceData = MQueryService(new(Service))
+        data.FilterData = MQueryFilter(new(Filter))
+        data.Name = cookiesData.name
+    } else {
+        data.Name = "登陆"
+    }
 
-	Render(ctx, url, data)
+    ctx.Response.Header.Set("Location", "/")
+
+    Render(ctx, url, data)
 }
 
 func ToService(ctx *fasthttp.RequestCtx)  {
 
 	url := "service.html"
-	var LoginInfo LoginData = LoginData{}
 
 	data := new(WebData)
 
-	GetCookie(ctx,&LoginInfo)
+        cookiesData := new(LoginData)
+        GetCookie(ctx,cookiesData)
 
-	ToOauth(&LoginInfo,data)
+        data.Title = "Gateway Manager"
+
+        if len(cookiesData.name)!=0 {
+            data.ApiData = MQueryApi(new(Api))
+            data.ServiceData = MQueryService(new(Service))
+            data.FilterData = MQueryFilter(new(Filter))
+            data.Name = cookiesData.name
+        } else {
+            data.Name = "登陆"
+        }
 
 	ctx.Response.Header.Set("Location", "/")
 
@@ -60,28 +88,40 @@ func ToService(ctx *fasthttp.RequestCtx)  {
 func Login(ctx *fasthttp.RequestCtx)  {
 	log.Printf("logining...")
 
-	indexHandler(ctx)
+        cookiesData := new(LoginData)
+        data := new(WebData)
 
 	cookie := fasthttp.AcquireCookie()
 	LoginInfo := GetLoginData(ctx)
 
-	cookie.SetKey("login")
-	cookie.SetValue(LoginInfo.name+"&"+LoginInfo.password)
-	ctx.Response.Header.SetCookie(cookie)
-}
+        GetCookie(ctx,cookiesData)
 
-func ToOauth(LoginInfo *LoginData,data *WebData)  {
-	allowed, _ := util.GetPermission(LoginInfo.name, LoginInfo.password, "gateway_list")
+            allowed, _ := util.GetPermission(LoginInfo.name, LoginInfo.password, "gateway_list")
+            log.Print("allowed " + LoginInfo.name+"   "+LoginInfo.password)
+            log.Print(allowed)
 
-	if allowed==true {
-		data.Title = "Gateway Manager"
-		data.ApiData = MQueryApi(new(Api))
-		data.ServiceData = MQueryService(new(Service))
-		data.FilterData = MQueryFilter(new(Filter))
-		data.Name = LoginInfo.name
-	} else {
-		data.Name = "登陆"
-	}
+            if allowed==true {
+                data.Title = "Gateway Manager"
+                data.ApiData = MQueryApi(new(Api))
+                data.ServiceData = MQueryService(new(Service))
+                data.FilterData = MQueryFilter(new(Filter))
+                data.Name = LoginInfo.name
+
+                cookie.SetKey("login")
+                cookie.SetValue(LoginInfo.name+"&"+LoginInfo.password)
+                ctx.Response.Header.SetCookie(cookie)
+
+                ctx.Response.Header.Set("Location","/api.html")
+                ctx.Response.Header.Set("status","true")
+                return
+            } else {
+                data.Name = "登陆"
+
+                ctx.Response.Header.Set("status","false")
+                ctx.Response.Header.DelClientCookie("login")
+                ctx.Response.Header.Set("Location","/api.html")
+            }
+
 }
 
 func GetCookie(ctx *fasthttp.RequestCtx,LoginInfo *LoginData)  {

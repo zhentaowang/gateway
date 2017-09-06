@@ -22,6 +22,7 @@ const (
     FilterVisitCount = "VISITCOUNT"
     FilterText = "FILTERTEXT"
     FilterJson = "JSON"
+    FilterVisitOauth = "VISITOAUTH"
 )
 
 func NewFilter(filterName string) (Filter, error) {
@@ -42,6 +43,9 @@ func NewFilter(filterName string) (Filter, error) {
         return newTextFilter(), nil
     case FilterJson:
         return newJSONFilter(), nil
+    case FilterVisitOauth:
+        return newVisitOauth(), nil
+
 
     default:
         return nil, ErrUnknownFilter
