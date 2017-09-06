@@ -125,15 +125,17 @@ func Render(ctx *fasthttp.RequestCtx, url string,data interface{}) {
 
 	htmlFile := filepath.Join(pwd, "src","admgateway","view", url)
 
-	cssFile := filepath.Join(pwd, "src","admgateway","view", "index.css")
+	//cssFile := filepath.Join(pwd, "src","admgateway","view", "index.css")
 
-	t, err := template.ParseFiles(htmlFile,cssFile)
+	//t, err := template.ParseFiles(htmlFile,cssFile)
+	t := template.New("dd")
+	t, err := t.ParseFiles(htmlFile)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	wr := bytes.NewBufferString("")
-	t.ExecuteTemplate(wr,"content",data)
+	err = t.ExecuteTemplate(wr,"content",data)
 	if err != nil {
 		log.Fatal(err)
 	}
