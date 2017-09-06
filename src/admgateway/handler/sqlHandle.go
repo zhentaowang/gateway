@@ -195,7 +195,9 @@ func MQueryService(data *Service) []Service {
 func QueryOneService(user *Service)  {
 	has, err := Engine.Get(user)
 
-	log.Println(has,err)
+	if err != nil {
+            log.Println(has,err)
+	}
 }
 
 
