@@ -111,7 +111,10 @@ func MInsertApi(data *Api, filter_seq int) {
 func QueryOneApi(user *Api)  {
     has, err := Engine.Get(user)
 
-    log.Println(has,err)
+	if err!=nil {
+		log.Println(has,err)
+	}
+
 }
 
 func MutiInsertApi(data []*Api)  {

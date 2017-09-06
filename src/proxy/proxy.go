@@ -193,7 +193,9 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
         outReq.Header.Set("client_id",string(outReq.PostArgs().Peek("client_id")))
         outReq.Header.Set("user_id",string(outReq.PostArgs().Peek("user_id")))
 
-        log.Println("处理http请求，uri="+result.API.URI+",转发到 "+service.GetHost())
+        if strings.Compare(string(ctx.QueryArgs().Peek("type")),"gateway_test")!=0 {
+            log.Println("处理http请求，uri=" + result.API.URI + ",转发到 " + service.GetHost())
+        }
         res, err := h.fastHTTPClient.Do(outReq, service.GetHost())
         c.SetEndAt(time.Now().UnixNano())
         result.Res = res
@@ -264,7 +266,6 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
             return
         }
 
-        log.Println("网关处理thrift请求，paramJson= "+string(req.ParamJSON)+"  ,operation= "+req.Operation+"  ,ServiceName="+req.ServiceName)
         res, err := rawClient.Send(req)
 	if res != nil {
 		log.Println("网关结束处理thrift请求，ResponseCode="+strconv.FormatInt(int64(res.ResponeCode),10)+",uri="+result.API.URI)
