@@ -59,7 +59,7 @@ func DoPreFilters(c Context, filters *list.List) (filterName string, statusCode 
             log.Printf("Proxy Filter-Pre<%s> fail.", filterName, err)
             return filterName, statusCode, err
         }
-        log.Printf("Proxy Filter-Pre<%s> success.", filterName)
+        //log.Printf("Proxy Filter-Pre<%s> success.", filterName)
     }
 
     return "", http.StatusOK, nil
@@ -77,7 +77,7 @@ func DoPostFilters(c Context, filters *list.List) (filterName string, statusCode
             return filterName, statusCode, err
         }
 
-        log.Printf("Proxy Filter-Post<%s> success ", filterName)
+        //log.Printf("Proxy Filter-Post<%s> success ", filterName)
     }
 
     return "", http.StatusOK, nil
