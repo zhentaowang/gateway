@@ -255,6 +255,8 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
         pooledClient, err := service.Pool.Get()
         if err != nil {
             result.Err = err
+            result.Code = http.StatusServiceUnavailable
+            result.Res.SetStatusCode(http.StatusServiceUnavailable)
             log.Println("Thrift pool get client error", err)
             return
         }

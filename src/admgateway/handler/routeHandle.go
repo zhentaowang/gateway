@@ -22,7 +22,6 @@ func indexHandler(ctx *fasthttp.RequestCtx) {
     data.Title = "Gateway Manager"
 
     if len(cookiesData.name)!=0 {
-        log.Println("i'm not null  "+cookiesData.name)
         data.ApiData = MQueryApi(new(Api))
         data.ServiceData = MQueryService(new(Service))
         data.FilterData = MQueryFilter(new(Filter))
