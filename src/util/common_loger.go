@@ -111,8 +111,8 @@ func SendToDingDing(v string)  {
 
     conf := GetConfigCenterInstance()
 
-    post := "{\"msgtype\": \"markdown\",\"markdown\": { \"title\": \"gateway错误详解\",\"text\":\"### <font color=red>详细信息</font>\n"+
-            "<font color=green> host:"+host+"</font>\n <p><code>"+ v+"</p></code>\"}}"
+    post := "{\"msgtype\": \"markdown\",\"markdown\": { \"title\": \"gateway错误详解\",\"text\":\"### <font color=red>详细信息</font><br />"+
+            "<font color=green> host:"+host+"</font><br /> <p><code>"+ v+"</p></code>\"}}"
     http.Post(conf.ConfProperties["kafka"]["DingDing"],
         "application/json",
         strings.NewReader(post))
