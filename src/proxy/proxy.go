@@ -270,9 +270,9 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
 
         res, err := rawClient.Send(req)
 	if res != nil {
-		log.Println("网关结束处理thrift请求，ResponseCode="+strconv.FormatInt(int64(res.ResponeCode),10)+",uri="+result.API.URI)
+		log.Println("网关结束处理thrift请求，ResponseCode="+strconv.FormatInt(int64(res.ResponeCode),10)+",Service="+result.API.Service.GetHost())
 	} else {
-		log.Println("网关结束处理thrift请求，返回的响应为空"+",uri="+result.API.URI)
+		log.Println("网关结束处理thrift请求，返回的响应为空"+",Service="+result.API.Service.GetHost())
 	}
         c.SetEndAt(time.Now().UnixNano())
 
