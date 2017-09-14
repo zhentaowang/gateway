@@ -48,8 +48,7 @@ func DataChange(h *proxy.HttpProxy)  {
 
     conn, _, err := zk.Connect(host, 10*time.Second)
     if nil != err {
-        log.Panic("load config error: ", err)
-        return
+        log.Println("connect zookeeper error: ", err)
     }
 
     for {
@@ -57,5 +56,11 @@ func DataChange(h *proxy.HttpProxy)  {
         <-stat
         log.Println("data changed")
         h.Init()
+        if conn.State() == 0 {
+            conn, _, err = zk.Connect(host, 10*time.Second)
+            if nil != err {
+                log.Println("connect zookeeper error: ", err)
+            }
+        }
     }
 }
