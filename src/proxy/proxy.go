@@ -155,6 +155,7 @@ func (h *HttpProxy) doProxy(ctx *fasthttp.RequestCtx, wg *sync.WaitGroup, result
         if err != nil || !ok {
             result.Err = err
             result.Code = http.StatusForbidden
+            result.Res.SetStatusCode(http.StatusForbidden)
             if err != nil {
                 log.Println("认证中心认证失败  "+err.Error())
             } else {
